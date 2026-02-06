@@ -1,4 +1,5 @@
 import type { PivotConfig, PivotResult, SelectedCell, Tuple } from '../domain/types';
+import styles from './pivotGrid.module.css';
 
 function tupleEquals(keys: string[], a: Tuple, b: Tuple): boolean {
   return keys.every((k) => (a[k] ?? '') === (b[k] ?? ''));
@@ -42,11 +43,8 @@ export function PivotGrid(props: {
   const colHeaderRows = buildColHeaderRows(config.colKeys, pivot.colTuples);
 
   return (
-    <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: 6 }}>
-      <table
-        className="pivotTable"
-        style={{ borderCollapse: 'collapse', width: 'max-content', minWidth: '100%' }}
-      >
+    <div className={styles.container}>
+      <table className={styles.table}>
         <thead>
           {colHeaderRows.map((row) => (
             <tr key={row.key}>
@@ -54,18 +52,7 @@ export function PivotGrid(props: {
               {config.rowKeys.map((rk) => (
                 <th
                   key={`${row.key}-corner-${rk}`}
-                  style={{
-                    position: 'sticky',
-                    left: 0,
-                    top: 0,
-                    background: '#fafafa',
-                    borderBottom: '1px solid #ddd',
-                    borderRight: '1px solid #ddd',
-                    padding: '6px 8px',
-                    textAlign: 'left',
-                    zIndex: 4,
-                    minWidth: 140,
-                  }}
+                  className={styles.corner}
                 >
                   {row.depth === colHeaderRows.length - 1 ? rk : ''}
                 </th>
@@ -75,17 +62,7 @@ export function PivotGrid(props: {
                 <th
                   key={`${row.key}-${idx}`}
                   colSpan={c.colSpan}
-                  style={{
-                    position: 'sticky',
-                    top: 0,
-                    borderBottom: '1px solid #ddd',
-                    borderRight: '1px solid #eee',
-                    padding: '6px 8px',
-                    background: '#fafafa',
-                    textAlign: 'center',
-                    fontWeight: 600,
-                    zIndex: 3,
-                  }}
+                  className={styles.colHeader}
                 >
                   {c.label || '(blank)'}
                 </th>
@@ -100,17 +77,7 @@ export function PivotGrid(props: {
               {config.rowKeys.map((rk) => (
                 <th
                   key={`${ri}-${rk}`}
-                  style={{
-                    position: 'sticky',
-                    left: 0,
-                    background: '#fff',
-                    borderRight: '1px solid #ddd',
-                    borderBottom: '1px solid #eee',
-                    padding: '6px 8px',
-                    textAlign: 'left',
-                    zIndex: 2,
-                    minWidth: 140,
-                  }}
+                  className={styles.rowHeader}
                 >
                   {rt[rk] || '(blank)'}
                 </th>
@@ -129,7 +96,7 @@ export function PivotGrid(props: {
                 return (
                   <td
                     key={key}
-                    className={isSelected ? 'pivotCell pivotCellSelected' : 'pivotCell'}
+                    className={isSelected ? `${styles.cell} ${styles.cellSelected}` : styles.cell}
                     onClick={() =>
                       onSelect?.({
                         rowIndex: ri,
@@ -139,17 +106,6 @@ export function PivotGrid(props: {
                         cell,
                       })
                     }
-                    style={{
-                      borderBottom: '1px solid #eee',
-                      borderRight: '1px solid #eee',
-                      padding: '6px 8px',
-                      textAlign: 'right',
-                      cursor: 'pointer',
-                      background: isSelected ? '#e6fffb' : '#fff',
-                      fontVariantNumeric: 'tabular-nums',
-                      minWidth: 80,
-                      userSelect: 'none',
-                    }}
                   >
                     {cell.value === null ? '' : cell.value.toFixed(2)}
                   </td>

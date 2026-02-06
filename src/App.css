@@ -40,13 +40,3 @@
 .read-the-docs {
   color: #888;
 }
-
-/* Pivot (Milestone 2 polish) */
-.pivotTable .pivotCell:hover {
-  background: #f6ffed; /* light green */
-}
-
-.pivotTable .pivotCellSelected {
-  outline: 2px solid #13c2c2; /* teal */
-  outline-offset: -2px;
-}

@@ -43,7 +43,8 @@ export function PivotControls(props: {
   const { schema, config, onChange } = props;
 
   const dimOptions = schema.fields
-    .filter((f) => !f.roles.includes('measure') && !f.roles.includes('flag') && f.type !== 'number')
+    .filter((f) => f.roles.some((r) => r === 'rowDim' || r === 'colDim' || r === 'slicer'))
+    .filter((f) => !f.roles.includes('measure') && !f.roles.includes('flag'))
     .map((f) => ({ value: f.key, label: f.label }));
 
   const measureOptions = fieldsByRole(schema, 'measure').map((f) => ({

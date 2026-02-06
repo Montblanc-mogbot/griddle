@@ -1,0 +1,70 @@
+.container {
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+}
+
+.corner {
+  position: sticky;
+  left: 0;
+  top: 0;
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: left;
+  z-index: 4;
+  min-width: 140px;
+}
+
+.colHeader {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #eee;
+  padding: 6px 8px;
+  background: #fafafa;
+  text-align: center;
+  font-weight: 600;
+  z-index: 3;
+}
+
+.rowHeader {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
+  padding: 6px 8px;
+  text-align: left;
+  z-index: 2;
+  min-width: 140px;
+}
+
+.cell {
+  border-bottom: 1px solid #eee;
+  border-right: 1px solid #eee;
+  padding: 6px 8px;
+  text-align: right;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  min-width: 80px;
+  user-select: none;
+  background: #fff;
+}
+
+.cell:hover {
+  background: #f6ffed;
+}
+
+.cellSelected {
+  background: #e6fffb;
+  outline: 2px solid #13c2c2;
+  outline-offset: -2px;
+}
