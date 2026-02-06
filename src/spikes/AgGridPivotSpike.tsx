@@ -29,8 +29,8 @@ export function AgGridPivotSpike(props: {
           rowData={rowData}
           columnDefs={columnDefs}
           defaultColDef={{ resizable: true }}
-          enableRangeSelection={true}
-          suppressMultiRangeSelection={false}
+          // v35+: use new cell selection API (replaces enableRangeSelection)
+          cellSelection={{ suppressMultiRanges: false }}
           onRangeSelectionChanged={(e) => {
             const ranges = e.api.getCellRanges();
             console.log('rangeSelectionChanged', ranges);
