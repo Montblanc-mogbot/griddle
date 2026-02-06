@@ -1,6 +1,6 @@
 # Griddle
 
-Schema-driven pivot view + data entry (Bills of Lading / ledger entries).
+Schema-driven pivot + data-entry tooling (Milestone 1 focuses on the pivot view).
 
 ## Dev
 
@@ -9,6 +9,24 @@ npm install
 npm run dev
 ```
 
-## Status
+## What exists (Milestone 1 so far)
 
-Milestone 1: pivot structure (see `../docs/03-milestone-1-plan.md`).
+- Dataset/schema/record types (`src/domain/types.ts`)
+- Pivot compute (`src/domain/pivot.ts`)
+  - distinct row/col tuples
+  - SUM aggregation for selected measure
+  - contributing `recordIds[]` per cell
+- Basic pivot UI:
+  - multi-row column headers
+  - multi-column row headers
+  - row/col selectors + measure selector
+  - cell selection debug panel
+- Unit tests for pivot compute: `npm test`
+
+## Current limitations
+
+- Sample data is hardcoded (`src/sample/sampleDataset.ts`)
+- No import/export yet
+- Slicers/filters UI not implemented (compute supports basic slicers)
+- No record editing/creation UI yet
+- No date bucketing yet
