@@ -4,12 +4,15 @@ import { RecordTapeRow } from './RecordTapeRow';
 import type { TapeFlag } from './RecordTapeRow.types';
 import styles from './tapeLedger.module.css';
 
+import { TapeNewEntryRow } from './TapeNewEntryRow';
+
 export function RecordTape(props: {
   dataset: DatasetFileV1;
   selected: SelectedCell;
   onToggleFlag: (recordId: string, flagKey: string, value: boolean) => void;
+  onSubmit: (args: { measureValues: Record<string, number | ''>; flags: Record<string, boolean> }) => void;
 }) {
-  const { dataset, selected, onToggleFlag } = props;
+  const { dataset, selected, onToggleFlag, onSubmit } = props;
 
   const records = getRecordsForCell(dataset, selected);
   const measures = measureFields(dataset.schema);
@@ -58,6 +61,7 @@ export function RecordTape(props: {
                   onToggleFlag={onToggleFlag}
                 />
               ))}
+              <TapeNewEntryRow schema={dataset.schema} onSubmit={onSubmit} />
             </tbody>
           </table>
         </div>

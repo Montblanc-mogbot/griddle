@@ -58,3 +58,21 @@
 .flagsCell {
   text-align: center;
 }
+
+.newEntryRow {
+  background: #fffbe6; /* light yellow focus */
+}
+
+.newEntryInput {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.newEntryInput:focus {
+  outline: 2px solid #13c2c2;
+  outline-offset: 0;
+}

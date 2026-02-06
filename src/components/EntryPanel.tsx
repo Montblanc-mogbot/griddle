@@ -1,7 +1,6 @@
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { BulkMetadataEdit } from './BulkMetadataEdit';
 import { EntryHeader } from './EntryHeader';
-import { FastEntryForm } from './FastEntryForm';
 import { RecordTape } from './RecordTape';
 import styles from './entryPanel.module.css';
 
@@ -30,10 +29,13 @@ export function EntryPanel(props: {
       {/* Bulk metadata should live above the tape (approved layout) */}
       <BulkMetadataEdit schema={dataset.schema} onToggle={onBulkToggleFlag} />
 
-      {/* TODO(M5.1): this will be replaced by a shaded bottom row inside the tape ledger */}
-      <FastEntryForm schema={dataset.schema} onSubmit={onSubmit} />
-
-      <RecordTape dataset={dataset} selected={selected} onToggleFlag={onToggleFlag} />
+      {/* Tape ledger includes the shaded bottom “new entry” row */}
+      <RecordTape
+        dataset={dataset}
+        selected={selected}
+        onToggleFlag={onToggleFlag}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 }
