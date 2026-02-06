@@ -9,6 +9,14 @@ npm install
 npm run dev
 ```
 
+## Import / Export
+
+- Use **Import JSON** to load a DatasetFileV1 JSON from disk.
+- Use **Export JSON** to download the current dataset.
+- If the imported file has issues, the UI will show an error (fatal) or warnings (non-fatal).
+
+JSON format docs: `docs/dataset-json-format.md`
+
 ## What exists (Milestone 1 + 2)
 
 ### Milestone 1 (pivot structure)
