@@ -1,8 +1,8 @@
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { BulkMetadataEdit } from './BulkMetadataEdit';
 import { EntryHeader } from './EntryHeader';
-import { FastEntryForm } from './FastEntryForm';
 import { RecordTape } from './RecordTape';
+import styles from './entryPanel.module.css';
 
 export function EntryPanel(props: {
   dataset: DatasetFileV1;
@@ -16,20 +16,9 @@ export function EntryPanel(props: {
   const { dataset, config, selected, onClose, onSubmit, onToggleFlag, onBulkToggleFlag } = props;
 
   return (
-    <div
-      style={{
-        border: '1px solid #ddd',
-        borderRadius: 8,
-        background: '#fff',
-        padding: 12,
-        display: 'grid',
-        gap: 12,
-        minWidth: 420,
-        maxWidth: 520,
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontWeight: 800 }}>Entry</div>
+    <div className={styles.panel}>
+      <div className={styles.titleRow}>
+        <div className={styles.title}>Entry</div>
         <button onClick={onClose} style={{ cursor: 'pointer' }}>
           Close
         </button>
@@ -37,14 +26,15 @@ export function EntryPanel(props: {
 
       <EntryHeader dataset={dataset} config={config} selected={selected} />
 
-      <FastEntryForm schema={dataset.schema} onSubmit={onSubmit} />
-
+      {/* Bulk metadata should live above the tape (approved layout) */}
       <BulkMetadataEdit schema={dataset.schema} onToggle={onBulkToggleFlag} />
 
+      {/* Tape ledger includes the shaded bottom “new entry” row */}
       <RecordTape
         dataset={dataset}
         selected={selected}
         onToggleFlag={onToggleFlag}
+        onSubmit={onSubmit}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import type { DatasetSchema } from '../domain/types';
 import { flagFields } from '../domain/records';
+import styles from './entryPanel.module.css';
 
 export function BulkMetadataEdit(props: {
   schema: DatasetSchema;
@@ -11,9 +12,9 @@ export function BulkMetadataEdit(props: {
   if (flags.length === 0) return null;
 
   return (
-    <div style={{ border: '1px solid #eee', borderRadius: 6, padding: 10 }}>
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>Bulk metadata (this cell)</div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+    <div className={styles.section}>
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>Bulk flags (apply to all records in cell)</div>
+      <div className={styles.bulkFlags}>
         {flags.map((f) => (
           <label key={f.key} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <input type="checkbox" onChange={(e) => onToggle(f.key, e.target.checked)} />
@@ -21,7 +22,7 @@ export function BulkMetadataEdit(props: {
           </label>
         ))}
       </div>
-      <div style={{ fontSize: 12, color: '#666', marginTop: 6 }}>
+      <div style={{ fontSize: 12, marginTop: 6 }} className={styles.muted}>
         Checking/unchecking applies the value to every record currently contributing to the selected cell.
       </div>
     </div>
