@@ -2,12 +2,31 @@ import { useMemo, useState } from 'react';
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { PivotGrid } from './components/PivotGrid';
+import { DatasetImportExport } from './components/DatasetImportExport';
 import { SchemaEditor } from './components/SchemaEditor';
 import { SelectionInspector } from './components/SelectionInspector';
 import { computePivot } from './domain/pivot';
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell } from './domain/types';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
+
+function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
+  const keys = new Set(schema.fields.map((f) => f.key));
+  const measureKeys = schema.fields.filter((f) => f.roles.includes('measure')).map((f) => f.key);
+
+  const defaultMeasure = measureKeys[0] ?? '';
+
+  const next: PivotConfig = {
+    ...prev,
+    rowKeys: prev.rowKeys.filter((k) => keys.has(k)),
+    colKeys: prev.colKeys.filter((k) => keys.has(k)),
+    slicerKeys: prev.slicerKeys.filter((k) => keys.has(k)),
+    slicers: Object.fromEntries(Object.entries(prev.slicers).filter(([k]) => keys.has(k))),
+    measureKey: keys.has(prev.measureKey) ? prev.measureKey : defaultMeasure,
+  };
+
+  return next;
+}
 
 export default function App() {
   const [dataset, setDataset] = useState<DatasetFileV1>(sampleDataset);
@@ -45,14 +64,17 @@ export default function App() {
       });
 
       // Update pivot config alongside dataset.
-      setConfig({
-        ...nextPivot,
-        // Ensure we always have a measure selected when possible
-        measureKey: nextPivot.measureKey || defaultMeasure,
-      });
+      setConfig(reconcilePivotConfig(nextSchema, nextPivot));
 
       return nextDataset;
     });
+  }
+
+  function applyImportedDataset(next: DatasetFileV1) {
+    setSelected(null);
+    setShowSchemaEditor(false);
+    setDataset(next);
+    setConfig((prev) => reconcilePivotConfig(next.schema, prev));
   }
 
   return (
@@ -62,7 +84,7 @@ export default function App() {
         <div style={{ color: '#666' }}>Schema-driven pivot</div>
       </header>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
         <PivotControls
           schema={dataset.schema}
           config={config}
@@ -71,9 +93,14 @@ export default function App() {
             setConfig(cfg);
           }}
         />
-        <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
-          {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
-        </button>
+
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <DatasetImportExport dataset={dataset} onImport={applyImportedDataset} />
+
+          <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
+            {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
+          </button>
+        </div>
       </div>
 
       {showSchemaEditor ? (
