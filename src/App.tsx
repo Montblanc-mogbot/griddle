@@ -9,6 +9,7 @@ import { SelectionInspector } from './components/SelectionInspector';
 import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
+import { AgGridPivotSpike } from './spikes/AgGridPivotSpike';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 
@@ -56,6 +57,7 @@ export default function App() {
 
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
+  const [showAgGridSpike, setShowAgGridSpike] = useState(false);
 
   const pivot = useMemo(
     () => computePivot(dataset.records, dataset.schema, config),
@@ -133,6 +135,10 @@ export default function App() {
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <DatasetImportExport dataset={dataset} onImport={applyImportedDataset} />
 
+          <button onClick={() => setShowAgGridSpike((s) => !s)} style={{ cursor: 'pointer' }}>
+            {showAgGridSpike ? 'Hide AG Grid spike' : 'Show AG Grid spike'}
+          </button>
+
           <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
             {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
           </button>
@@ -143,46 +149,50 @@ export default function App() {
         <SchemaEditor schema={dataset.schema} onChange={applySchema} />
       ) : null}
 
-      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <PivotGrid pivot={pivot} config={config} selected={selected} onSelect={setSelected} />
-        </div>
+      {showAgGridSpike ? (
+        <AgGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
+      ) : (
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <PivotGrid pivot={pivot} config={config} selected={selected} onSelect={setSelected} />
+          </div>
 
-        {selected ? (
-          <EntryPanel
-            dataset={dataset}
-            config={config}
-            selected={selected}
-            onClose={() => setSelected(null)}
-            onSubmit={({ measureValues, flags }) => {
-              const record = createRecordFromSelection({
-                schema: dataset.schema,
-                config,
-                selected,
-                measureValues,
-                flags,
-              });
-              setDataset((prev) => upsertRecords(prev, [record]));
-            }}
-            onToggleFlag={(recordId, flagKey, value) => {
-              setDataset((prev) => {
-                const rec = prev.records.find((r) => r.id === recordId);
-                if (!rec) return prev;
-                return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
-              });
-            }}
-            onBulkToggleFlag={(flagKey, value) => {
-              setDataset((prev) => {
-                const inCell = getRecordsForCell(prev, selected);
-                const updated = bulkSetMetadata(inCell, flagKey, value);
-                return upsertRecords(prev, updated);
-              });
-            }}
-          />
-        ) : (
-          <SelectionInspector dataset={dataset} selected={selected} onClose={() => setSelected(null)} />
-        )}
-      </div>
+          {selected ? (
+            <EntryPanel
+              dataset={dataset}
+              config={config}
+              selected={selected}
+              onClose={() => setSelected(null)}
+              onSubmit={({ measureValues, flags }) => {
+                const record = createRecordFromSelection({
+                  schema: dataset.schema,
+                  config,
+                  selected,
+                  measureValues,
+                  flags,
+                });
+                setDataset((prev) => upsertRecords(prev, [record]));
+              }}
+              onToggleFlag={(recordId, flagKey, value) => {
+                setDataset((prev) => {
+                  const rec = prev.records.find((r) => r.id === recordId);
+                  if (!rec) return prev;
+                  return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
+                });
+              }}
+              onBulkToggleFlag={(flagKey, value) => {
+                setDataset((prev) => {
+                  const inCell = getRecordsForCell(prev, selected);
+                  const updated = bulkSetMetadata(inCell, flagKey, value);
+                  return upsertRecords(prev, updated);
+                });
+              }}
+            />
+          ) : (
+            <SelectionInspector dataset={dataset} selected={selected} onClose={() => setSelected(null)} />
+          )}
+        </div>
+      )}
     </div>
   );
 }
