@@ -6,6 +6,7 @@ import { SchemaEditor } from './components/SchemaEditor';
 import { SelectionInspector } from './components/SelectionInspector';
 import { computePivot } from './domain/pivot';
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell } from './domain/types';
+import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 
 export default function App() {
@@ -34,17 +35,24 @@ export default function App() {
 
   function applySchema(nextSchema: DatasetSchema) {
     setSelected(null);
-    setDataset({ ...dataset, schema: nextSchema });
 
-    // Ensure pivot config stays valid after schema edits.
-    const fieldKeys = new Set(nextSchema.fields.map((f) => f.key));
-    setConfig((prev) => ({
-      ...prev,
-      rowKeys: prev.rowKeys.filter((k) => fieldKeys.has(k)),
-      colKeys: prev.colKeys.filter((k) => fieldKeys.has(k)),
-      slicerKeys: prev.slicerKeys.filter((k) => fieldKeys.has(k)),
-      measureKey: fieldKeys.has(prev.measureKey) ? prev.measureKey : defaultMeasure,
-    }));
+    setDataset((prevDataset) => {
+      // Note: this call also migrates record data keys (best-effort rename + drop removed fields)
+      const { dataset: nextDataset, pivotConfig: nextPivot } = migrateDatasetOnSchemaChange({
+        dataset: prevDataset,
+        nextSchema,
+        pivotConfig: config,
+      });
+
+      // Update pivot config alongside dataset.
+      setConfig({
+        ...nextPivot,
+        // Ensure we always have a measure selected when possible
+        measureKey: nextPivot.measureKey || defaultMeasure,
+      });
+
+      return nextDataset;
+    });
   }
 
   return (
