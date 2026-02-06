@@ -1,6 +1,8 @@
 import type { DatasetFileV1, SelectedCell } from '../domain/types';
 import { flagFields, getRecordsForCell, measureFields } from '../domain/records';
 import { RecordTapeRow } from './RecordTapeRow';
+import type { TapeFlag } from './RecordTapeRow.types';
+import styles from './tapeLedger.module.css';
 
 export function RecordTape(props: {
   dataset: DatasetFileV1;
@@ -13,26 +15,51 @@ export function RecordTape(props: {
   const measures = measureFields(dataset.schema);
   const flags = flagFields(dataset.schema);
 
+  const measureKeys = measures.map((m) => m.key);
+  const flagKeys: TapeFlag[] = flags.map((f) => ({ key: f.key, label: f.label }));
+
   return (
-    <div style={{ border: '1px solid #eee', borderRadius: 6, padding: 10 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+    <div className={styles.section}>
+      <div className={styles.headerRow}>
         <div style={{ fontWeight: 700 }}>Records in cell</div>
-        <div style={{ fontSize: 12, color: '#666' }}>{records.length} records</div>
+        <div className={styles.muted} style={{ fontSize: 12 }}>
+          {records.length} records
+        </div>
       </div>
 
       {records.length === 0 ? (
-        <div style={{ marginTop: 8, color: '#666' }}>(none)</div>
+        <div className={styles.muted} style={{ marginTop: 8 }}>
+          (none)
+        </div>
       ) : (
-        <div style={{ marginTop: 8, display: 'grid', gap: 8, maxHeight: 360, overflow: 'auto' }}>
-          {records.map((r) => (
-            <RecordTapeRow
-              key={r.id}
-              record={r}
-              measures={measures.map((m) => m.key)}
-              flags={flags.map((f) => ({ key: f.key, label: f.label }))}
-              onToggleFlag={onToggleFlag}
-            />
-          ))}
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                {measures.map((m) => (
+                  <th key={m.key} className={styles.th}>
+                    {m.label}
+                  </th>
+                ))}
+                {flags.map((f) => (
+                  <th key={f.key} className={`${styles.th} ${styles.thLeft}`} style={{ textAlign: 'center' }}>
+                    {f.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {records.map((r) => (
+                <RecordTapeRow
+                  key={r.id}
+                  record={r}
+                  measures={measureKeys}
+                  flags={flagKeys}
+                  onToggleFlag={onToggleFlag}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
