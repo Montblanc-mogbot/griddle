@@ -1,5 +1,7 @@
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { dimensionKeysFromConfig } from '../domain/records';
+import { formatNumber } from '../domain/format';
+import styles from './entryPanel.module.css';
 
 export function EntryHeader(props: {
   dataset: DatasetFileV1;
@@ -18,23 +20,27 @@ export function EntryHeader(props: {
     .filter((x) => x.value !== '');
 
   return (
-    <div style={{ border: '1px solid #eee', borderRadius: 6, padding: 10 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+    <div className={styles.section}>
+      <div className={styles.headerTop}>
         <div style={{ fontWeight: 700 }}>Selection</div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 12, color: '#666' }}>Cell total ({config.measureKey})</div>
-          <div style={{ fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
-            {selected.cell.value ?? '(empty)'}
+        <div className={styles.headerRight}>
+          <div style={{ fontSize: 12 }} className={styles.muted}>
+            Cell total ({config.measureKey})
           </div>
-          <div style={{ fontSize: 12, color: '#666' }}>Records: {selected.cell.recordIds.length}</div>
+          <div style={{ fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
+            {selected.cell.value === null ? '(empty)' : formatNumber(selected.cell.value)}
+          </div>
+          <div style={{ fontSize: 12 }} className={styles.muted}>
+            Records: {selected.cell.recordIds.length}
+          </div>
         </div>
       </div>
 
       <div style={{ marginTop: 8, display: 'grid', gap: 2 }}>
         {implied.map((x) => (
-          <div key={x.key} style={{ display: 'flex', gap: 8 }}>
-            <div style={{ width: 110, color: '#666' }}>{x.label}:</div>
-            <div style={{ fontWeight: 600 }}>{String(x.value)}</div>
+          <div key={x.key} className={styles.kvRow}>
+            <div className={styles.kLabel}>{x.label}:</div>
+            <div className={styles.kValue}>{String(x.value)}</div>
           </div>
         ))}
       </div>

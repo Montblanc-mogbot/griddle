@@ -1,0 +1,61 @@
+.panel {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+  min-width: 420px;
+  max-width: 560px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-weight: 800;
+}
+
+.section {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.muted {
+  color: #666;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerRight {
+  text-align: right;
+}
+
+.kvRow {
+  display: flex;
+  gap: 8px;
+}
+
+.kLabel {
+  width: 110px;
+  color: #666;
+}
+
+.kValue {
+  font-weight: 600;
+}
+
+.bulkFlags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
