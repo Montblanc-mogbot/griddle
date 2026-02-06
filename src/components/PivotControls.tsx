@@ -42,7 +42,10 @@ export function PivotControls(props: {
 }) {
   const { schema, config, onChange } = props;
 
-  const dimOptions = schema.fields.map((f) => ({ value: f.key, label: f.label }));
+  const dimOptions = schema.fields
+    .filter((f) => !f.roles.includes('measure') && !f.roles.includes('flag'))
+    .map((f) => ({ value: f.key, label: f.label }));
+
   const measureOptions = fieldsByRole(schema, 'measure').map((f) => ({
     value: f.key,
     label: f.label,
