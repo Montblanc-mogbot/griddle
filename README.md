@@ -21,14 +21,16 @@ JSON format docs: `docs/dataset-json-format.md`
 
 1) Click a pivot cell.
 2) The **Entry** panel opens on the right.
-3) Type into the measure field(s):
+3) The tape shows a ledger of existing records contributing to the cell.
+4) New entry is a shaded row at the bottom of the tape:
+   - Type into the measure field(s).
    - **Enter** moves to the next measure.
    - **Enter on the last measure** submits the record.
    - After submit: inputs clear and focus returns to the first measure.
-4) Metadata (flag) checkboxes:
-   - In **Fast entry**, flags apply to the record you’re about to submit (default false).
-   - In **Records in cell**, flags are editable per record.
-   - In **Bulk metadata**, checking/unchecking sets that flag for *all* records contributing to the selected cell.
+5) Metadata (flag) checkboxes:
+   - In the shaded new-entry row, flags apply to the record you’re about to submit (default false).
+   - In tape rows, flags are editable per record.
+   - In **Bulk flags**, checking/unchecking sets that flag for *all* records contributing to the selected cell.
 
 All row/col/slicer dimensions are implied from the selected cell; fast entry edits **measures + flags only**.
 
