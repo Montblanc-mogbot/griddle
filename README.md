@@ -9,19 +9,32 @@ npm install
 npm run dev
 ```
 
-## What exists (Milestone 1 so far)
+## What exists (Milestone 1 + 2)
+
+### Milestone 1 (pivot structure)
 
 - Dataset/schema/record types (`src/domain/types.ts`)
 - Pivot compute (`src/domain/pivot.ts`)
   - distinct row/col tuples
   - SUM aggregation for selected measure
   - contributing `recordIds[]` per cell
-- Basic pivot UI:
+- Pivot UI:
   - multi-row column headers
   - multi-column row headers
   - row/col selectors + measure selector
-  - cell selection debug panel
 - Unit tests for pivot compute: `npm test`
+
+### Milestone 2 (usable pivot demo)
+
+- Dummy dataset wired in (`src/sample/sampleDataset.ts`)
+- Click a pivot cell to open the **Selection Inspector** panel:
+  - aggregated value
+  - selected row+column dimension values
+  - contributing record IDs + expandable JSON for each record
+- Basic pivot UX polish:
+  - sticky headers
+  - hover highlight
+  - strong selected-cell styling
 
 ## Current limitations
 
