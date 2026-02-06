@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { PivotGrid } from './components/PivotGrid';
 import { DatasetImportExport } from './components/DatasetImportExport';
+import { EntryPanel } from './components/EntryPanel';
 import { SchemaEditor } from './components/SchemaEditor';
 import { SelectionInspector } from './components/SelectionInspector';
 import { computePivot } from './domain/pivot';
-import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell } from './domain/types';
+import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
+import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 
@@ -59,6 +61,32 @@ export default function App() {
     () => computePivot(dataset.records, dataset.schema, config),
     [dataset.records, dataset.schema, config],
   );
+
+  // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
+  useEffect(() => {
+    if (!selected) return;
+
+    function tupleEq(a: Tuple, b: Tuple, keys: string[]): boolean {
+      return keys.every((k) => (a[k] ?? '') === (b[k] ?? ''));
+    }
+
+    const ri = pivot.rowTuples.findIndex((rt) => tupleEq(rt, selected.row, config.rowKeys));
+    const ci = pivot.colTuples.findIndex((ct) => tupleEq(ct, selected.col, config.colKeys));
+    if (ri < 0 || ci < 0) return;
+
+    const key = `${ri}:${ci}`;
+    const nextCell = pivot.cells[key] ?? { value: null, recordIds: [] };
+
+    // Avoid cascading renders if nothing changed.
+    const sameIds =
+      nextCell.recordIds.length === selected.cell.recordIds.length &&
+      nextCell.recordIds.every((id, i) => id === selected.cell.recordIds[i]);
+
+    if (sameIds && nextCell.value === selected.cell.value) return;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelected({ ...selected, rowIndex: ri, colIndex: ci, cell: nextCell });
+  }, [dataset.records, pivot, config.colKeys, config.rowKeys, selected]);
 
   function applySchema(nextSchema: DatasetSchema) {
     setSelected(null);
@@ -119,7 +147,41 @@ export default function App() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <PivotGrid pivot={pivot} config={config} selected={selected} onSelect={setSelected} />
         </div>
-        <SelectionInspector dataset={dataset} selected={selected} onClose={() => setSelected(null)} />
+
+        {selected ? (
+          <EntryPanel
+            dataset={dataset}
+            config={config}
+            selected={selected}
+            onClose={() => setSelected(null)}
+            onSubmit={({ measureValues, flags }) => {
+              const record = createRecordFromSelection({
+                schema: dataset.schema,
+                config,
+                selected,
+                measureValues,
+                flags,
+              });
+              setDataset((prev) => upsertRecords(prev, [record]));
+            }}
+            onToggleFlag={(recordId, flagKey, value) => {
+              setDataset((prev) => {
+                const rec = prev.records.find((r) => r.id === recordId);
+                if (!rec) return prev;
+                return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
+              });
+            }}
+            onBulkToggleFlag={(flagKey, value) => {
+              setDataset((prev) => {
+                const inCell = getRecordsForCell(prev, selected);
+                const updated = bulkSetMetadata(inCell, flagKey, value);
+                return upsertRecords(prev, updated);
+              });
+            }}
+          />
+        ) : (
+          <SelectionInspector dataset={dataset} selected={selected} onClose={() => setSelected(null)} />
+        )}
       </div>
     </div>
   );

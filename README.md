@@ -17,6 +17,21 @@ npm run dev
 
 JSON format docs: `docs/dataset-json-format.md`
 
+## Fast entry (Milestone 5)
+
+1) Click a pivot cell.
+2) The **Entry** panel opens on the right.
+3) Type into the measure field(s):
+   - **Enter** moves to the next measure.
+   - **Enter on the last measure** submits the record.
+   - After submit: inputs clear and focus returns to the first measure.
+4) Metadata (flag) checkboxes:
+   - In **Fast entry**, flags apply to the record you’re about to submit (default false).
+   - In **Records in cell**, flags are editable per record.
+   - In **Bulk metadata**, checking/unchecking sets that flag for *all* records contributing to the selected cell.
+
+All row/col/slicer dimensions are implied from the selected cell; fast entry edits **measures + flags only**.
+
 ## What exists (Milestone 1 + 2)
 
 ### Milestone 1 (pivot structure)
