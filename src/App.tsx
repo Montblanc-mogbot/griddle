@@ -12,6 +12,9 @@ import { sampleDataset } from './sample/sampleDataset';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
+
+  const rowDefaults = schema.fields.filter((f) => f.roles.includes('rowDim')).map((f) => f.key);
+  const colDefaults = schema.fields.filter((f) => f.roles.includes('colDim')).map((f) => f.key);
   const measureKeys = schema.fields.filter((f) => f.roles.includes('measure')).map((f) => f.key);
 
   const defaultMeasure = measureKeys[0] ?? '';
@@ -24,6 +27,11 @@ function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotCo
     slicers: Object.fromEntries(Object.entries(prev.slicers).filter(([k]) => keys.has(k))),
     measureKey: keys.has(prev.measureKey) ? prev.measureKey : defaultMeasure,
   };
+
+  // If the user ends up with no dimensions selected (common after importing), choose sensible defaults.
+  if (next.rowKeys.length === 0) next.rowKeys = rowDefaults.slice(0, 2);
+  if (next.colKeys.length === 0) next.colKeys = colDefaults.slice(0, 2);
+  if (next.measureKey === '' && defaultMeasure) next.measureKey = defaultMeasure;
 
   return next;
 }
