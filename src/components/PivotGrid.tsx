@@ -43,7 +43,10 @@ export function PivotGrid(props: {
 
   return (
     <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: 6 }}>
-      <table style={{ borderCollapse: 'collapse', width: 'max-content', minWidth: '100%' }}>
+      <table
+        className="pivotTable"
+        style={{ borderCollapse: 'collapse', width: 'max-content', minWidth: '100%' }}
+      >
         <thead>
           {colHeaderRows.map((row) => (
             <tr key={row.key}>
@@ -126,6 +129,7 @@ export function PivotGrid(props: {
                 return (
                   <td
                     key={key}
+                    className={isSelected ? 'pivotCell pivotCellSelected' : 'pivotCell'}
                     onClick={() =>
                       onSelect?.({
                         rowIndex: ri,
