@@ -36,10 +36,22 @@ npm run dev
   - hover highlight
   - strong selected-cell styling
 
+## Schema editor (Milestone 3)
+
+Click **Edit schema** to toggle the schema editor.
+
+You can:
+- add/delete fields
+- edit field label/key/type
+- toggle roles (`rowDim`, `colDim`, `slicer`, `measure`, `flag`)
+- set `enum` options for string fields (one per line)
+
+Schema changes apply live to the pivot controls and grid.
+
 ## Current limitations
 
 - Sample data is hardcoded (`src/sample/sampleDataset.ts`)
 - No import/export yet
-- Slicers/filters UI not implemented (compute supports basic slicers)
+- Slicers UI not implemented (compute supports it, but no UI)
 - No record editing/creation UI yet
 - No date bucketing yet
