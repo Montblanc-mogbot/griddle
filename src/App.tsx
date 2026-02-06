@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { PivotGrid } from './components/PivotGrid';
+import { SelectionInspector } from './components/SelectionInspector';
 import { computePivot } from './domain/pivot';
 import type { PivotConfig, SelectedCell } from './domain/types';
 import { sampleDataset } from './sample/sampleDataset';
@@ -42,14 +43,12 @@ export default function App() {
         }}
       />
 
-      <PivotGrid pivot={pivot} config={config} selected={selected} onSelect={setSelected} />
-
-      <details open style={{ border: '1px solid #ddd', borderRadius: 6, padding: 12 }}>
-        <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Selection debug</summary>
-        <pre style={{ margin: 0, paddingTop: 8, overflow: 'auto' }}>
-          {JSON.stringify(selected, null, 2)}
-        </pre>
-      </details>
+      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <PivotGrid pivot={pivot} config={config} selected={selected} onSelect={setSelected} />
+        </div>
+        <SelectionInspector dataset={dataset} selected={selected} onClose={() => setSelected(null)} />
+      </div>
     </div>
   );
 }

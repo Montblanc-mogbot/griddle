@@ -54,12 +54,13 @@ export function PivotGrid(props: {
                   style={{
                     position: 'sticky',
                     left: 0,
+                    top: 0,
                     background: '#fafafa',
                     borderBottom: '1px solid #ddd',
                     borderRight: '1px solid #ddd',
                     padding: '6px 8px',
                     textAlign: 'left',
-                    zIndex: 2,
+                    zIndex: 4,
                     minWidth: 140,
                   }}
                 >
@@ -72,12 +73,15 @@ export function PivotGrid(props: {
                   key={`${row.key}-${idx}`}
                   colSpan={c.colSpan}
                   style={{
+                    position: 'sticky',
+                    top: 0,
                     borderBottom: '1px solid #ddd',
                     borderRight: '1px solid #eee',
                     padding: '6px 8px',
                     background: '#fafafa',
                     textAlign: 'center',
                     fontWeight: 600,
+                    zIndex: 3,
                   }}
                 >
                   {c.label || '(blank)'}
@@ -101,7 +105,7 @@ export function PivotGrid(props: {
                     borderBottom: '1px solid #eee',
                     padding: '6px 8px',
                     textAlign: 'left',
-                    zIndex: 1,
+                    zIndex: 2,
                     minWidth: 140,
                   }}
                 >
@@ -140,6 +144,7 @@ export function PivotGrid(props: {
                       background: isSelected ? '#e6fffb' : '#fff',
                       fontVariantNumeric: 'tabular-nums',
                       minWidth: 80,
+                      userSelect: 'none',
                     }}
                   >
                     {cell.value === null ? '' : cell.value.toFixed(2)}
