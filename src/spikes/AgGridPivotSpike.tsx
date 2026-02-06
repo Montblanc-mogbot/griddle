@@ -1,9 +1,13 @@
 import { AgGridReact } from 'ag-grid-react';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import type { DatasetFileV1, PivotConfig, PivotResult } from '../domain/types';
 import { makeAgGridTable } from './agGridAdapter';
 
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
+
+// AG Grid v35+ requires module registration.
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 export function AgGridPivotSpike(props: {
   dataset: DatasetFileV1;
