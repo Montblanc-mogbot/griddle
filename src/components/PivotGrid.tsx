@@ -1,4 +1,5 @@
 import type { PivotConfig, PivotResult, SelectedCell, Tuple } from '../domain/types';
+import { formatNumber } from '../domain/format';
 import styles from './pivotGrid.module.css';
 
 function tupleEquals(keys: string[], a: Tuple, b: Tuple): boolean {
@@ -107,7 +108,7 @@ export function PivotGrid(props: {
                       })
                     }
                   >
-                    {cell.value === null ? '' : cell.value.toFixed(2)}
+                    {cell.value === null ? '' : formatNumber(cell.value)}
                   </td>
                 );
               })}
