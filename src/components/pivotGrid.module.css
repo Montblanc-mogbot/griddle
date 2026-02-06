@@ -8,6 +8,7 @@
   border-collapse: collapse;
   width: max-content;
   min-width: 100%;
+  color: #111; /* ensure visible on white cells even when app theme uses light text */
 }
 
 .corner {
