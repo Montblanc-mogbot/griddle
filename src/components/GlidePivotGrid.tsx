@@ -15,6 +15,7 @@ export function GlidePivotGrid(props: {
   pivot: PivotResult;
   schema: DatasetSchema;
   config: PivotConfig;
+  theme: 'light' | 'dark';
   rowDimWidth: number;
   valueColWidth: number;
   rowMarkersWidth: number;
@@ -27,6 +28,7 @@ export function GlidePivotGrid(props: {
     pivot,
     schema,
     config,
+    theme,
     rowDimWidth,
     valueColWidth,
     rowMarkersWidth,
@@ -84,8 +86,44 @@ export function GlidePivotGrid(props: {
     };
   }
 
+  const glideTheme = useMemo(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const surface = cs.getPropertyValue('--surface').trim() || '#fff';
+    const surface2 = cs.getPropertyValue('--surface2').trim() || '#f6f6f6';
+    const border2 = cs.getPropertyValue('--border2').trim() || '#eee';
+    const text = cs.getPropertyValue('--text').trim() || '#111';
+    const muted = cs.getPropertyValue('--muted').trim() || '#666';
+
+    return {
+      // General
+      bgIconHeader: surface2,
+      bgHeader: surface2,
+      bgHeaderHasFocus: surface2,
+      bgHeaderHovered: surface2,
+      bgBubble: surface2,
+
+      // Cells
+      bgCell: surface,
+      bgCellMedium: surface,
+      bgCellLight: surface,
+      bgSearchResult: theme === 'dark' ? 'rgba(139,135,255,0.25)' : 'rgba(79,70,229,0.15)',
+
+      // Grid lines
+      borderColor: border2,
+
+      // Text
+      textDark: text,
+      textMedium: muted,
+      textLight: muted,
+
+      // Selection
+      accentColor: theme === 'dark' ? '#8b87ff' : '#4f46e5',
+    };
+  }, [theme]);
+
   return (
     <DataEditor
+      theme={glideTheme}
       columns={columns}
       rows={rowCount}
       getCellContent={getCell}

@@ -607,6 +607,7 @@ export default function App() {
                     pivot={pivot}
                     schema={dataset.schema}
                     config={config}
+                    theme={theme}
                     rowDimWidth={rowDimWidth}
                     valueColWidth={valueColWidth}
                     rowMarkersWidth={rowMarkersWidth}
