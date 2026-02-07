@@ -10,6 +10,7 @@ import { FullRecordsPanel } from './components/FullRecordsPanel';
 import { MetadataStyleEditor } from './components/MetadataStyleEditor';
 import { BulkRangePanel } from './components/BulkRangePanel';
 import { SchemaEditor } from './components/SchemaEditor';
+import { Modal } from './components/Modal';
 import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
@@ -177,7 +178,11 @@ export default function App() {
         </div>
       </div>
 
-      {showSchemaEditor ? <SchemaEditor schema={dataset.schema} onChange={applySchema} /> : null}
+      {showSchemaEditor ? (
+        <Modal title="Schema editor" onClose={() => setShowSchemaEditor(false)}>
+          <SchemaEditor schema={dataset.schema} onChange={applySchema} />
+        </Modal>
+      ) : null}
 
       {showStyleEditor ? (
         <MetadataStyleEditor
