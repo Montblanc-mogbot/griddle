@@ -17,6 +17,7 @@ import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 import { ensureDefaultFlagRules } from './domain/metadataStyling';
+import { ensureDefaultFastEntry } from './domain/entryDefaults';
 import { getRecordIdsForGridSelection } from './domain/gridSelection';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
@@ -51,7 +52,7 @@ function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotCo
 export default function App() {
   const [dataset, setDataset] = useState<DatasetFileV1>({
     ...sampleDataset,
-    schema: ensureDefaultFlagRules(sampleDataset.schema),
+    schema: ensureDefaultFastEntry(ensureDefaultFlagRules(sampleDataset.schema)),
   });
 
   const defaultMeasure =
@@ -131,14 +132,17 @@ export default function App() {
       // Update pivot config alongside dataset.
       setConfig(reconcilePivotConfig(nextSchema, nextPivot));
 
-      return { ...nextDataset, schema: ensureDefaultFlagRules(nextDataset.schema) };
+      return {
+        ...nextDataset,
+        schema: ensureDefaultFastEntry(ensureDefaultFlagRules(nextDataset.schema)),
+      };
     });
   }
 
   function applyImportedDataset(next: DatasetFileV1) {
     setSelected(null);
     setShowSchemaEditor(false);
-    setDataset({ ...next, schema: ensureDefaultFlagRules(next.schema) });
+    setDataset({ ...next, schema: ensureDefaultFastEntry(ensureDefaultFlagRules(next.schema)) });
     setConfig((prev) => reconcilePivotConfig(next.schema, prev));
   }
 
@@ -262,13 +266,14 @@ export default function App() {
                 setPanelMode('entry');
               }}
               onGoToFullRecords={() => setPanelMode('fullRecords')}
-              onSubmit={({ measureValues, flags }) => {
+              onSubmit={({ measureValues, flags, details }) => {
                 const record = createRecordFromSelection({
                   schema: dataset.schema,
                   config,
                   selected,
                   measureValues,
                   flags,
+                  details,
                 });
                 setDataset((prev) => upsertRecords(prev, [record]));
               }}

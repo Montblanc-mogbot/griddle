@@ -190,6 +190,29 @@ export function SchemaEditor(props: {
               </div>
             </div>
 
+            <div style={{ display: 'grid', gap: 6 }}>
+              <label style={{ fontSize: 12, color: '#666' }}>Entry UI</label>
+              <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(selected.entry?.showInFastEntry)}
+                  onChange={(e) => {
+                    updateField({
+                      ...selected,
+                      entry: {
+                        ...selected.entry,
+                        showInFastEntry: e.target.checked,
+                      },
+                    });
+                  }}
+                />
+                <span>Show in fast entry</span>
+              </label>
+              <div style={{ fontSize: 12, color: '#999' }}>
+                Fast entry is the right-side Entry drawer.
+              </div>
+            </div>
+
             {selected.type === 'string' ? (
               <EnumEditor
                 value={selected.enum ?? []}

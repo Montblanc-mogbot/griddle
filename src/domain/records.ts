@@ -48,8 +48,9 @@ export function createRecordFromSelection(args: {
   selected: SelectedCell;
   measureValues: Record<string, number | '' | null | undefined>;
   flags: Record<string, boolean | undefined>;
+  details?: Record<string, unknown>;
 }): RecordEntity {
-  const { schema, config, selected, measureValues, flags } = args;
+  const { schema, config, selected, measureValues, flags, details } = args;
 
   const now = new Date().toISOString();
   const data: Record<string, unknown> = {};
@@ -71,6 +72,14 @@ export function createRecordFromSelection(args: {
   // Flags (default false unless checked)
   for (const f of flagFields(schema)) {
     data[f.key] = Boolean(flags[f.key]);
+  }
+
+  // Details / per-record non-aggregated fields (ticket numbers, notes, etc.)
+  if (details) {
+    for (const [k, v] of Object.entries(details)) {
+      if (v === '' || v === null || v === undefined) continue;
+      data[k] = v;
+    }
   }
 
   // Minimal id for now (no uuid lib yet)

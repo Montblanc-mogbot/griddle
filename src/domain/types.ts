@@ -10,6 +10,15 @@ export interface FieldDef {
 
   enum?: string[];
 
+  /**
+   * Entry UI preferences.
+   * "Fast entry" is the right-side Entry drawer.
+   */
+  entry?: {
+    showInFastEntry?: boolean;
+    order?: number;
+  };
+
   measure?: {
     format?: 'decimal' | 'integer' | 'currency';
   };

@@ -44,6 +44,7 @@ export function TapeNewEntryRow(props: {
     const flagValues: Record<string, boolean> = {};
     for (const f of flags) flagValues[f.key] = Boolean(flagDrafts[f.key]);
 
+    // detailsDraft is captured by EntryPanel and passed down; we don't clear it here.
     onSubmit({ measureValues, flags: flagValues });
     clearAndFocusFirst();
   }
