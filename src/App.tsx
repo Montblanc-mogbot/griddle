@@ -148,11 +148,12 @@ export default function App() {
         <div className={styles.gridArea}>
           <div
             style={{
-              border: '1px solid #ddd',
-              borderRadius: 8,
+              height: '100%',
+              borderBottom: '1px solid #ddd',
               overflow: 'hidden',
               background: '#fff',
               display: 'grid',
+              gridTemplateRows: 'auto 1fr',
               gap: 0,
             }}
           >
@@ -165,7 +166,7 @@ export default function App() {
               rowMarkersWidth={44}
             />
 
-            <div style={{ height: 'calc(100vh - 56px - 24px - 44px)' }}>
+            <div style={{ minHeight: 0 }}>
               <GlidePivotGrid
                 pivot={pivot}
                 config={config}
@@ -176,42 +177,40 @@ export default function App() {
           </div>
         </div>
 
-        <div className={styles.drawerWrap}>
-          <div className={`${styles.drawer} ${selected ? styles.drawerOpen : ''}`}>
-            {selected ? (
-              <EntryPanel
-                dataset={dataset}
-                config={config}
-                selected={selected}
-                onClose={() => setSelected(null)}
-                onSubmit={({ measureValues, flags }) => {
-                  const record = createRecordFromSelection({
-                    schema: dataset.schema,
-                    config,
-                    selected,
-                    measureValues,
-                    flags,
-                  });
-                  setDataset((prev) => upsertRecords(prev, [record]));
-                }}
-                onToggleFlag={(recordId, flagKey, value) => {
-                  setDataset((prev) => {
-                    const rec = prev.records.find((r) => r.id === recordId);
-                    if (!rec) return prev;
-                    return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
-                  });
-                }}
-                onBulkToggleFlag={(flagKey, value) => {
-                  setDataset((prev) => {
-                    const inCell = getRecordsForCell(prev, selected);
-                    const updated = bulkSetMetadata(inCell, flagKey, value);
-                    return upsertRecords(prev, updated);
-                  });
-                }}
-              />
-            ) : null}
+        {selected ? (
+          <div className={styles.drawer}>
+            <EntryPanel
+              dataset={dataset}
+              config={config}
+              selected={selected}
+              onClose={() => setSelected(null)}
+              onSubmit={({ measureValues, flags }) => {
+                const record = createRecordFromSelection({
+                  schema: dataset.schema,
+                  config,
+                  selected,
+                  measureValues,
+                  flags,
+                });
+                setDataset((prev) => upsertRecords(prev, [record]));
+              }}
+              onToggleFlag={(recordId, flagKey, value) => {
+                setDataset((prev) => {
+                  const rec = prev.records.find((r) => r.id === recordId);
+                  if (!rec) return prev;
+                  return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
+                });
+              }}
+              onBulkToggleFlag={(flagKey, value) => {
+                setDataset((prev) => {
+                  const inCell = getRecordsForCell(prev, selected);
+                  const updated = bulkSetMetadata(inCell, flagKey, value);
+                  return upsertRecords(prev, updated);
+                });
+              }}
+            />
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );
