@@ -167,19 +167,30 @@ export function BulkRangePanel(props: {
   return (
     <div style={{ padding: 12, display: 'grid', gap: 12 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-        <div>
+        <div style={{ display: 'grid', gap: 6 }}>
           <div style={{ fontWeight: 900 }}>Bulk edit</div>
+
+          {currentMeasure && currentTotal !== null ? (
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 950,
+                letterSpacing: -0.2,
+                color: 'var(--text)',
+              }}
+            >
+              Total ({currentMeasure.label}): {formatNumber(currentTotal)}
+            </div>
+          ) : null}
+
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
             {cellCount} cells selected • {records.length} records affected
-            {currentMeasure && currentTotal !== null ? (
-              <> • Current total ({currentMeasure.label}): {formatNumber(currentTotal)}</>
-            ) : null}
           </div>
         </div>
         <button onClick={onClose}>Close</button>
       </div>
 
-      <div style={{ fontSize: 12, color: '#666' }}>Range selection = bulk edit. Single cell = Entry.</div>
+      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Range selection = bulk edit. Single cell = Entry.</div>
 
       <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
         <div style={{ fontWeight: 900, marginBottom: 8 }}>Metadata (flags)</div>
