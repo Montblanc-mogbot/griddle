@@ -1,5 +1,13 @@
-import { DataEditor, GridCellKind, type GridCell, type Item } from '@glideapps/glide-data-grid';
+import {
+  CompactSelection,
+  DataEditor,
+  GridCellKind,
+  type GridCell,
+  type GridSelection,
+  type Item,
+} from '@glideapps/glide-data-grid';
 import '@glideapps/glide-data-grid/dist/index.css';
+import { useMemo, useState } from 'react';
 import type { DatasetFileV1, PivotConfig, PivotResult } from '../domain/types';
 import { formatNumber } from '../domain/format';
 
@@ -16,10 +24,20 @@ export function GlidePivotSpike(props: {
 }) {
   const { dataset, pivot, config } = props;
 
-  const columns = [
-    ...config.rowKeys.map((rk) => ({ title: rk, id: rk })),
-    ...pivot.colTuples.map((ct, idx) => ({ title: colTupleLabel(config, ct), id: `c${idx}` })),
-  ];
+  // DataEditor becomes "controlled selection" when onGridSelectionChange is provided,
+  // so we must also provide gridSelection to see selection UI.
+  const [selection, setSelection] = useState<GridSelection>({
+    columns: CompactSelection.empty(),
+    rows: CompactSelection.empty(),
+  });
+
+  const columns = useMemo(
+    () => [
+      ...config.rowKeys.map((rk) => ({ title: rk, id: rk })),
+      ...pivot.colTuples.map((ct, idx) => ({ title: colTupleLabel(config, ct), id: `c${idx}` })),
+    ],
+    [config, pivot.colTuples],
+  );
 
   const rowCount = pivot.rowTuples.length;
 
@@ -52,8 +70,7 @@ export function GlidePivotSpike(props: {
   return (
     <div style={{ display: 'grid', gap: 8 }}>
       <div style={{ fontSize: 12, color: '#666' }}>
-        Glide Data Grid spike. Try drag to select; try Ctrl/Cmd to multi-select. (Note: peer deps may lag
-        React 19.)
+        Glide Data Grid spike. Drag to select a range; try Ctrl/Cmd to create another range.
       </div>
 
       <div style={{ height: 560 }}>
@@ -62,10 +79,17 @@ export function GlidePivotSpike(props: {
           rows={rowCount}
           getCellContent={getCell}
           rowMarkers="both"
+          rangeSelect="multi-rect"
+          gridSelection={selection}
           onGridSelectionChange={(sel) => {
+            setSelection(sel);
             console.log('glide selection', sel);
           }}
         />
+      </div>
+
+      <div style={{ fontSize: 12, color: '#666' }}>
+        Selected ranges: {selection.current ? 1 + selection.current.rangeStack.length : 0}
       </div>
 
       <div style={{ fontSize: 12, color: '#666' }}>
