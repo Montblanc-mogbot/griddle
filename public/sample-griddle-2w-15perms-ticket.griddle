@@ -1,0 +1,5613 @@
+{
+  "fileType": "griddle",
+  "version": 1,
+  "dataset": {
+    "version": 1,
+    "name": "Bills of Lading (2 weeks, 15 permutations, tickets)",
+    "schema": {
+      "version": 1,
+      "fields": [
+        {
+          "key": "date",
+          "label": "Date",
+          "type": "date",
+          "roles": [
+            "rowDim"
+          ]
+        },
+        {
+          "key": "material",
+          "label": "Material",
+          "type": "string",
+          "roles": [
+            "rowDim"
+          ],
+          "enum": [
+            "Stone",
+            "Dirt",
+            "Sand",
+            "Gravel",
+            "Clay"
+          ]
+        },
+        {
+          "key": "vendor",
+          "label": "Vendor",
+          "type": "string",
+          "roles": [
+            "rowDim"
+          ],
+          "enum": [
+            "Acme",
+            "Globex",
+            "Initech"
+          ]
+        },
+        {
+          "key": "location",
+          "label": "Location",
+          "type": "string",
+          "roles": [
+            "rowDim"
+          ],
+          "enum": [
+            "North",
+            "South",
+            "East"
+          ]
+        },
+        {
+          "key": "ticketNumber",
+          "label": "Ticket #",
+          "type": "string",
+          "roles": [],
+          "entry": {
+            "showInFastEntry": true
+          }
+        },
+        {
+          "key": "tons",
+          "label": "Tons",
+          "type": "number",
+          "roles": [
+            "measure"
+          ],
+          "measure": {
+            "format": "decimal"
+          },
+          "entry": {
+            "showInFastEntry": true
+          }
+        },
+        {
+          "key": "isCorrection",
+          "label": "Correction",
+          "type": "boolean",
+          "roles": [
+            "flag"
+          ],
+          "flag": {
+            "style": {
+              "cellClass": "cell-flagged",
+              "priority": 1
+            },
+            "styleRules": {
+              "none": {},
+              "some": {
+                "bg": "#eef2ff",
+                "text": "#111"
+              },
+              "all": {
+                "bg": "#e0e7ff",
+                "text": "#111"
+              }
+            }
+          },
+          "entry": {
+            "showInFastEntry": true
+          }
+        }
+      ]
+    },
+    "records": [
+      {
+        "id": "r1",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 5,
+          "ticketNumber": "T-20260201-00-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r2",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 8,
+          "ticketNumber": "T-20260201-01-1"
+        }
+      },
+      {
+        "id": "r3",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 13.25,
+          "ticketNumber": "T-20260201-01-2"
+        }
+      },
+      {
+        "id": "r4",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 11,
+          "ticketNumber": "T-20260201-02-1"
+        }
+      },
+      {
+        "id": "r5",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 16.25,
+          "ticketNumber": "T-20260201-02-2"
+        }
+      },
+      {
+        "id": "r6",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 21.5,
+          "ticketNumber": "T-20260201-02-3"
+        }
+      },
+      {
+        "id": "r7",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 14,
+          "ticketNumber": "T-20260201-03-1"
+        }
+      },
+      {
+        "id": "r8",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 17,
+          "ticketNumber": "T-20260201-04-1"
+        }
+      },
+      {
+        "id": "r9",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 22.25,
+          "ticketNumber": "T-20260201-04-2"
+        }
+      },
+      {
+        "id": "r10",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 20,
+          "ticketNumber": "T-20260201-05-1"
+        }
+      },
+      {
+        "id": "r11",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 25.25,
+          "ticketNumber": "T-20260201-05-2"
+        }
+      },
+      {
+        "id": "r12",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 30.5,
+          "ticketNumber": "T-20260201-05-3"
+        }
+      },
+      {
+        "id": "r13",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 23,
+          "ticketNumber": "T-20260201-06-1"
+        }
+      },
+      {
+        "id": "r14",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 26,
+          "ticketNumber": "T-20260201-07-1"
+        }
+      },
+      {
+        "id": "r15",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 31.25,
+          "ticketNumber": "T-20260201-07-2"
+        }
+      },
+      {
+        "id": "r16",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 29,
+          "ticketNumber": "T-20260201-08-1"
+        }
+      },
+      {
+        "id": "r17",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 34.25,
+          "ticketNumber": "T-20260201-08-2"
+        }
+      },
+      {
+        "id": "r18",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 39.5,
+          "ticketNumber": "T-20260201-08-3"
+        }
+      },
+      {
+        "id": "r19",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 32,
+          "ticketNumber": "T-20260201-09-1"
+        }
+      },
+      {
+        "id": "r20",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 35,
+          "ticketNumber": "T-20260201-10-1"
+        }
+      },
+      {
+        "id": "r21",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 40.25,
+          "ticketNumber": "T-20260201-10-2"
+        }
+      },
+      {
+        "id": "r22",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 38,
+          "ticketNumber": "T-20260201-11-1"
+        }
+      },
+      {
+        "id": "r23",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 43.25,
+          "ticketNumber": "T-20260201-11-2"
+        }
+      },
+      {
+        "id": "r24",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 48.5,
+          "ticketNumber": "T-20260201-11-3"
+        }
+      },
+      {
+        "id": "r25",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 41,
+          "ticketNumber": "T-20260201-12-1"
+        }
+      },
+      {
+        "id": "r26",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 44,
+          "ticketNumber": "T-20260201-13-1"
+        }
+      },
+      {
+        "id": "r27",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 49.25,
+          "ticketNumber": "T-20260201-13-2"
+        }
+      },
+      {
+        "id": "r28",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 47,
+          "ticketNumber": "T-20260201-14-1"
+        }
+      },
+      {
+        "id": "r29",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 52.25,
+          "ticketNumber": "T-20260201-14-2"
+        }
+      },
+      {
+        "id": "r30",
+        "createdAt": "2026-02-01T00:00:00Z",
+        "updatedAt": "2026-02-01T00:00:00Z",
+        "data": {
+          "date": "2026-02-01",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 57.5,
+          "ticketNumber": "T-20260201-14-3"
+        }
+      },
+      {
+        "id": "r31",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 12,
+          "ticketNumber": "T-20260202-00-1"
+        }
+      },
+      {
+        "id": "r32",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 17.25,
+          "ticketNumber": "T-20260202-00-2"
+        }
+      },
+      {
+        "id": "r33",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 15,
+          "ticketNumber": "T-20260202-01-1"
+        }
+      },
+      {
+        "id": "r34",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 20.25,
+          "ticketNumber": "T-20260202-01-2"
+        }
+      },
+      {
+        "id": "r35",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 25.5,
+          "ticketNumber": "T-20260202-01-3"
+        }
+      },
+      {
+        "id": "r36",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 18,
+          "ticketNumber": "T-20260202-02-1"
+        }
+      },
+      {
+        "id": "r37",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 21,
+          "ticketNumber": "T-20260202-03-1"
+        }
+      },
+      {
+        "id": "r38",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 26.25,
+          "ticketNumber": "T-20260202-03-2"
+        }
+      },
+      {
+        "id": "r39",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 24,
+          "ticketNumber": "T-20260202-04-1"
+        }
+      },
+      {
+        "id": "r40",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 29.25,
+          "ticketNumber": "T-20260202-04-2"
+        }
+      },
+      {
+        "id": "r41",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 34.5,
+          "ticketNumber": "T-20260202-04-3"
+        }
+      },
+      {
+        "id": "r42",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 27,
+          "ticketNumber": "T-20260202-05-1"
+        }
+      },
+      {
+        "id": "r43",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 30,
+          "ticketNumber": "T-20260202-06-1"
+        }
+      },
+      {
+        "id": "r44",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 35.25,
+          "ticketNumber": "T-20260202-06-2"
+        }
+      },
+      {
+        "id": "r45",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 33,
+          "ticketNumber": "T-20260202-07-1"
+        }
+      },
+      {
+        "id": "r46",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 38.25,
+          "ticketNumber": "T-20260202-07-2"
+        }
+      },
+      {
+        "id": "r47",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 43.5,
+          "ticketNumber": "T-20260202-07-3"
+        }
+      },
+      {
+        "id": "r48",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 36,
+          "ticketNumber": "T-20260202-08-1"
+        }
+      },
+      {
+        "id": "r49",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 39,
+          "ticketNumber": "T-20260202-09-1"
+        }
+      },
+      {
+        "id": "r50",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 44.25,
+          "ticketNumber": "T-20260202-09-2"
+        }
+      },
+      {
+        "id": "r51",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 42,
+          "ticketNumber": "T-20260202-10-1"
+        }
+      },
+      {
+        "id": "r52",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 47.25,
+          "ticketNumber": "T-20260202-10-2"
+        }
+      },
+      {
+        "id": "r53",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 52.5,
+          "ticketNumber": "T-20260202-10-3"
+        }
+      },
+      {
+        "id": "r54",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 45,
+          "ticketNumber": "T-20260202-11-1"
+        }
+      },
+      {
+        "id": "r55",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 48,
+          "ticketNumber": "T-20260202-12-1"
+        }
+      },
+      {
+        "id": "r56",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 53.25,
+          "ticketNumber": "T-20260202-12-2"
+        }
+      },
+      {
+        "id": "r57",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 51,
+          "ticketNumber": "T-20260202-13-1"
+        }
+      },
+      {
+        "id": "r58",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 56.25,
+          "ticketNumber": "T-20260202-13-2"
+        }
+      },
+      {
+        "id": "r59",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 61.5,
+          "ticketNumber": "T-20260202-13-3"
+        }
+      },
+      {
+        "id": "r60",
+        "createdAt": "2026-02-02T00:00:00Z",
+        "updatedAt": "2026-02-02T00:00:00Z",
+        "data": {
+          "date": "2026-02-02",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 54,
+          "ticketNumber": "T-20260202-14-1"
+        }
+      },
+      {
+        "id": "r61",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 19,
+          "ticketNumber": "T-20260203-00-1"
+        }
+      },
+      {
+        "id": "r62",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 24.25,
+          "ticketNumber": "T-20260203-00-2"
+        }
+      },
+      {
+        "id": "r63",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 29.5,
+          "ticketNumber": "T-20260203-00-3"
+        }
+      },
+      {
+        "id": "r64",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 22,
+          "ticketNumber": "T-20260203-01-1"
+        }
+      },
+      {
+        "id": "r65",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 25,
+          "ticketNumber": "T-20260203-02-1"
+        }
+      },
+      {
+        "id": "r66",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 30.25,
+          "ticketNumber": "T-20260203-02-2"
+        }
+      },
+      {
+        "id": "r67",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 28,
+          "ticketNumber": "T-20260203-03-1"
+        }
+      },
+      {
+        "id": "r68",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 33.25,
+          "ticketNumber": "T-20260203-03-2"
+        }
+      },
+      {
+        "id": "r69",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 38.5,
+          "ticketNumber": "T-20260203-03-3"
+        }
+      },
+      {
+        "id": "r70",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 31,
+          "ticketNumber": "T-20260203-04-1"
+        }
+      },
+      {
+        "id": "r71",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 34,
+          "ticketNumber": "T-20260203-05-1"
+        }
+      },
+      {
+        "id": "r72",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 39.25,
+          "ticketNumber": "T-20260203-05-2"
+        }
+      },
+      {
+        "id": "r73",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 37,
+          "ticketNumber": "T-20260203-06-1"
+        }
+      },
+      {
+        "id": "r74",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 42.25,
+          "ticketNumber": "T-20260203-06-2"
+        }
+      },
+      {
+        "id": "r75",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 47.5,
+          "ticketNumber": "T-20260203-06-3"
+        }
+      },
+      {
+        "id": "r76",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 40,
+          "ticketNumber": "T-20260203-07-1"
+        }
+      },
+      {
+        "id": "r77",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 43,
+          "ticketNumber": "T-20260203-08-1"
+        }
+      },
+      {
+        "id": "r78",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 48.25,
+          "ticketNumber": "T-20260203-08-2"
+        }
+      },
+      {
+        "id": "r79",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 46,
+          "ticketNumber": "T-20260203-09-1"
+        }
+      },
+      {
+        "id": "r80",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 51.25,
+          "ticketNumber": "T-20260203-09-2"
+        }
+      },
+      {
+        "id": "r81",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 56.5,
+          "ticketNumber": "T-20260203-09-3"
+        }
+      },
+      {
+        "id": "r82",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 49,
+          "ticketNumber": "T-20260203-10-1"
+        }
+      },
+      {
+        "id": "r83",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 52,
+          "ticketNumber": "T-20260203-11-1"
+        }
+      },
+      {
+        "id": "r84",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 57.25,
+          "ticketNumber": "T-20260203-11-2"
+        }
+      },
+      {
+        "id": "r85",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 55,
+          "ticketNumber": "T-20260203-12-1"
+        }
+      },
+      {
+        "id": "r86",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 60.25,
+          "ticketNumber": "T-20260203-12-2"
+        }
+      },
+      {
+        "id": "r87",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 65.5,
+          "ticketNumber": "T-20260203-12-3"
+        }
+      },
+      {
+        "id": "r88",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 58,
+          "ticketNumber": "T-20260203-13-1"
+        }
+      },
+      {
+        "id": "r89",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 61,
+          "ticketNumber": "T-20260203-14-1"
+        }
+      },
+      {
+        "id": "r90",
+        "createdAt": "2026-02-03T00:00:00Z",
+        "updatedAt": "2026-02-03T00:00:00Z",
+        "data": {
+          "date": "2026-02-03",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 66.25,
+          "ticketNumber": "T-20260203-14-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r91",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 26,
+          "ticketNumber": "T-20260204-00-1"
+        }
+      },
+      {
+        "id": "r92",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 29,
+          "ticketNumber": "T-20260204-01-1"
+        }
+      },
+      {
+        "id": "r93",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 34.25,
+          "ticketNumber": "T-20260204-01-2"
+        }
+      },
+      {
+        "id": "r94",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 32,
+          "ticketNumber": "T-20260204-02-1"
+        }
+      },
+      {
+        "id": "r95",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 37.25,
+          "ticketNumber": "T-20260204-02-2"
+        }
+      },
+      {
+        "id": "r96",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 42.5,
+          "ticketNumber": "T-20260204-02-3"
+        }
+      },
+      {
+        "id": "r97",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 35,
+          "ticketNumber": "T-20260204-03-1"
+        }
+      },
+      {
+        "id": "r98",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 38,
+          "ticketNumber": "T-20260204-04-1"
+        }
+      },
+      {
+        "id": "r99",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 43.25,
+          "ticketNumber": "T-20260204-04-2"
+        }
+      },
+      {
+        "id": "r100",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 41,
+          "ticketNumber": "T-20260204-05-1"
+        }
+      },
+      {
+        "id": "r101",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 46.25,
+          "ticketNumber": "T-20260204-05-2"
+        }
+      },
+      {
+        "id": "r102",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 51.5,
+          "ticketNumber": "T-20260204-05-3"
+        }
+      },
+      {
+        "id": "r103",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 44,
+          "ticketNumber": "T-20260204-06-1"
+        }
+      },
+      {
+        "id": "r104",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 47,
+          "ticketNumber": "T-20260204-07-1"
+        }
+      },
+      {
+        "id": "r105",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 52.25,
+          "ticketNumber": "T-20260204-07-2"
+        }
+      },
+      {
+        "id": "r106",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 50,
+          "ticketNumber": "T-20260204-08-1"
+        }
+      },
+      {
+        "id": "r107",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 55.25,
+          "ticketNumber": "T-20260204-08-2"
+        }
+      },
+      {
+        "id": "r108",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 60.5,
+          "ticketNumber": "T-20260204-08-3"
+        }
+      },
+      {
+        "id": "r109",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 53,
+          "ticketNumber": "T-20260204-09-1"
+        }
+      },
+      {
+        "id": "r110",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 56,
+          "ticketNumber": "T-20260204-10-1"
+        }
+      },
+      {
+        "id": "r111",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 61.25,
+          "ticketNumber": "T-20260204-10-2"
+        }
+      },
+      {
+        "id": "r112",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 59,
+          "ticketNumber": "T-20260204-11-1"
+        }
+      },
+      {
+        "id": "r113",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 64.25,
+          "ticketNumber": "T-20260204-11-2"
+        }
+      },
+      {
+        "id": "r114",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 69.5,
+          "ticketNumber": "T-20260204-11-3"
+        }
+      },
+      {
+        "id": "r115",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 62,
+          "ticketNumber": "T-20260204-12-1"
+        }
+      },
+      {
+        "id": "r116",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 65,
+          "ticketNumber": "T-20260204-13-1"
+        }
+      },
+      {
+        "id": "r117",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 70.25,
+          "ticketNumber": "T-20260204-13-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r118",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 68,
+          "ticketNumber": "T-20260204-14-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r119",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 73.25,
+          "ticketNumber": "T-20260204-14-2"
+        }
+      },
+      {
+        "id": "r120",
+        "createdAt": "2026-02-04T00:00:00Z",
+        "updatedAt": "2026-02-04T00:00:00Z",
+        "data": {
+          "date": "2026-02-04",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 8.5,
+          "ticketNumber": "T-20260204-14-3"
+        }
+      },
+      {
+        "id": "r121",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 33,
+          "ticketNumber": "T-20260205-00-1"
+        }
+      },
+      {
+        "id": "r122",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 38.25,
+          "ticketNumber": "T-20260205-00-2"
+        }
+      },
+      {
+        "id": "r123",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 36,
+          "ticketNumber": "T-20260205-01-1"
+        }
+      },
+      {
+        "id": "r124",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 41.25,
+          "ticketNumber": "T-20260205-01-2"
+        }
+      },
+      {
+        "id": "r125",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 46.5,
+          "ticketNumber": "T-20260205-01-3"
+        }
+      },
+      {
+        "id": "r126",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 39,
+          "ticketNumber": "T-20260205-02-1"
+        }
+      },
+      {
+        "id": "r127",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 42,
+          "ticketNumber": "T-20260205-03-1"
+        }
+      },
+      {
+        "id": "r128",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 47.25,
+          "ticketNumber": "T-20260205-03-2"
+        }
+      },
+      {
+        "id": "r129",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 45,
+          "ticketNumber": "T-20260205-04-1"
+        }
+      },
+      {
+        "id": "r130",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 50.25,
+          "ticketNumber": "T-20260205-04-2"
+        }
+      },
+      {
+        "id": "r131",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 55.5,
+          "ticketNumber": "T-20260205-04-3"
+        }
+      },
+      {
+        "id": "r132",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 48,
+          "ticketNumber": "T-20260205-05-1"
+        }
+      },
+      {
+        "id": "r133",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 51,
+          "ticketNumber": "T-20260205-06-1"
+        }
+      },
+      {
+        "id": "r134",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 56.25,
+          "ticketNumber": "T-20260205-06-2"
+        }
+      },
+      {
+        "id": "r135",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 54,
+          "ticketNumber": "T-20260205-07-1"
+        }
+      },
+      {
+        "id": "r136",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 59.25,
+          "ticketNumber": "T-20260205-07-2"
+        }
+      },
+      {
+        "id": "r137",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 64.5,
+          "ticketNumber": "T-20260205-07-3"
+        }
+      },
+      {
+        "id": "r138",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 57,
+          "ticketNumber": "T-20260205-08-1"
+        }
+      },
+      {
+        "id": "r139",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 60,
+          "ticketNumber": "T-20260205-09-1"
+        }
+      },
+      {
+        "id": "r140",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 65.25,
+          "ticketNumber": "T-20260205-09-2"
+        }
+      },
+      {
+        "id": "r141",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 63,
+          "ticketNumber": "T-20260205-10-1"
+        }
+      },
+      {
+        "id": "r142",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 68.25,
+          "ticketNumber": "T-20260205-10-2"
+        }
+      },
+      {
+        "id": "r143",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 73.5,
+          "ticketNumber": "T-20260205-10-3"
+        }
+      },
+      {
+        "id": "r144",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 66,
+          "ticketNumber": "T-20260205-11-1"
+        }
+      },
+      {
+        "id": "r145",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 69,
+          "ticketNumber": "T-20260205-12-1"
+        }
+      },
+      {
+        "id": "r146",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 74.25,
+          "ticketNumber": "T-20260205-12-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r147",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 72,
+          "ticketNumber": "T-20260205-13-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r148",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 7.25,
+          "ticketNumber": "T-20260205-13-2"
+        }
+      },
+      {
+        "id": "r149",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 12.5,
+          "ticketNumber": "T-20260205-13-3"
+        }
+      },
+      {
+        "id": "r150",
+        "createdAt": "2026-02-05T00:00:00Z",
+        "updatedAt": "2026-02-05T00:00:00Z",
+        "data": {
+          "date": "2026-02-05",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 5,
+          "ticketNumber": "T-20260205-14-1"
+        }
+      },
+      {
+        "id": "r151",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 40,
+          "ticketNumber": "T-20260206-00-1"
+        }
+      },
+      {
+        "id": "r152",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 45.25,
+          "ticketNumber": "T-20260206-00-2"
+        }
+      },
+      {
+        "id": "r153",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 50.5,
+          "ticketNumber": "T-20260206-00-3"
+        }
+      },
+      {
+        "id": "r154",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 43,
+          "ticketNumber": "T-20260206-01-1"
+        }
+      },
+      {
+        "id": "r155",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 46,
+          "ticketNumber": "T-20260206-02-1"
+        }
+      },
+      {
+        "id": "r156",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 51.25,
+          "ticketNumber": "T-20260206-02-2"
+        }
+      },
+      {
+        "id": "r157",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 49,
+          "ticketNumber": "T-20260206-03-1"
+        }
+      },
+      {
+        "id": "r158",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 54.25,
+          "ticketNumber": "T-20260206-03-2"
+        }
+      },
+      {
+        "id": "r159",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 59.5,
+          "ticketNumber": "T-20260206-03-3"
+        }
+      },
+      {
+        "id": "r160",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 52,
+          "ticketNumber": "T-20260206-04-1"
+        }
+      },
+      {
+        "id": "r161",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 55,
+          "ticketNumber": "T-20260206-05-1"
+        }
+      },
+      {
+        "id": "r162",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 60.25,
+          "ticketNumber": "T-20260206-05-2"
+        }
+      },
+      {
+        "id": "r163",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 58,
+          "ticketNumber": "T-20260206-06-1"
+        }
+      },
+      {
+        "id": "r164",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 63.25,
+          "ticketNumber": "T-20260206-06-2"
+        }
+      },
+      {
+        "id": "r165",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 68.5,
+          "ticketNumber": "T-20260206-06-3"
+        }
+      },
+      {
+        "id": "r166",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 61,
+          "ticketNumber": "T-20260206-07-1"
+        }
+      },
+      {
+        "id": "r167",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 64,
+          "ticketNumber": "T-20260206-08-1"
+        }
+      },
+      {
+        "id": "r168",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 69.25,
+          "ticketNumber": "T-20260206-08-2"
+        }
+      },
+      {
+        "id": "r169",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 67,
+          "ticketNumber": "T-20260206-09-1"
+        }
+      },
+      {
+        "id": "r170",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 72.25,
+          "ticketNumber": "T-20260206-09-2"
+        }
+      },
+      {
+        "id": "r171",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 7.5,
+          "ticketNumber": "T-20260206-09-3"
+        }
+      },
+      {
+        "id": "r172",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 70,
+          "ticketNumber": "T-20260206-10-1"
+        }
+      },
+      {
+        "id": "r173",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 73,
+          "ticketNumber": "T-20260206-11-1"
+        }
+      },
+      {
+        "id": "r174",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 8.25,
+          "ticketNumber": "T-20260206-11-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r175",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 6,
+          "ticketNumber": "T-20260206-12-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r176",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 11.25,
+          "ticketNumber": "T-20260206-12-2"
+        }
+      },
+      {
+        "id": "r177",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 16.5,
+          "ticketNumber": "T-20260206-12-3"
+        }
+      },
+      {
+        "id": "r178",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 9,
+          "ticketNumber": "T-20260206-13-1"
+        }
+      },
+      {
+        "id": "r179",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 12,
+          "ticketNumber": "T-20260206-14-1"
+        }
+      },
+      {
+        "id": "r180",
+        "createdAt": "2026-02-06T00:00:00Z",
+        "updatedAt": "2026-02-06T00:00:00Z",
+        "data": {
+          "date": "2026-02-06",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 17.25,
+          "ticketNumber": "T-20260206-14-2"
+        }
+      },
+      {
+        "id": "r181",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 47,
+          "ticketNumber": "T-20260207-00-1"
+        }
+      },
+      {
+        "id": "r182",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 50,
+          "ticketNumber": "T-20260207-01-1"
+        }
+      },
+      {
+        "id": "r183",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 55.25,
+          "ticketNumber": "T-20260207-01-2"
+        }
+      },
+      {
+        "id": "r184",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 53,
+          "ticketNumber": "T-20260207-02-1"
+        }
+      },
+      {
+        "id": "r185",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 58.25,
+          "ticketNumber": "T-20260207-02-2"
+        }
+      },
+      {
+        "id": "r186",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 63.5,
+          "ticketNumber": "T-20260207-02-3"
+        }
+      },
+      {
+        "id": "r187",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 56,
+          "ticketNumber": "T-20260207-03-1"
+        }
+      },
+      {
+        "id": "r188",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 59,
+          "ticketNumber": "T-20260207-04-1"
+        }
+      },
+      {
+        "id": "r189",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 64.25,
+          "ticketNumber": "T-20260207-04-2"
+        }
+      },
+      {
+        "id": "r190",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 62,
+          "ticketNumber": "T-20260207-05-1"
+        }
+      },
+      {
+        "id": "r191",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 67.25,
+          "ticketNumber": "T-20260207-05-2"
+        }
+      },
+      {
+        "id": "r192",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 72.5,
+          "ticketNumber": "T-20260207-05-3"
+        }
+      },
+      {
+        "id": "r193",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 65,
+          "ticketNumber": "T-20260207-06-1"
+        }
+      },
+      {
+        "id": "r194",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 68,
+          "ticketNumber": "T-20260207-07-1"
+        }
+      },
+      {
+        "id": "r195",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 73.25,
+          "ticketNumber": "T-20260207-07-2"
+        }
+      },
+      {
+        "id": "r196",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 71,
+          "ticketNumber": "T-20260207-08-1"
+        }
+      },
+      {
+        "id": "r197",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 6.25,
+          "ticketNumber": "T-20260207-08-2"
+        }
+      },
+      {
+        "id": "r198",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 11.5,
+          "ticketNumber": "T-20260207-08-3"
+        }
+      },
+      {
+        "id": "r199",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 74,
+          "ticketNumber": "T-20260207-09-1"
+        }
+      },
+      {
+        "id": "r200",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 7,
+          "ticketNumber": "T-20260207-10-1"
+        }
+      },
+      {
+        "id": "r201",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 12.25,
+          "ticketNumber": "T-20260207-10-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r202",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 10,
+          "ticketNumber": "T-20260207-11-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r203",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 15.25,
+          "ticketNumber": "T-20260207-11-2"
+        }
+      },
+      {
+        "id": "r204",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 20.5,
+          "ticketNumber": "T-20260207-11-3"
+        }
+      },
+      {
+        "id": "r205",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 13,
+          "ticketNumber": "T-20260207-12-1"
+        }
+      },
+      {
+        "id": "r206",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 16,
+          "ticketNumber": "T-20260207-13-1"
+        }
+      },
+      {
+        "id": "r207",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 21.25,
+          "ticketNumber": "T-20260207-13-2"
+        }
+      },
+      {
+        "id": "r208",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 19,
+          "ticketNumber": "T-20260207-14-1"
+        }
+      },
+      {
+        "id": "r209",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 24.25,
+          "ticketNumber": "T-20260207-14-2"
+        }
+      },
+      {
+        "id": "r210",
+        "createdAt": "2026-02-07T00:00:00Z",
+        "updatedAt": "2026-02-07T00:00:00Z",
+        "data": {
+          "date": "2026-02-07",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 29.5,
+          "ticketNumber": "T-20260207-14-3"
+        }
+      },
+      {
+        "id": "r211",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 54,
+          "ticketNumber": "T-20260208-00-1"
+        }
+      },
+      {
+        "id": "r212",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 59.25,
+          "ticketNumber": "T-20260208-00-2"
+        }
+      },
+      {
+        "id": "r213",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 57,
+          "ticketNumber": "T-20260208-01-1"
+        }
+      },
+      {
+        "id": "r214",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 62.25,
+          "ticketNumber": "T-20260208-01-2"
+        }
+      },
+      {
+        "id": "r215",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 67.5,
+          "ticketNumber": "T-20260208-01-3"
+        }
+      },
+      {
+        "id": "r216",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 60,
+          "ticketNumber": "T-20260208-02-1"
+        }
+      },
+      {
+        "id": "r217",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 63,
+          "ticketNumber": "T-20260208-03-1"
+        }
+      },
+      {
+        "id": "r218",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 68.25,
+          "ticketNumber": "T-20260208-03-2"
+        }
+      },
+      {
+        "id": "r219",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 66,
+          "ticketNumber": "T-20260208-04-1"
+        }
+      },
+      {
+        "id": "r220",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 71.25,
+          "ticketNumber": "T-20260208-04-2"
+        }
+      },
+      {
+        "id": "r221",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 6.5,
+          "ticketNumber": "T-20260208-04-3"
+        }
+      },
+      {
+        "id": "r222",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 69,
+          "ticketNumber": "T-20260208-05-1"
+        }
+      },
+      {
+        "id": "r223",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 72,
+          "ticketNumber": "T-20260208-06-1"
+        }
+      },
+      {
+        "id": "r224",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 7.25,
+          "ticketNumber": "T-20260208-06-2"
+        }
+      },
+      {
+        "id": "r225",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 5,
+          "ticketNumber": "T-20260208-07-1"
+        }
+      },
+      {
+        "id": "r226",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 10.25,
+          "ticketNumber": "T-20260208-07-2"
+        }
+      },
+      {
+        "id": "r227",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 15.5,
+          "ticketNumber": "T-20260208-07-3"
+        }
+      },
+      {
+        "id": "r228",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 8,
+          "ticketNumber": "T-20260208-08-1"
+        }
+      },
+      {
+        "id": "r229",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 11,
+          "ticketNumber": "T-20260208-09-1"
+        }
+      },
+      {
+        "id": "r230",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 16.25,
+          "ticketNumber": "T-20260208-09-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r231",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 14,
+          "ticketNumber": "T-20260208-10-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r232",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 19.25,
+          "ticketNumber": "T-20260208-10-2"
+        }
+      },
+      {
+        "id": "r233",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 24.5,
+          "ticketNumber": "T-20260208-10-3"
+        }
+      },
+      {
+        "id": "r234",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 17,
+          "ticketNumber": "T-20260208-11-1"
+        }
+      },
+      {
+        "id": "r235",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 20,
+          "ticketNumber": "T-20260208-12-1"
+        }
+      },
+      {
+        "id": "r236",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 25.25,
+          "ticketNumber": "T-20260208-12-2"
+        }
+      },
+      {
+        "id": "r237",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 23,
+          "ticketNumber": "T-20260208-13-1"
+        }
+      },
+      {
+        "id": "r238",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 28.25,
+          "ticketNumber": "T-20260208-13-2"
+        }
+      },
+      {
+        "id": "r239",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 33.5,
+          "ticketNumber": "T-20260208-13-3"
+        }
+      },
+      {
+        "id": "r240",
+        "createdAt": "2026-02-08T00:00:00Z",
+        "updatedAt": "2026-02-08T00:00:00Z",
+        "data": {
+          "date": "2026-02-08",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 26,
+          "ticketNumber": "T-20260208-14-1"
+        }
+      },
+      {
+        "id": "r241",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 61,
+          "ticketNumber": "T-20260209-00-1"
+        }
+      },
+      {
+        "id": "r242",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 66.25,
+          "ticketNumber": "T-20260209-00-2"
+        }
+      },
+      {
+        "id": "r243",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 71.5,
+          "ticketNumber": "T-20260209-00-3"
+        }
+      },
+      {
+        "id": "r244",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 64,
+          "ticketNumber": "T-20260209-01-1"
+        }
+      },
+      {
+        "id": "r245",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 67,
+          "ticketNumber": "T-20260209-02-1"
+        }
+      },
+      {
+        "id": "r246",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 72.25,
+          "ticketNumber": "T-20260209-02-2"
+        }
+      },
+      {
+        "id": "r247",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 70,
+          "ticketNumber": "T-20260209-03-1"
+        }
+      },
+      {
+        "id": "r248",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 5.25,
+          "ticketNumber": "T-20260209-03-2"
+        }
+      },
+      {
+        "id": "r249",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 10.5,
+          "ticketNumber": "T-20260209-03-3"
+        }
+      },
+      {
+        "id": "r250",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 73,
+          "ticketNumber": "T-20260209-04-1"
+        }
+      },
+      {
+        "id": "r251",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 6,
+          "ticketNumber": "T-20260209-05-1"
+        }
+      },
+      {
+        "id": "r252",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 11.25,
+          "ticketNumber": "T-20260209-05-2"
+        }
+      },
+      {
+        "id": "r253",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 9,
+          "ticketNumber": "T-20260209-06-1"
+        }
+      },
+      {
+        "id": "r254",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 14.25,
+          "ticketNumber": "T-20260209-06-2"
+        }
+      },
+      {
+        "id": "r255",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 19.5,
+          "ticketNumber": "T-20260209-06-3"
+        }
+      },
+      {
+        "id": "r256",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 12,
+          "ticketNumber": "T-20260209-07-1"
+        }
+      },
+      {
+        "id": "r257",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 15,
+          "ticketNumber": "T-20260209-08-1"
+        }
+      },
+      {
+        "id": "r258",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 20.25,
+          "ticketNumber": "T-20260209-08-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r259",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 18,
+          "ticketNumber": "T-20260209-09-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r260",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 23.25,
+          "ticketNumber": "T-20260209-09-2"
+        }
+      },
+      {
+        "id": "r261",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 28.5,
+          "ticketNumber": "T-20260209-09-3"
+        }
+      },
+      {
+        "id": "r262",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 21,
+          "ticketNumber": "T-20260209-10-1"
+        }
+      },
+      {
+        "id": "r263",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 24,
+          "ticketNumber": "T-20260209-11-1"
+        }
+      },
+      {
+        "id": "r264",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 29.25,
+          "ticketNumber": "T-20260209-11-2"
+        }
+      },
+      {
+        "id": "r265",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 27,
+          "ticketNumber": "T-20260209-12-1"
+        }
+      },
+      {
+        "id": "r266",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 32.25,
+          "ticketNumber": "T-20260209-12-2"
+        }
+      },
+      {
+        "id": "r267",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 37.5,
+          "ticketNumber": "T-20260209-12-3"
+        }
+      },
+      {
+        "id": "r268",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 30,
+          "ticketNumber": "T-20260209-13-1"
+        }
+      },
+      {
+        "id": "r269",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 33,
+          "ticketNumber": "T-20260209-14-1"
+        }
+      },
+      {
+        "id": "r270",
+        "createdAt": "2026-02-09T00:00:00Z",
+        "updatedAt": "2026-02-09T00:00:00Z",
+        "data": {
+          "date": "2026-02-09",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 38.25,
+          "ticketNumber": "T-20260209-14-2"
+        }
+      },
+      {
+        "id": "r271",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 68,
+          "ticketNumber": "T-20260210-00-1"
+        }
+      },
+      {
+        "id": "r272",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 71,
+          "ticketNumber": "T-20260210-01-1"
+        }
+      },
+      {
+        "id": "r273",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 6.25,
+          "ticketNumber": "T-20260210-01-2"
+        }
+      },
+      {
+        "id": "r274",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 74,
+          "ticketNumber": "T-20260210-02-1"
+        }
+      },
+      {
+        "id": "r275",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 9.25,
+          "ticketNumber": "T-20260210-02-2"
+        }
+      },
+      {
+        "id": "r276",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 14.5,
+          "ticketNumber": "T-20260210-02-3"
+        }
+      },
+      {
+        "id": "r277",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 7,
+          "ticketNumber": "T-20260210-03-1"
+        }
+      },
+      {
+        "id": "r278",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 10,
+          "ticketNumber": "T-20260210-04-1"
+        }
+      },
+      {
+        "id": "r279",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 15.25,
+          "ticketNumber": "T-20260210-04-2"
+        }
+      },
+      {
+        "id": "r280",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 13,
+          "ticketNumber": "T-20260210-05-1"
+        }
+      },
+      {
+        "id": "r281",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 18.25,
+          "ticketNumber": "T-20260210-05-2"
+        }
+      },
+      {
+        "id": "r282",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 23.5,
+          "ticketNumber": "T-20260210-05-3"
+        }
+      },
+      {
+        "id": "r283",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 16,
+          "ticketNumber": "T-20260210-06-1"
+        }
+      },
+      {
+        "id": "r284",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 19,
+          "ticketNumber": "T-20260210-07-1"
+        }
+      },
+      {
+        "id": "r285",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 24.25,
+          "ticketNumber": "T-20260210-07-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r286",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 22,
+          "ticketNumber": "T-20260210-08-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r287",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 27.25,
+          "ticketNumber": "T-20260210-08-2"
+        }
+      },
+      {
+        "id": "r288",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 32.5,
+          "ticketNumber": "T-20260210-08-3"
+        }
+      },
+      {
+        "id": "r289",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 25,
+          "ticketNumber": "T-20260210-09-1"
+        }
+      },
+      {
+        "id": "r290",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 28,
+          "ticketNumber": "T-20260210-10-1"
+        }
+      },
+      {
+        "id": "r291",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 33.25,
+          "ticketNumber": "T-20260210-10-2"
+        }
+      },
+      {
+        "id": "r292",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 31,
+          "ticketNumber": "T-20260210-11-1"
+        }
+      },
+      {
+        "id": "r293",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 36.25,
+          "ticketNumber": "T-20260210-11-2"
+        }
+      },
+      {
+        "id": "r294",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 41.5,
+          "ticketNumber": "T-20260210-11-3"
+        }
+      },
+      {
+        "id": "r295",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 34,
+          "ticketNumber": "T-20260210-12-1"
+        }
+      },
+      {
+        "id": "r296",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 37,
+          "ticketNumber": "T-20260210-13-1"
+        }
+      },
+      {
+        "id": "r297",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 42.25,
+          "ticketNumber": "T-20260210-13-2"
+        }
+      },
+      {
+        "id": "r298",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 40,
+          "ticketNumber": "T-20260210-14-1"
+        }
+      },
+      {
+        "id": "r299",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 45.25,
+          "ticketNumber": "T-20260210-14-2"
+        }
+      },
+      {
+        "id": "r300",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "updatedAt": "2026-02-10T00:00:00Z",
+        "data": {
+          "date": "2026-02-10",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 50.5,
+          "ticketNumber": "T-20260210-14-3"
+        }
+      },
+      {
+        "id": "r301",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 5,
+          "ticketNumber": "T-20260211-00-1"
+        }
+      },
+      {
+        "id": "r302",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 10.25,
+          "ticketNumber": "T-20260211-00-2"
+        }
+      },
+      {
+        "id": "r303",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 8,
+          "ticketNumber": "T-20260211-01-1"
+        }
+      },
+      {
+        "id": "r304",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 13.25,
+          "ticketNumber": "T-20260211-01-2"
+        }
+      },
+      {
+        "id": "r305",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 18.5,
+          "ticketNumber": "T-20260211-01-3"
+        }
+      },
+      {
+        "id": "r306",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 11,
+          "ticketNumber": "T-20260211-02-1"
+        }
+      },
+      {
+        "id": "r307",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 14,
+          "ticketNumber": "T-20260211-03-1"
+        }
+      },
+      {
+        "id": "r308",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 19.25,
+          "ticketNumber": "T-20260211-03-2"
+        }
+      },
+      {
+        "id": "r309",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 17,
+          "ticketNumber": "T-20260211-04-1"
+        }
+      },
+      {
+        "id": "r310",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 22.25,
+          "ticketNumber": "T-20260211-04-2"
+        }
+      },
+      {
+        "id": "r311",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 27.5,
+          "ticketNumber": "T-20260211-04-3"
+        }
+      },
+      {
+        "id": "r312",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 20,
+          "ticketNumber": "T-20260211-05-1"
+        }
+      },
+      {
+        "id": "r313",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 23,
+          "ticketNumber": "T-20260211-06-1"
+        }
+      },
+      {
+        "id": "r314",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 28.25,
+          "ticketNumber": "T-20260211-06-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r315",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 26,
+          "ticketNumber": "T-20260211-07-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r316",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 31.25,
+          "ticketNumber": "T-20260211-07-2"
+        }
+      },
+      {
+        "id": "r317",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 36.5,
+          "ticketNumber": "T-20260211-07-3"
+        }
+      },
+      {
+        "id": "r318",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 29,
+          "ticketNumber": "T-20260211-08-1"
+        }
+      },
+      {
+        "id": "r319",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 32,
+          "ticketNumber": "T-20260211-09-1"
+        }
+      },
+      {
+        "id": "r320",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 37.25,
+          "ticketNumber": "T-20260211-09-2"
+        }
+      },
+      {
+        "id": "r321",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 35,
+          "ticketNumber": "T-20260211-10-1"
+        }
+      },
+      {
+        "id": "r322",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 40.25,
+          "ticketNumber": "T-20260211-10-2"
+        }
+      },
+      {
+        "id": "r323",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 45.5,
+          "ticketNumber": "T-20260211-10-3"
+        }
+      },
+      {
+        "id": "r324",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 38,
+          "ticketNumber": "T-20260211-11-1"
+        }
+      },
+      {
+        "id": "r325",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 41,
+          "ticketNumber": "T-20260211-12-1"
+        }
+      },
+      {
+        "id": "r326",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 46.25,
+          "ticketNumber": "T-20260211-12-2"
+        }
+      },
+      {
+        "id": "r327",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 44,
+          "ticketNumber": "T-20260211-13-1"
+        }
+      },
+      {
+        "id": "r328",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 49.25,
+          "ticketNumber": "T-20260211-13-2"
+        }
+      },
+      {
+        "id": "r329",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 54.5,
+          "ticketNumber": "T-20260211-13-3"
+        }
+      },
+      {
+        "id": "r330",
+        "createdAt": "2026-02-11T00:00:00Z",
+        "updatedAt": "2026-02-11T00:00:00Z",
+        "data": {
+          "date": "2026-02-11",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 47,
+          "ticketNumber": "T-20260211-14-1"
+        }
+      },
+      {
+        "id": "r331",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 12,
+          "ticketNumber": "T-20260212-00-1"
+        }
+      },
+      {
+        "id": "r332",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 17.25,
+          "ticketNumber": "T-20260212-00-2"
+        }
+      },
+      {
+        "id": "r333",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 22.5,
+          "ticketNumber": "T-20260212-00-3"
+        }
+      },
+      {
+        "id": "r334",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 15,
+          "ticketNumber": "T-20260212-01-1"
+        }
+      },
+      {
+        "id": "r335",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 18,
+          "ticketNumber": "T-20260212-02-1"
+        }
+      },
+      {
+        "id": "r336",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 23.25,
+          "ticketNumber": "T-20260212-02-2"
+        }
+      },
+      {
+        "id": "r337",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 21,
+          "ticketNumber": "T-20260212-03-1"
+        }
+      },
+      {
+        "id": "r338",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 26.25,
+          "ticketNumber": "T-20260212-03-2"
+        }
+      },
+      {
+        "id": "r339",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 31.5,
+          "ticketNumber": "T-20260212-03-3"
+        }
+      },
+      {
+        "id": "r340",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 24,
+          "ticketNumber": "T-20260212-04-1"
+        }
+      },
+      {
+        "id": "r341",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 27,
+          "ticketNumber": "T-20260212-05-1"
+        }
+      },
+      {
+        "id": "r342",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 32.25,
+          "ticketNumber": "T-20260212-05-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r343",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 30,
+          "ticketNumber": "T-20260212-06-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r344",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 35.25,
+          "ticketNumber": "T-20260212-06-2"
+        }
+      },
+      {
+        "id": "r345",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 40.5,
+          "ticketNumber": "T-20260212-06-3"
+        }
+      },
+      {
+        "id": "r346",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 33,
+          "ticketNumber": "T-20260212-07-1"
+        }
+      },
+      {
+        "id": "r347",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 36,
+          "ticketNumber": "T-20260212-08-1"
+        }
+      },
+      {
+        "id": "r348",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 41.25,
+          "ticketNumber": "T-20260212-08-2"
+        }
+      },
+      {
+        "id": "r349",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 39,
+          "ticketNumber": "T-20260212-09-1"
+        }
+      },
+      {
+        "id": "r350",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 44.25,
+          "ticketNumber": "T-20260212-09-2"
+        }
+      },
+      {
+        "id": "r351",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 49.5,
+          "ticketNumber": "T-20260212-09-3"
+        }
+      },
+      {
+        "id": "r352",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 42,
+          "ticketNumber": "T-20260212-10-1"
+        }
+      },
+      {
+        "id": "r353",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 45,
+          "ticketNumber": "T-20260212-11-1"
+        }
+      },
+      {
+        "id": "r354",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 50.25,
+          "ticketNumber": "T-20260212-11-2"
+        }
+      },
+      {
+        "id": "r355",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 48,
+          "ticketNumber": "T-20260212-12-1"
+        }
+      },
+      {
+        "id": "r356",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 53.25,
+          "ticketNumber": "T-20260212-12-2"
+        }
+      },
+      {
+        "id": "r357",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 58.5,
+          "ticketNumber": "T-20260212-12-3"
+        }
+      },
+      {
+        "id": "r358",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 51,
+          "ticketNumber": "T-20260212-13-1"
+        }
+      },
+      {
+        "id": "r359",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 54,
+          "ticketNumber": "T-20260212-14-1"
+        }
+      },
+      {
+        "id": "r360",
+        "createdAt": "2026-02-12T00:00:00Z",
+        "updatedAt": "2026-02-12T00:00:00Z",
+        "data": {
+          "date": "2026-02-12",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 59.25,
+          "ticketNumber": "T-20260212-14-2"
+        }
+      },
+      {
+        "id": "r361",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 19,
+          "ticketNumber": "T-20260213-00-1"
+        }
+      },
+      {
+        "id": "r362",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 22,
+          "ticketNumber": "T-20260213-01-1"
+        }
+      },
+      {
+        "id": "r363",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 27.25,
+          "ticketNumber": "T-20260213-01-2"
+        }
+      },
+      {
+        "id": "r364",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 25,
+          "ticketNumber": "T-20260213-02-1"
+        }
+      },
+      {
+        "id": "r365",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 30.25,
+          "ticketNumber": "T-20260213-02-2"
+        }
+      },
+      {
+        "id": "r366",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 35.5,
+          "ticketNumber": "T-20260213-02-3"
+        }
+      },
+      {
+        "id": "r367",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 28,
+          "ticketNumber": "T-20260213-03-1"
+        }
+      },
+      {
+        "id": "r368",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 31,
+          "ticketNumber": "T-20260213-04-1"
+        }
+      },
+      {
+        "id": "r369",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 36.25,
+          "ticketNumber": "T-20260213-04-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r370",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 34,
+          "ticketNumber": "T-20260213-05-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r371",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 39.25,
+          "ticketNumber": "T-20260213-05-2"
+        }
+      },
+      {
+        "id": "r372",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 44.5,
+          "ticketNumber": "T-20260213-05-3"
+        }
+      },
+      {
+        "id": "r373",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 37,
+          "ticketNumber": "T-20260213-06-1"
+        }
+      },
+      {
+        "id": "r374",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 40,
+          "ticketNumber": "T-20260213-07-1"
+        }
+      },
+      {
+        "id": "r375",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 45.25,
+          "ticketNumber": "T-20260213-07-2"
+        }
+      },
+      {
+        "id": "r376",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 43,
+          "ticketNumber": "T-20260213-08-1"
+        }
+      },
+      {
+        "id": "r377",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 48.25,
+          "ticketNumber": "T-20260213-08-2"
+        }
+      },
+      {
+        "id": "r378",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 53.5,
+          "ticketNumber": "T-20260213-08-3"
+        }
+      },
+      {
+        "id": "r379",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 46,
+          "ticketNumber": "T-20260213-09-1"
+        }
+      },
+      {
+        "id": "r380",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 49,
+          "ticketNumber": "T-20260213-10-1"
+        }
+      },
+      {
+        "id": "r381",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 54.25,
+          "ticketNumber": "T-20260213-10-2"
+        }
+      },
+      {
+        "id": "r382",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 52,
+          "ticketNumber": "T-20260213-11-1"
+        }
+      },
+      {
+        "id": "r383",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 57.25,
+          "ticketNumber": "T-20260213-11-2"
+        }
+      },
+      {
+        "id": "r384",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 62.5,
+          "ticketNumber": "T-20260213-11-3"
+        }
+      },
+      {
+        "id": "r385",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 55,
+          "ticketNumber": "T-20260213-12-1"
+        }
+      },
+      {
+        "id": "r386",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 58,
+          "ticketNumber": "T-20260213-13-1"
+        }
+      },
+      {
+        "id": "r387",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 63.25,
+          "ticketNumber": "T-20260213-13-2"
+        }
+      },
+      {
+        "id": "r388",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 61,
+          "ticketNumber": "T-20260213-14-1"
+        }
+      },
+      {
+        "id": "r389",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 66.25,
+          "ticketNumber": "T-20260213-14-2"
+        }
+      },
+      {
+        "id": "r390",
+        "createdAt": "2026-02-13T00:00:00Z",
+        "updatedAt": "2026-02-13T00:00:00Z",
+        "data": {
+          "date": "2026-02-13",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 71.5,
+          "ticketNumber": "T-20260213-14-3"
+        }
+      },
+      {
+        "id": "r391",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 26,
+          "ticketNumber": "T-20260214-00-1"
+        }
+      },
+      {
+        "id": "r392",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 31.25,
+          "ticketNumber": "T-20260214-00-2"
+        }
+      },
+      {
+        "id": "r393",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 29,
+          "ticketNumber": "T-20260214-01-1"
+        }
+      },
+      {
+        "id": "r394",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 34.25,
+          "ticketNumber": "T-20260214-01-2"
+        }
+      },
+      {
+        "id": "r395",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 39.5,
+          "ticketNumber": "T-20260214-01-3"
+        }
+      },
+      {
+        "id": "r396",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 32,
+          "ticketNumber": "T-20260214-02-1"
+        }
+      },
+      {
+        "id": "r397",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 35,
+          "ticketNumber": "T-20260214-03-1"
+        }
+      },
+      {
+        "id": "r398",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 40.25,
+          "ticketNumber": "T-20260214-03-2",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r399",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 38,
+          "ticketNumber": "T-20260214-04-1",
+          "isCorrection": true
+        }
+      },
+      {
+        "id": "r400",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 43.25,
+          "ticketNumber": "T-20260214-04-2"
+        }
+      },
+      {
+        "id": "r401",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 48.5,
+          "ticketNumber": "T-20260214-04-3"
+        }
+      },
+      {
+        "id": "r402",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 41,
+          "ticketNumber": "T-20260214-05-1"
+        }
+      },
+      {
+        "id": "r403",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 44,
+          "ticketNumber": "T-20260214-06-1"
+        }
+      },
+      {
+        "id": "r404",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "East",
+          "tons": 49.25,
+          "ticketNumber": "T-20260214-06-2"
+        }
+      },
+      {
+        "id": "r405",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 47,
+          "ticketNumber": "T-20260214-07-1"
+        }
+      },
+      {
+        "id": "r406",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 52.25,
+          "ticketNumber": "T-20260214-07-2"
+        }
+      },
+      {
+        "id": "r407",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "North",
+          "tons": 57.5,
+          "ticketNumber": "T-20260214-07-3"
+        }
+      },
+      {
+        "id": "r408",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Clay",
+          "vendor": "Initech",
+          "location": "South",
+          "tons": 50,
+          "ticketNumber": "T-20260214-08-1"
+        }
+      },
+      {
+        "id": "r409",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 53,
+          "ticketNumber": "T-20260214-09-1"
+        }
+      },
+      {
+        "id": "r410",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "East",
+          "tons": 58.25,
+          "ticketNumber": "T-20260214-09-2"
+        }
+      },
+      {
+        "id": "r411",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 56,
+          "ticketNumber": "T-20260214-10-1"
+        }
+      },
+      {
+        "id": "r412",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 61.25,
+          "ticketNumber": "T-20260214-10-2"
+        }
+      },
+      {
+        "id": "r413",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "North",
+          "tons": 66.5,
+          "ticketNumber": "T-20260214-10-3"
+        }
+      },
+      {
+        "id": "r414",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Acme",
+          "location": "South",
+          "tons": 59,
+          "ticketNumber": "T-20260214-11-1"
+        }
+      },
+      {
+        "id": "r415",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 62,
+          "ticketNumber": "T-20260214-12-1"
+        }
+      },
+      {
+        "id": "r416",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "East",
+          "tons": 67.25,
+          "ticketNumber": "T-20260214-12-2"
+        }
+      },
+      {
+        "id": "r417",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 65,
+          "ticketNumber": "T-20260214-13-1"
+        }
+      },
+      {
+        "id": "r418",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 70.25,
+          "ticketNumber": "T-20260214-13-2"
+        }
+      },
+      {
+        "id": "r419",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "North",
+          "tons": 5.5,
+          "ticketNumber": "T-20260214-13-3"
+        }
+      },
+      {
+        "id": "r420",
+        "createdAt": "2026-02-14T00:00:00Z",
+        "updatedAt": "2026-02-14T00:00:00Z",
+        "data": {
+          "date": "2026-02-14",
+          "material": "Dirt",
+          "vendor": "Globex",
+          "location": "South",
+          "tons": 68,
+          "ticketNumber": "T-20260214-14-1"
+        }
+      }
+    ]
+  },
+  "pivotConfig": {
+    "rowKeys": [
+      "location",
+      "vendor",
+      "material"
+    ],
+    "colKeys": [
+      "date"
+    ],
+    "rowFilters": {},
+    "slicerKeys": [],
+    "slicers": {},
+    "measureKey": "tons"
+  }
+}
