@@ -46,12 +46,21 @@ export type Tuple = Record<string, string>;
 export interface PivotConfig {
   rowKeys: string[];
   colKeys: string[];
+
+  /**
+   * Row filters constrain which row-dimension members are included.
+   * Each key is a row dim key; the value is the allowed set (multi-select).
+   * Empty/undefined means "all".
+   */
+  rowFilters?: Record<string, unknown[]>;
+
   slicerKeys: string[];
   /**
    * Slicer values are exact-match filters.
    * Each key may be set to a single value or an array of allowed values.
    */
   slicers: Record<string, unknown | unknown[]>;
+
   measureKey: string;
 }
 

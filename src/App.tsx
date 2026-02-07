@@ -27,6 +27,9 @@ function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotCo
     ...prev,
     rowKeys: prev.rowKeys.filter((k) => keys.has(k)),
     colKeys: prev.colKeys.filter((k) => keys.has(k)),
+    rowFilters: Object.fromEntries(
+      Object.entries(prev.rowFilters ?? {}).filter(([k]) => keys.has(k)),
+    ),
     slicerKeys: prev.slicerKeys.filter((k) => keys.has(k)),
     slicers: Object.fromEntries(Object.entries(prev.slicers).filter(([k]) => keys.has(k))),
     measureKey: keys.has(prev.measureKey) ? prev.measureKey : defaultMeasure,
@@ -51,6 +54,7 @@ export default function App() {
   const [config, setConfig] = useState<PivotConfig>({
     rowKeys: ['location', 'vendor', 'material'],
     colKeys: ['date'],
+    rowFilters: {},
     slicerKeys: [],
     slicers: {},
     measureKey: defaultMeasure,

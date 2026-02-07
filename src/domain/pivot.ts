@@ -38,6 +38,20 @@ function recordMatchesSlicers(record: RecordEntity, config: PivotConfig): boolea
   return true;
 }
 
+function recordMatchesRowFilters(record: RecordEntity, config: PivotConfig): boolean {
+  const rf = config.rowFilters;
+  if (!rf) return true;
+
+  for (const [k, allowed] of Object.entries(rf)) {
+    if (!allowed || allowed.length === 0) continue;
+    const actual = asKeyPart(record.data[k]);
+    const set = new Set(allowed.map(asKeyPart));
+    if (!set.has(actual)) return false;
+  }
+
+  return true;
+}
+
 function measureValue(record: RecordEntity, measureKey: string): number | null {
   const v = record.data[measureKey];
   if (v === null || v === undefined || v === '') return null;
@@ -64,7 +78,7 @@ export function computePivot(
   const rowMap = new Map<string, Tuple>();
   const colMap = new Map<string, Tuple>();
 
-  const filtered = records.filter((r) => recordMatchesSlicers(r, config));
+  const filtered = records.filter((r) => recordMatchesSlicers(r, config) && recordMatchesRowFilters(r, config));
 
   for (const r of filtered) {
     const rt = buildTuple(config.rowKeys, r);
