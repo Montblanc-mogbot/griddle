@@ -64,7 +64,8 @@ export function PivotControls(props: {
     label: f.label,
   }));
 
-  const slicerFields = fieldsByRole(schema, 'slicer').filter(
+  // Any non-measure/non-flag field can act as a slicer (including current row/col dims).
+  const slicerFields = schema.fields.filter(
     (f) => !f.roles.includes('measure') && !f.roles.includes('flag'),
   );
 
