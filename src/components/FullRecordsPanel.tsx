@@ -1,6 +1,5 @@
-import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
+import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
 import { createRecordFromSelection, getRecordsForCell, upsertRecords } from '../domain/records';
-import { flagFields, measureFields } from '../domain/records';
 import styles from './bottomPanel.module.css';
 
 function ContextPills(props: { selected: SelectedCell; config: PivotConfig }) {
@@ -21,6 +20,106 @@ function ContextPills(props: { selected: SelectedCell; config: PivotConfig }) {
   );
 }
 
+function setRecordField(record: RecordEntity, field: FieldDef, value: unknown): RecordEntity {
+  const nextData = { ...record.data };
+
+  if (value === '' || value === null || value === undefined) {
+    delete nextData[field.key];
+  } else {
+    nextData[field.key] = value;
+  }
+
+  return {
+    ...record,
+    updatedAt: new Date().toISOString(),
+    data: nextData,
+  };
+}
+
+function readFieldValue(record: RecordEntity, field: FieldDef): unknown {
+  return record.data[field.key];
+}
+
+function CellEditor(props: {
+  record: RecordEntity;
+  field: FieldDef;
+  onChange: (next: RecordEntity) => void;
+}) {
+  const { record, field, onChange } = props;
+  const v = readFieldValue(record, field);
+
+  if (field.type === 'boolean') {
+    return (
+      <input
+        type="checkbox"
+        checked={Boolean(v)}
+        onChange={(e) => onChange(setRecordField(record, field, e.target.checked))}
+      />
+    );
+  }
+
+  if (field.enum && field.enum.length > 0) {
+    const sv = v === null || v === undefined ? '' : String(v);
+    return (
+      <select
+        value={sv}
+        onChange={(e) => {
+          const next = e.target.value;
+          onChange(setRecordField(record, field, next === '' ? '' : next));
+        }}
+      >
+        <option value="">(blank)</option>
+        {field.enum.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
+  if (field.type === 'number') {
+    const sv = v === null || v === undefined ? '' : String(v);
+    return (
+      <input
+        type="number"
+        defaultValue={sv}
+        onBlur={(e) => {
+          const raw = e.target.value;
+          if (raw === '') return onChange(setRecordField(record, field, ''));
+          const n = Number(raw);
+          if (!Number.isFinite(n)) return;
+          onChange(setRecordField(record, field, n));
+        }}
+        style={{ width: 110 }}
+      />
+    );
+  }
+
+  if (field.type === 'date') {
+    const sv = v === null || v === undefined ? '' : String(v);
+    return (
+      <input
+        type="date"
+        defaultValue={sv}
+        onBlur={(e) => onChange(setRecordField(record, field, e.target.value))}
+        style={{ width: 140 }}
+      />
+    );
+  }
+
+  // string
+  const sv = v === null || v === undefined ? '' : String(v);
+  return (
+    <input
+      type="text"
+      defaultValue={sv}
+      onBlur={(e) => onChange(setRecordField(record, field, e.target.value))}
+      style={{ width: 160 }}
+    />
+  );
+}
+
 export function FullRecordsPanel(props: {
   dataset: DatasetFileV1;
   config: PivotConfig;
@@ -32,17 +131,20 @@ export function FullRecordsPanel(props: {
   const { dataset, config, selected, onClose, onDone, onDatasetChange } = props;
 
   const records = getRecordsForCell(dataset, selected);
-  const measures = measureFields(dataset.schema);
-  const flags = flagFields(dataset.schema);
+  const fields = dataset.schema.fields;
+
+  function updateRecord(next: RecordEntity) {
+    onDatasetChange(upsertRecords(dataset, [next]));
+  }
 
   function addNewRecord() {
-    // For now: add a record with empty measures (user can edit later). This unblocks "blank cell" creation.
+    // Add a record prepopulated from selection dims; user can then fill any other fields.
     const rec = createRecordFromSelection({
       schema: dataset.schema,
       config,
       selected,
       measureValues: {},
-      flags: Object.fromEntries(flags.map((f) => [f.key, false])),
+      flags: {},
     });
     onDatasetChange(upsertRecords(dataset, [rec]));
   }
@@ -64,7 +166,7 @@ export function FullRecordsPanel(props: {
 
       <div className={styles.body}>
         <div style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>
-          {records.length} records in this cell. (Editor UI next: inline edit of dims/measures/flags.)
+          {records.length} records in this cell.
         </div>
 
         <div style={{ overflowX: 'auto' }}>
@@ -72,13 +174,8 @@ export function FullRecordsPanel(props: {
             <thead>
               <tr>
                 <th style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px' }}>id</th>
-                {measures.map((m) => (
-                  <th key={m.key} style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px' }}>
-                    {m.label}
-                  </th>
-                ))}
-                {flags.map((f) => (
-                  <th key={f.key} style={{ textAlign: 'center', borderBottom: '1px solid #eee', padding: '6px 8px' }}>
+                {fields.map((f) => (
+                  <th key={f.key} style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px' }}>
                     {f.label}
                   </th>
                 ))}
@@ -88,14 +185,9 @@ export function FullRecordsPanel(props: {
               {records.map((r) => (
                 <tr key={r.id}>
                   <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>{r.id}</td>
-                  {measures.map((m) => (
-                    <td key={m.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
-                      {String(r.data[m.key] ?? '')}
-                    </td>
-                  ))}
-                  {flags.map((f) => (
-                    <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', textAlign: 'center' }}>
-                      {r.data[f.key] ? '✓' : ''}
+                  {fields.map((f) => (
+                    <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
+                      <CellEditor record={r} field={f} onChange={updateRecord} />
                     </td>
                   ))}
                 </tr>
