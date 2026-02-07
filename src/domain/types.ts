@@ -19,6 +19,11 @@ export interface FieldDef {
       cellClass?: string;
       priority?: number;
     };
+    styleRules?: {
+      none?: { bg?: string; text?: string };
+      some?: { bg?: string; text?: string };
+      all?: { bg?: string; text?: string };
+    };
   };
 }
 
@@ -67,6 +72,7 @@ export interface PivotConfig {
 export interface PivotCell {
   value: number | null;
   recordIds: string[];
+  /** counts of TRUE flags within this cell, keyed by field key */
   flagSummary?: Record<string, number>;
 }
 

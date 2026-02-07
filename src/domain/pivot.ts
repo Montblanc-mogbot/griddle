@@ -72,11 +72,13 @@ function measureValue(record: RecordEntity, measureKey: string): number | null {
  */
 export function computePivot(
   records: RecordEntity[],
-  _schema: DatasetSchema,
+  schema: DatasetSchema,
   config: PivotConfig,
 ): PivotResult {
   const rowMap = new Map<string, Tuple>();
   const colMap = new Map<string, Tuple>();
+
+  const flagKeys = schema.fields.filter((f) => f.roles.includes('flag')).map((f) => f.key);
 
   const filtered = records.filter((r) => recordMatchesSlicers(r, config) && recordMatchesRowFilters(r, config));
 
@@ -128,10 +130,19 @@ export function computePivot(
       cells[key] = {
         value: null,
         recordIds: [],
+        flagSummary: Object.fromEntries(flagKeys.map((fk) => [fk, 0])),
       };
     }
 
     cells[key].recordIds.push(r.id);
+
+    // Flag summaries (count of true per flag)
+    if (cells[key].flagSummary) {
+      for (const fk of flagKeys) {
+        if (r.data[fk] === true) cells[key].flagSummary[fk] = (cells[key].flagSummary[fk] ?? 0) + 1;
+      }
+    }
+
     if (m !== null) cells[key].value = (cells[key].value ?? 0) + m;
   }
 

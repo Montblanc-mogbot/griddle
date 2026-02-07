@@ -8,11 +8,13 @@ import {
 } from '@glideapps/glide-data-grid';
 import '@glideapps/glide-data-grid/dist/index.css';
 import { useMemo, useState } from 'react';
-import type { PivotConfig, PivotResult, SelectedCell } from '../domain/types';
+import type { DatasetSchema, PivotConfig, PivotResult, SelectedCell } from '../domain/types';
 import { formatNumber } from '../domain/format';
+import { pickCellStyle } from '../domain/metadataStyling';
 
 export function GlidePivotGrid(props: {
   pivot: PivotResult;
+  schema: DatasetSchema;
   config: PivotConfig;
   rowDimWidth: number;
   valueColWidth: number;
@@ -20,7 +22,16 @@ export function GlidePivotGrid(props: {
   onScrollTx: (tx: number) => void;
   onSingleValueCellSelected: (sel: SelectedCell) => void;
 }) {
-  const { pivot, config, rowDimWidth, valueColWidth, rowMarkersWidth, onScrollTx, onSingleValueCellSelected } = props;
+  const {
+    pivot,
+    schema,
+    config,
+    rowDimWidth,
+    valueColWidth,
+    rowMarkersWidth,
+    onScrollTx,
+    onSingleValueCellSelected,
+  } = props;
 
   const [selection, setSelection] = useState<GridSelection>({
     columns: CompactSelection.empty(),
@@ -56,11 +67,22 @@ export function GlidePivotGrid(props: {
     const cell = pivot.cells[`${row}:${ci}`];
     const v = cell?.value;
     const txt = typeof v === 'number' ? formatNumber(v) : '';
+
+    const st = cell ? pickCellStyle(schema, cell) : {};
+
     return {
       kind: GridCellKind.Number,
       data: v ?? 0,
       displayData: txt,
       allowOverlay: false,
+      themeOverride:
+        st.bg || st.text
+          ? {
+              bgCell: st.bg ?? undefined,
+              bgCellMedium: st.bg ?? undefined,
+              textDark: st.text ?? undefined,
+            }
+          : undefined,
     };
   }
 

@@ -6,6 +6,7 @@ import { GlidePivotHeader } from './components/GlidePivotHeader';
 import { DatasetImportExport } from './components/DatasetImportExport';
 import { EntryPanel } from './components/EntryPanel';
 import { FullRecordsPanel } from './components/FullRecordsPanel';
+import { MetadataStyleEditor } from './components/MetadataStyleEditor';
 import { SchemaEditor } from './components/SchemaEditor';
 import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
@@ -13,6 +14,7 @@ import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } f
 import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
+import { ensureDefaultFlagRules } from './domain/metadataStyling';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -44,7 +46,10 @@ function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotCo
 }
 
 export default function App() {
-  const [dataset, setDataset] = useState<DatasetFileV1>(sampleDataset);
+  const [dataset, setDataset] = useState<DatasetFileV1>({
+    ...sampleDataset,
+    schema: ensureDefaultFlagRules(sampleDataset.schema),
+  });
 
   const defaultMeasure =
     dataset.schema.fields.find((f) => f.roles.includes('measure'))?.key ??
@@ -64,6 +69,7 @@ export default function App() {
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [glideHeaderTx, setGlideHeaderTx] = useState(0);
   const [panelMode, setPanelMode] = useState<'entry' | 'fullRecords'>('entry');
+  const [showStyleEditor, setShowStyleEditor] = useState(false);
 
   const pivot = useMemo(
     () => computePivot(dataset.records, dataset.schema, config),
@@ -110,14 +116,14 @@ export default function App() {
       // Update pivot config alongside dataset.
       setConfig(reconcilePivotConfig(nextSchema, nextPivot));
 
-      return nextDataset;
+      return { ...nextDataset, schema: ensureDefaultFlagRules(nextDataset.schema) };
     });
   }
 
   function applyImportedDataset(next: DatasetFileV1) {
     setSelected(null);
     setShowSchemaEditor(false);
-    setDataset(next);
+    setDataset({ ...next, schema: ensureDefaultFlagRules(next.schema) });
     setConfig((prev) => reconcilePivotConfig(next.schema, prev));
   }
 
@@ -143,6 +149,9 @@ export default function App() {
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <DatasetImportExport dataset={dataset} onImport={applyImportedDataset} />
+          <button onClick={() => setShowStyleEditor(true)} style={{ cursor: 'pointer' }}>
+            Styles
+          </button>
           <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
             {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
           </button>
@@ -150,6 +159,16 @@ export default function App() {
       </div>
 
       {showSchemaEditor ? <SchemaEditor schema={dataset.schema} onChange={applySchema} /> : null}
+
+      {showStyleEditor ? (
+        <MetadataStyleEditor
+          schema={dataset.schema}
+          onChange={(nextSchema) => {
+            setDataset((prev) => ({ ...prev, schema: nextSchema }));
+          }}
+          onClose={() => setShowStyleEditor(false)}
+        />
+      ) : null}
 
       <div className={styles.main}>
         <div className={styles.gridArea}>
@@ -182,6 +201,7 @@ export default function App() {
                 <div style={{ minHeight: 0 }}>
                   <GlidePivotGrid
                     pivot={pivot}
+                    schema={dataset.schema}
                     config={config}
                     rowDimWidth={rowDimWidth}
                     valueColWidth={valueColWidth}
