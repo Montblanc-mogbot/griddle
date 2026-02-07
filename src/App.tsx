@@ -48,8 +48,8 @@ export default function App() {
     '';
 
   const [config, setConfig] = useState<PivotConfig>({
-    rowKeys: ['date', 'material'],
-    colKeys: ['vendor', 'location'],
+    rowKeys: ['location', 'vendor', 'material'],
+    colKeys: ['date'],
     slicerKeys: [],
     slicers: {},
     measureKey: defaultMeasure,
