@@ -1,5 +1,4 @@
 import {
-  CompactSelection,
   DataEditor,
   GridCellKind,
   type GridCell,
@@ -7,7 +6,7 @@ import {
   type Item,
 } from '@glideapps/glide-data-grid';
 import '@glideapps/glide-data-grid/dist/index.css';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { DatasetSchema, PivotConfig, PivotResult, SelectedCell } from '../domain/types';
 import { formatNumber } from '../domain/format';
 import { pickCellStyle } from '../domain/metadataStyling';
@@ -19,6 +18,8 @@ export function GlidePivotGrid(props: {
   rowDimWidth: number;
   valueColWidth: number;
   rowMarkersWidth: number;
+  selection: GridSelection;
+  onSelectionChange: (sel: GridSelection) => void;
   onScrollTx: (tx: number) => void;
   onSingleValueCellSelected: (sel: SelectedCell) => void;
 }) {
@@ -29,14 +30,11 @@ export function GlidePivotGrid(props: {
     rowDimWidth,
     valueColWidth,
     rowMarkersWidth,
+    selection,
+    onSelectionChange,
     onScrollTx,
     onSingleValueCellSelected,
   } = props;
-
-  const [selection, setSelection] = useState<GridSelection>({
-    columns: CompactSelection.empty(),
-    rows: CompactSelection.empty(),
-  });
 
   const columns = useMemo(
     () => [
@@ -96,10 +94,14 @@ export function GlidePivotGrid(props: {
       rangeSelect="multi-rect"
       gridSelection={selection}
       onGridSelectionChange={(sel) => {
-        setSelection(sel);
+        onSelectionChange(sel);
 
         const cur = sel.current;
         if (!cur) return;
+
+        // Only treat as "single-cell selection" if there is exactly one 1x1 range and no rangeStack.
+        if (cur.range.width !== 1 || cur.range.height !== 1) return;
+        if (cur.rangeStack.length > 0) return;
 
         const col = cur.cell[0];
         const row = cur.cell[1];

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
@@ -7,6 +8,7 @@ import { DatasetImportExport } from './components/DatasetImportExport';
 import { EntryPanel } from './components/EntryPanel';
 import { FullRecordsPanel } from './components/FullRecordsPanel';
 import { MetadataStyleEditor } from './components/MetadataStyleEditor';
+import { BulkRangePanel } from './components/BulkRangePanel';
 import { SchemaEditor } from './components/SchemaEditor';
 import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
@@ -15,6 +17,7 @@ import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 import { ensureDefaultFlagRules } from './domain/metadataStyling';
+import { getRecordIdsForGridSelection } from './domain/gridSelection';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -71,10 +74,22 @@ export default function App() {
   const [panelMode, setPanelMode] = useState<'entry' | 'fullRecords'>('entry');
   const [showStyleEditor, setShowStyleEditor] = useState(false);
 
+  const [gridSelection, setGridSelection] = useState<GridSelection>({
+    columns: CompactSelection.empty(),
+    rows: CompactSelection.empty(),
+  });
+
   const pivot = useMemo(
     () => computePivot(dataset.records, dataset.schema, config),
     [dataset.records, dataset.schema, config],
   );
+
+  const bulkSel = (() => {
+    const { recordIds, cellCount } = getRecordIdsForGridSelection({ pivot, config, selection: gridSelection });
+    const ranges = gridSelection.current ? [gridSelection.current.range, ...gridSelection.current.rangeStack] : [];
+    const hasMulti = ranges.some((r) => r.width * r.height > 1) || (gridSelection.current?.rangeStack.length ?? 0) > 0;
+    return { recordIds, cellCount, hasMulti };
+  })();
 
   // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
   useEffect(() => {
@@ -206,8 +221,15 @@ export default function App() {
                     rowDimWidth={rowDimWidth}
                     valueColWidth={valueColWidth}
                     rowMarkersWidth={rowMarkersWidth}
+                    selection={gridSelection}
+                    onSelectionChange={(sel) => {
+                      setGridSelection(sel);
+                    }}
                     onScrollTx={setGlideHeaderTx}
-                    onSingleValueCellSelected={(sel) => setSelected(sel)}
+                    onSingleValueCellSelected={(sel) => {
+                      setSelected(sel);
+                      setPanelMode('entry');
+                    }}
                   />
                 </div>
               </div>
@@ -215,7 +237,21 @@ export default function App() {
           })()}
         </div>
 
-        {selected && panelMode === 'entry' ? (
+        {bulkSel.hasMulti ? (
+          <div className={styles.drawer}>
+            <BulkRangePanel
+              dataset={dataset}
+              selected={selected}
+              recordIds={bulkSel.recordIds}
+              cellCount={bulkSel.cellCount}
+              onClose={() => {
+                // keep selection, just close bulk panel
+                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+              }}
+              onDatasetChange={(next) => setDataset(next)}
+            />
+          </div>
+        ) : selected && panelMode === 'entry' ? (
           <div className={styles.drawer}>
             <EntryPanel
               dataset={dataset}
