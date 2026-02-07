@@ -10,7 +10,8 @@
     "format": "prettier -w .",
     "format:check": "prettier --check .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "ci:install": "npm ci --legacy-peer-deps"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
