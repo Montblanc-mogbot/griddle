@@ -1,7 +1,13 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { DatasetSchema, PivotConfig, RecordEntity } from '../domain/types';
 
 function fieldsByRole(schema: DatasetSchema, role: string) {
   return schema.fields.filter((f) => f.roles.includes(role as never));
+}
+
+function asLabel(v: unknown): string {
+  if (v === null || v === undefined || v === '') return '(blank)';
+  return String(v);
 }
 
 function MultiSelect(props: {
@@ -22,7 +28,7 @@ function MultiSelect(props: {
           const selected = Array.from(e.target.selectedOptions).map((o) => o.value);
           onChange(selected);
         }}
-        style={{ minWidth: 220, minHeight: 90 }}
+        style={{ minWidth: 200, minHeight: 72 }}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -30,7 +36,6 @@ function MultiSelect(props: {
           </option>
         ))}
       </select>
-      <div style={{ fontSize: 11, color: '#777' }}>Tip: ctrl/cmd+click to select multiple</div>
     </label>
   );
 }
@@ -71,6 +76,62 @@ export function PivotControls(props: {
 
   const slicerOptions = slicerFields.map((f) => ({ value: f.key, label: f.label }));
 
+  const [activeSlicerKey, setActiveSlicerKey] = useState<string | null>(null);
+  const [slicerSearch, setSlicerSearch] = useState('');
+  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [popoverPos, setPopoverPos] = useState<{ left: number; top: number } | null>(null);
+
+  const activeSlicerField = useMemo(
+    () => slicerFields.find((f) => f.key === activeSlicerKey) ?? null,
+    [slicerFields, activeSlicerKey],
+  );
+
+  const activeOptions = useMemo(() => {
+    if (!activeSlicerField) return [];
+    const key = activeSlicerField.key;
+    const vals = activeSlicerField.enum ?? uniqValues(records, key);
+    const q = slicerSearch.trim().toLowerCase();
+    const filtered = q ? vals.filter((v) => String(v).toLowerCase().includes(q)) : vals;
+    return filtered.map((v) => ({ value: String(v), label: asLabel(v) }));
+  }, [activeSlicerField, records, slicerSearch]);
+
+  const activeSelected = useMemo(() => {
+    if (!activeSlicerKey) return [];
+    const desired = config.slicers[activeSlicerKey];
+    return Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
+  }, [config.slicers, activeSlicerKey]);
+
+  useEffect(() => {
+    if (!activeSlicerKey) return;
+    const el = chipRefs.current[activeSlicerKey];
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setPopoverPos({ left: r.left, top: r.bottom + 6 });
+  }, [activeSlicerKey]);
+
+  useEffect(() => {
+    function onDocMouseDown(e: MouseEvent) {
+      if (!activeSlicerKey) return;
+      const chip = chipRefs.current[activeSlicerKey];
+      if (chip && (e.target instanceof Node) && chip.contains(e.target)) return;
+      // Close when clicking outside; popover is rendered in-tree but positioned fixed.
+      const pop = document.getElementById('griddle-slicer-popover');
+      if (pop && (e.target instanceof Node) && pop.contains(e.target)) return;
+      setActiveSlicerKey(null);
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setActiveSlicerKey(null);
+    }
+
+    document.addEventListener('mousedown', onDocMouseDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onDocMouseDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [activeSlicerKey]);
+
   return (
     <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', flexWrap: 'wrap' }}>
       <MultiSelect
@@ -87,7 +148,7 @@ export function PivotControls(props: {
         onChange={(colKeys) => onChange({ ...config, colKeys })}
       />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, position: 'relative' }}>
         <MultiSelect
           label="Slicers"
           options={slicerOptions}
@@ -97,38 +158,159 @@ export function PivotControls(props: {
             const nextSlicers = Object.fromEntries(
               Object.entries(config.slicers).filter(([k]) => slicerKeys.includes(k)),
             );
+            setActiveSlicerKey(null);
+            setSlicerSearch('');
             onChange({ ...config, slicerKeys, slicers: nextSlicers });
           }}
         />
 
         {config.slicerKeys.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxWidth: 520 }}>
             {config.slicerKeys.map((k) => {
               const field = slicerFields.find((f) => f.key === k);
               if (!field) return null;
 
-              const options = (field.enum ?? uniqValues(records, k)).map((v) => ({ value: v, label: v }));
               const desired = config.slicers[k];
               const values = Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
+              const label = values.length === 0 ? 'All' : values.length <= 2 ? values.join(', ') : `${values.length} selected`;
 
               return (
-                <MultiSelect
+                <button
                   key={k}
-                  label={`Filter: ${field.label}`}
-                  options={options}
-                  values={values}
-                  onChange={(nextValues) => {
-                    onChange({
-                      ...config,
-                      slicers: {
-                        ...config.slicers,
-                        [k]: nextValues,
-                      },
-                    });
+                  ref={(el) => {
+                    chipRefs.current[k] = el;
                   }}
-                />
+                  onClick={() => {
+                    setSlicerSearch('');
+                    setActiveSlicerKey((prev) => (prev === k ? null : k));
+                  }}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    border: '1px solid #ddd',
+                    background: activeSlicerKey === k ? '#eef2ff' : '#f6f6f6',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    gap: 6,
+                    alignItems: 'center',
+                  }}
+                  title={`${field.label}: ${label}`}
+                >
+                  <span style={{ color: '#555' }}>{field.label}:</span>
+                  <span>{label}</span>
+                </button>
               );
             })}
+
+            {config.slicerKeys.length > 0 ? (
+              <button
+                onClick={() => {
+                  const cleared = Object.fromEntries(config.slicerKeys.map((k) => [k, []]));
+                  onChange({ ...config, slicers: { ...config.slicers, ...cleared } });
+                }}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 999,
+                  border: '1px solid #ddd',
+                  background: '#fff',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                Clear
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {activeSlicerField && popoverPos ? (
+          <div
+            id="griddle-slicer-popover"
+            style={{
+              position: 'fixed',
+              left: popoverPos.left,
+              top: popoverPos.top,
+              width: 320,
+              maxHeight: 360,
+              overflow: 'auto',
+              background: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: 10,
+              boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+              padding: 10,
+              zIndex: 50,
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontWeight: 800, fontSize: 13 }}>{activeSlicerField.label}</div>
+              <button
+                onClick={() => setActiveSlicerKey(null)}
+                style={{ padding: '4px 8px', borderRadius: 8, fontSize: 12 }}
+              >
+                Close
+              </button>
+            </div>
+
+            <input
+              value={slicerSearch}
+              onChange={(e) => setSlicerSearch(e.target.value)}
+              placeholder="Search…"
+              style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
+            />
+
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <button
+                onClick={() => {
+                  const all = (activeSlicerField.enum ?? uniqValues(records, activeSlicerField.key)).map(String);
+                  onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: all } });
+                }}
+                style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
+              >
+                Select all
+              </button>
+              <button
+                onClick={() => {
+                  onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: [] } });
+                }}
+                style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
+              >
+                Clear
+              </button>
+            </div>
+
+            <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
+              {activeOptions.map((o) => {
+                const checked = activeSelected.includes(o.value);
+                return (
+                  <label key={o.value} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13 }}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        const next = checked
+                          ? activeSelected.filter((v) => v !== o.value)
+                          : [...activeSelected, o.value];
+                        onChange({
+                          ...config,
+                          slicers: {
+                            ...config.slicers,
+                            [activeSlicerField.key]: next,
+                          },
+                        });
+                      }}
+                    />
+                    <span>{o.label}</span>
+                  </label>
+                );
+              })}
+
+              {activeOptions.length === 0 ? (
+                <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div>
+              ) : null}
+            </div>
           </div>
         ) : null}
       </div>
