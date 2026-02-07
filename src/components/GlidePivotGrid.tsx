@@ -32,7 +32,7 @@ export function GlidePivotGrid(props: {
       ...config.rowKeys.map((rk) => ({ title: rk, id: rk, width: rowDimWidth })),
       ...pivot.colTuples.map((_ct, idx) => ({ title: String(idx), id: `c${idx}`, width: valueColWidth })),
     ],
-    [config.rowKeys, pivot.colTuples.length],
+    [config.rowKeys, pivot.colTuples],
   );
 
   const rowCount = pivot.rowTuples.length;
