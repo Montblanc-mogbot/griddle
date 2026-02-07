@@ -212,6 +212,7 @@ export default function App() {
 
       if (k === 's') {
         e.preventDefault();
+        if (!dataset) return;
         const gf = buildGriddleFile({ dataset, pivotConfig: config });
         downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
         return;
