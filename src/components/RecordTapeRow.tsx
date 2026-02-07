@@ -12,7 +12,7 @@ export function RecordTapeRow(props: {
   const { record, measures, flags, onToggleFlag } = props;
 
   return (
-    <tr>
+    <>
       {measures.map((k) => {
         const v = record.data[k];
         const num = typeof v === 'number' && Number.isFinite(v) ? formatNumber(v) : v ? String(v) : '';
@@ -32,6 +32,7 @@ export function RecordTapeRow(props: {
           />
         </td>
       ))}
-    </tr>
+    </>
   );
 }
+

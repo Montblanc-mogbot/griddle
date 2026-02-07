@@ -1,35 +1,60 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { DatasetSchema } from '../domain/types';
+import type { DatasetSchema, FieldDef } from '../domain/types';
 import { flagFields, measureFields } from '../domain/records';
 import styles from './tapeLedger.module.css';
 
+function detailsFields(schema: DatasetSchema): FieldDef[] {
+  return schema.fields
+    .filter(
+      (f) =>
+        Boolean(f.entry?.showInFastEntry) &&
+        !f.roles.includes('measure') &&
+        !f.roles.includes('flag'),
+    )
+    .slice()
+    .sort((a, b) => (a.entry?.order ?? 0) - (b.entry?.order ?? 0));
+}
+
 export function TapeNewEntryRow(props: {
   schema: DatasetSchema;
-  onSubmit: (args: { measureValues: Record<string, number | ''>; flags: Record<string, boolean> }) => void;
+  onSubmit: (args: {
+    measureValues: Record<string, number | ''>;
+    flags: Record<string, boolean>;
+    details?: Record<string, unknown>;
+  }) => void;
 }) {
   const { schema, onSubmit } = props;
 
+  const details = useMemo(() => detailsFields(schema), [schema]);
   const measures = useMemo(() => measureFields(schema), [schema]);
   const flags = useMemo(() => flagFields(schema), [schema]);
 
+  const [detailDrafts, setDetailDrafts] = useState<Record<string, string>>({});
   const [measureDrafts, setMeasureDrafts] = useState<Record<string, string>>({});
   const [flagDrafts, setFlagDrafts] = useState<Record<string, boolean>>({});
 
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   function clearAndFocusFirst() {
+    setDetailDrafts({});
     setMeasureDrafts({});
     setFlagDrafts({});
-    const first = measures[0]?.key;
+    const first = details[0]?.key ?? measures[0]?.key;
     if (first) setTimeout(() => inputRefs.current[first]?.focus(), 0);
   }
 
   useEffect(() => {
-    const first = measures[0]?.key;
+    const first = details[0]?.key ?? measures[0]?.key;
     if (first) inputRefs.current[first]?.focus();
-  }, [measures]);
+  }, [details, measures]);
 
   function submit() {
+    const detailsValues: Record<string, unknown> = {};
+    for (const d of details) {
+      const raw = (detailDrafts[d.key] ?? '').trim();
+      if (raw !== '') detailsValues[d.key] = raw;
+    }
+
     const measureValues: Record<string, number | ''> = {};
     for (const m of measures) {
       const raw = (measureDrafts[m.key] ?? '').trim();
@@ -44,13 +69,41 @@ export function TapeNewEntryRow(props: {
     const flagValues: Record<string, boolean> = {};
     for (const f of flags) flagValues[f.key] = Boolean(flagDrafts[f.key]);
 
-    // detailsDraft is captured by EntryPanel and passed down; we don't clear it here.
-    onSubmit({ measureValues, flags: flagValues });
+    onSubmit({ measureValues, flags: flagValues, details: detailsValues });
     clearAndFocusFirst();
   }
 
+  const detailCount = details.length;
+  const measureCount = measures.length;
+  const totalEditable = detailCount + measureCount;
+
   return (
     <tr className={styles.newEntryRow}>
+      {details.map((d, idx) => (
+        <td key={d.key} className={styles.td}>
+          <input
+            ref={(el) => {
+              inputRefs.current[d.key] = el;
+            }}
+            className={styles.newEntryInput}
+            value={detailDrafts[d.key] ?? ''}
+            onChange={(e) => setDetailDrafts((p) => ({ ...p, [d.key]: e.target.value }))}
+            onKeyDown={(e) => {
+              if (e.key !== 'Enter') return;
+              e.preventDefault();
+
+              const isLast = idx === totalEditable - 1;
+              if (!isLast) {
+                const nextKey = details[idx + 1]?.key ?? measures[0]?.key;
+                if (nextKey) inputRefs.current[nextKey]?.focus();
+                return;
+              }
+              submit();
+            }}
+          />
+        </td>
+      ))}
+
       {measures.map((m, idx) => (
         <td key={m.key} className={styles.td}>
           <input
@@ -64,7 +117,8 @@ export function TapeNewEntryRow(props: {
               if (e.key !== 'Enter') return;
               e.preventDefault();
 
-              const isLast = idx === measures.length - 1;
+              const globalIdx = detailCount + idx;
+              const isLast = globalIdx === totalEditable - 1;
               if (!isLast) {
                 const nextKey = measures[idx + 1]?.key;
                 if (nextKey) inputRefs.current[nextKey]?.focus();

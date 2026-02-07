@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { BulkMetadataEdit } from './BulkMetadataEdit';
 import { EntryHeader } from './EntryHeader';
-import { FastDetailsForm } from './FastDetailsForm';
 import { RecordTape } from './RecordTape';
 import styles from './entryPanel.module.css';
 
@@ -17,8 +15,6 @@ export function EntryPanel(props: {
   onBulkToggleFlag: (flagKey: string, value: boolean) => void;
 }) {
   const { dataset, config, selected, onClose, onGoToFullRecords, onSubmit, onToggleFlag, onBulkToggleFlag } = props;
-
-  const [detailsDraft, setDetailsDraft] = useState<Record<string, unknown>>({});
 
   return (
     <div className={styles.panel}>
@@ -36,8 +32,6 @@ export function EntryPanel(props: {
 
       <EntryHeader dataset={dataset} config={config} selected={selected} />
 
-      <FastDetailsForm schema={dataset.schema} onChange={setDetailsDraft} />
-
       {/* Bulk metadata should live above the tape (approved layout) */}
       <BulkMetadataEdit schema={dataset.schema} onToggle={onBulkToggleFlag} />
 
@@ -46,7 +40,7 @@ export function EntryPanel(props: {
         dataset={dataset}
         selected={selected}
         onToggleFlag={onToggleFlag}
-        onSubmit={({ measureValues, flags }) => onSubmit({ measureValues, flags, details: detailsDraft })}
+        onSubmit={onSubmit}
       />
     </div>
   );
