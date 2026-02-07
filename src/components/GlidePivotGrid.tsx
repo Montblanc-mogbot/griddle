@@ -87,42 +87,55 @@ export function GlidePivotGrid(props: {
   }
 
   const glideTheme = useMemo(() => {
-    const cs = getComputedStyle(document.documentElement);
-    const surface = cs.getPropertyValue('--surface').trim() || '#fff';
-    const surface2 = cs.getPropertyValue('--surface2').trim() || '#f6f6f6';
-    const border2 = cs.getPropertyValue('--border2').trim() || '#eee';
-    const text = cs.getPropertyValue('--text').trim() || '#111';
-    const muted = cs.getPropertyValue('--muted').trim() || '#666';
+    // Keep these in sync with src/index.css tokens.
+    if (theme === 'dark') {
+      return {
+        bgIconHeader: '#1a2030',
+        bgHeader: '#1a2030',
+        bgHeaderHasFocus: '#1a2030',
+        bgHeaderHovered: '#20283b',
+        bgBubble: '#1a2030',
+
+        bgCell: '#141821',
+        bgCellMedium: '#141821',
+        bgCellLight: '#141821',
+        bgSearchResult: 'rgba(139,135,255,0.25)',
+
+        borderColor: '#1f2637',
+
+        textDark: '#e8ebf2',
+        textMedium: '#a8b0c2',
+        textLight: '#a8b0c2',
+
+        accentColor: '#8b87ff',
+      };
+    }
 
     return {
-      // General
-      bgIconHeader: surface2,
-      bgHeader: surface2,
-      bgHeaderHasFocus: surface2,
-      bgHeaderHovered: surface2,
-      bgBubble: surface2,
+      bgIconHeader: '#f6f6f6',
+      bgHeader: '#f6f6f6',
+      bgHeaderHasFocus: '#f6f6f6',
+      bgHeaderHovered: '#f0f0f0',
+      bgBubble: '#f6f6f6',
 
-      // Cells
-      bgCell: surface,
-      bgCellMedium: surface,
-      bgCellLight: surface,
-      bgSearchResult: theme === 'dark' ? 'rgba(139,135,255,0.25)' : 'rgba(79,70,229,0.15)',
+      bgCell: '#ffffff',
+      bgCellMedium: '#ffffff',
+      bgCellLight: '#ffffff',
+      bgSearchResult: 'rgba(79,70,229,0.15)',
 
-      // Grid lines
-      borderColor: border2,
+      borderColor: '#eeeeee',
 
-      // Text
-      textDark: text,
-      textMedium: muted,
-      textLight: muted,
+      textDark: '#111111',
+      textMedium: '#666666',
+      textLight: '#666666',
 
-      // Selection
-      accentColor: theme === 'dark' ? '#8b87ff' : '#4f46e5',
+      accentColor: '#4f46e5',
     };
   }, [theme]);
 
   return (
     <DataEditor
+      key={theme}
       theme={glideTheme}
       columns={columns}
       rows={rowCount}

@@ -457,7 +457,7 @@ export function PivotControls(props: {
                   }}
                   title={`${field.label}: ${label}`}
                 >
-                  <span style={{ color: '#555' }}>{field.label}:</span>
+                  <span style={{ color: 'var(--muted)' }}>{field.label}:</span>
                   <span>{label}</span>
                 </button>
               );
@@ -496,10 +496,10 @@ export function PivotControls(props: {
                 width: 320,
                 maxHeight: 360,
                 overflow: 'auto',
-                background: '#fff',
-                border: '1px solid #ddd',
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
-                boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+                boxShadow: 'var(--shadow)',
                 padding: 10,
                 zIndex: 50,
               }}
@@ -646,9 +646,9 @@ export function PivotControls(props: {
                 style={{
                   padding: '6px 10px',
                   borderRadius: 999,
-                  border: '1px solid #ddd',
-                  background: '#f6f6f6',
-                  boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px #4f46e5' : 'none',
+                  border: '1px solid var(--border)',
+                  background: 'var(--surface2)',
+                  boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px var(--accent)' : 'none',
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: 'pointer',
@@ -663,7 +663,7 @@ export function PivotControls(props: {
                 }}
                 title={`${field.label}: ${label}`}
               >
-                <span style={{ color: '#555' }}>{field.label}:</span>
+                <span style={{ color: 'var(--muted)' }}>{field.label}:</span>
                 <span>{label}</span>
               </button>
             );
@@ -678,8 +678,8 @@ export function PivotControls(props: {
               style={{
                 padding: '6px 10px',
                 borderRadius: 999,
-                border: '1px solid #ddd',
-                background: '#fff',
+                border: '1px solid var(--border)',
+                background: 'var(--surface)',
                 fontSize: 12,
                 fontWeight: 700,
                 cursor: 'pointer',
@@ -704,7 +704,7 @@ export function PivotControls(props: {
               background: 'var(--surface)',
               border: '1px solid var(--border)',
               borderRadius: 10,
-              boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+              boxShadow: 'var(--shadow)',
               padding: 10,
               zIndex: 50,
             }}
@@ -723,7 +723,15 @@ export function PivotControls(props: {
               value={slicerSearch}
               onChange={(e) => setSlicerSearch(e.target.value)}
               placeholder="Search…"
-              style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
+              style={{
+                width: '100%',
+                marginTop: 8,
+                padding: '6px 8px',
+                border: '1px solid var(--border)',
+                borderRadius: 8,
+                background: 'var(--surface)',
+                color: 'var(--text)',
+              }}
             />
 
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>

@@ -74,18 +74,18 @@ export function SchemaEditor(props: {
   }
 
   return (
-    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', color: 'var(--text)' }}>
       <div
         style={{
-          border: '1px solid #ddd',
+          border: '1px solid var(--border)',
           borderRadius: 6,
           padding: 12,
           minWidth: 260,
-          background: '#fff',
+          background: 'var(--surface)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontWeight: 700 }}>Schema</div>
+          <div style={{ fontWeight: 700 }}>Fields</div>
           <button onClick={addField} style={{ cursor: 'pointer' }}>
             + Field
           </button>
@@ -101,13 +101,13 @@ export function SchemaEditor(props: {
                   textAlign: 'left',
                   padding: '8px 10px',
                   borderRadius: 6,
-                  border: '1px solid ' + (isSel ? '#13c2c2' : '#eee'),
-                  background: isSel ? '#e6fffb' : '#fafafa',
+                  border: '1px solid ' + (isSel ? 'var(--accent)' : 'var(--border2)'),
+                  background: isSel ? 'var(--accentSoft)' : 'var(--surface2)',
                   cursor: 'pointer',
                 }}
               >
                 <div style={{ fontWeight: 600 }}>{f.label}</div>
-                <div style={{ fontSize: 12, color: '#666' }}>{f.key}</div>
+                <div style={{ fontSize: 12, color: 'var(--muted)' }}>{f.key}</div>
               </button>
             );
           })}
@@ -116,10 +116,10 @@ export function SchemaEditor(props: {
 
       <div
         style={{
-          border: '1px solid #ddd',
+          border: '1px solid var(--border)',
           borderRadius: 6,
           padding: 12,
-          background: '#fff',
+          background: 'var(--surface)',
           minWidth: 420,
           flex: 1,
         }}
@@ -127,11 +127,11 @@ export function SchemaEditor(props: {
         <div style={{ fontWeight: 700 }}>Field editor</div>
 
         {!selected ? (
-          <div style={{ marginTop: 10, color: '#666' }}>Select a field to edit.</div>
+          <div style={{ marginTop: 10, color: 'var(--muted)' }}>Select a field to edit.</div>
         ) : (
           <div style={{ marginTop: 10, display: 'grid', gap: 12 }}>
             <div style={{ display: 'grid', gap: 6 }}>
-              <label style={{ fontSize: 12, color: '#666' }}>Label</label>
+              <label style={{ fontSize: 12, color: 'var(--muted)' }}>Label</label>
               <input
                 value={selected.label}
                 onChange={(e) => updateField({ ...selected, label: e.target.value })}
@@ -139,18 +139,18 @@ export function SchemaEditor(props: {
             </div>
 
             <div style={{ display: 'grid', gap: 6 }}>
-              <label style={{ fontSize: 12, color: '#666' }}>Key</label>
+              <label style={{ fontSize: 12, color: 'var(--muted)' }}>Key</label>
               <input
                 value={selected.key}
                 onChange={(e) => renameField(selected, e.target.value)}
               />
-              <div style={{ fontSize: 12, color: '#999' }}>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>
                 Keys must be unique and are used inside record JSON.
               </div>
             </div>
 
             <div style={{ display: 'grid', gap: 6 }}>
-              <label style={{ fontSize: 12, color: '#666' }}>Type</label>
+              <label style={{ fontSize: 12, color: 'var(--muted)' }}>Type</label>
               <select
                 value={selected.type}
                 onChange={(e) => updateField({ ...selected, type: e.target.value as FieldType })}
@@ -164,7 +164,7 @@ export function SchemaEditor(props: {
             </div>
 
             <div style={{ display: 'grid', gap: 6 }}>
-              <label style={{ fontSize: 12, color: '#666' }}>Roles</label>
+              <label style={{ fontSize: 12, color: 'var(--muted)' }}>Roles</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                 {ALL_ROLES.map((role) => {
                   const checked = selected.roles.includes(role);
@@ -185,13 +185,13 @@ export function SchemaEditor(props: {
                   );
                 })}
               </div>
-              <div style={{ fontSize: 12, color: '#999' }}>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>
                 Note: we allow empty roles for flexibility; pivot controls will only show eligible fields.
               </div>
             </div>
 
             <div style={{ display: 'grid', gap: 6 }}>
-              <label style={{ fontSize: 12, color: '#666' }}>Entry UI</label>
+              <label style={{ fontSize: 12, color: 'var(--muted)' }}>Entry UI</label>
               <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <input
                   type="checkbox"
@@ -208,7 +208,7 @@ export function SchemaEditor(props: {
                 />
                 <span>Show in fast entry</span>
               </label>
-              <div style={{ fontSize: 12, color: '#999' }}>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>
                 Fast entry is the right-side Entry drawer.
               </div>
             </div>
@@ -223,7 +223,7 @@ export function SchemaEditor(props: {
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
                 onClick={() => deleteField(selected.key)}
-                style={{ cursor: 'pointer', background: '#fff1f0', border: '1px solid #ffa39e' }}
+                style={{ cursor: 'pointer', background: 'rgba(255, 77, 79, 0.12)', border: '1px solid rgba(255, 77, 79, 0.5)', color: 'var(--text)' }}
               >
                 Delete field
               </button>
@@ -241,7 +241,7 @@ function EnumEditor(props: { value: string[]; onChange: (value: string[]) => voi
 
   return (
     <div style={{ display: 'grid', gap: 6 }}>
-      <label style={{ fontSize: 12, color: '#666' }}>Enum (one option per line)</label>
+      <label style={{ fontSize: 12, color: 'var(--muted)' }}>Enum (one option per line)</label>
       <textarea
         rows={6}
         value={draft}
@@ -254,7 +254,7 @@ function EnumEditor(props: { value: string[]; onChange: (value: string[]) => voi
           onChange(Array.from(new Set(next)));
         }}
       />
-      <div style={{ fontSize: 12, color: '#999' }}>Optional. Used for categorical pickers later.</div>
+      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Optional. Used for categorical pickers later.</div>
     </div>
   );
 }
