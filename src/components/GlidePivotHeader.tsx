@@ -10,12 +10,13 @@ export function GlidePivotHeader(props: {
   // Widths
   rowDimWidth: number;
   valueColWidth: number;
+  rowMarkersWidth: number;
 }) {
-  const { pivot, config, scrollTx, rowDimWidth, valueColWidth } = props;
+  const { pivot, config, scrollTx, rowDimWidth, valueColWidth, rowMarkersWidth } = props;
 
   const headerRows = buildColumnHeaderRows(config, pivot.colTuples);
 
-  const leftWidth = config.rowKeys.length * rowDimWidth;
+  const leftWidth = rowMarkersWidth + config.rowKeys.length * rowDimWidth;
 
   return (
     <div className={styles.wrap}>

@@ -21,6 +21,7 @@ export function GlidePivotGrid(props: {
 
   const rowDimWidth = 160;
   const valueColWidth = 120;
+  const rowMarkersWidth = 44;
 
   const [selection, setSelection] = useState<GridSelection>({
     columns: CompactSelection.empty(),
@@ -30,7 +31,8 @@ export function GlidePivotGrid(props: {
   const columns = useMemo(
     () => [
       ...config.rowKeys.map((rk) => ({ title: rk, id: rk, width: rowDimWidth })),
-      ...pivot.colTuples.map((_ct, idx) => ({ title: String(idx), id: `c${idx}`, width: valueColWidth })),
+      // Column titles are hidden (headerHeight=0). We still need stable ids + widths.
+      ...pivot.colTuples.map((_ct, idx) => ({ title: '', id: `c${idx}`, width: valueColWidth })),
     ],
     [config.rowKeys, pivot.colTuples],
   );
@@ -68,7 +70,8 @@ export function GlidePivotGrid(props: {
       columns={columns}
       rows={rowCount}
       getCellContent={getCell}
-      rowMarkers="both"
+      headerHeight={0}
+      rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
       rangeSelect="multi-rect"
       gridSelection={selection}
       onGridSelectionChange={(sel) => {

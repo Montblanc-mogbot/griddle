@@ -171,22 +171,34 @@ export default function App() {
         <MuiDataGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
       ) : (
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-          <div style={{ flex: 1, minWidth: 0, display: 'grid', gap: 8 }}>
-            <GlidePivotHeader
-              pivot={pivot}
-              config={config}
-              scrollTx={glideHeaderTx}
-              rowDimWidth={160}
-              valueColWidth={120}
-            />
-
-            <div style={{ height: 560 }}>
-              <GlidePivotGrid
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                border: '1px solid #ddd',
+                borderRadius: 8,
+                overflow: 'hidden',
+                background: '#fff',
+                display: 'grid',
+                gap: 0,
+              }}
+            >
+              <GlidePivotHeader
                 pivot={pivot}
                 config={config}
-                onScrollTx={setGlideHeaderTx}
-                onSingleValueCellSelected={(sel) => setSelected(sel)}
+                scrollTx={glideHeaderTx}
+                rowDimWidth={160}
+                valueColWidth={120}
+                rowMarkersWidth={44}
               />
+
+              <div style={{ height: 560 }}>
+                <GlidePivotGrid
+                  pivot={pivot}
+                  config={config}
+                  onScrollTx={setGlideHeaderTx}
+                  onSingleValueCellSelected={(sel) => setSelected(sel)}
+                />
+              </div>
             </div>
           </div>
 
