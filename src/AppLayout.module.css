@@ -7,8 +7,8 @@
 .toolbar {
   flex: 0 0 auto;
   padding: 10px 12px;
-  border-bottom: 1px solid #e5e5e5;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
   display: flex;
   gap: 12px;
   align-items: center;
@@ -35,9 +35,9 @@
   height: 100vh;
   width: 440px;
   max-width: 90vw;
-  background: #fff;
-  border-left: 1px solid #e5e5e5;
-  box-shadow: -12px 0 24px rgba(0, 0, 0, 0.08);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -12px 0 24px rgba(0, 0, 0, 0.25);
   overflow: auto;
   z-index: 10;
 }

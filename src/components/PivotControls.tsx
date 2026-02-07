@@ -246,10 +246,10 @@ export function PivotControls(props: {
                 width: 420,
                 maxHeight: 420,
                 overflow: 'auto',
-                background: '#fff',
-                border: '1px solid #ddd',
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
                 borderRadius: 10,
-                boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+                boxShadow: 'var(--shadow)',
                 padding: 10,
                 zIndex: 60,
               }}
@@ -274,8 +274,8 @@ export function PivotControls(props: {
                       style={{
                         padding: '6px 10px',
                         borderRadius: 999,
-                        border: '1px solid #ddd',
-                        background: activeRowFilterKey === k ? '#eef2ff' : '#f6f6f6',
+                        border: '1px solid var(--border)',
+                        background: activeRowFilterKey === k ? 'var(--accentSoft)' : 'var(--surface2)',
                         fontSize: 12,
                         fontWeight: 800,
                         cursor: 'pointer',
@@ -336,7 +336,7 @@ export function PivotControls(props: {
                       value={rowFilterSearch}
                       onChange={(e) => setRowFilterSearch(e.target.value)}
                       placeholder="Search values…"
-                      style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
+                      style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid var(--border)', borderRadius: 8, background: 'var(--surface)', color: 'var(--text)' }}
                     />
 
                     <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
@@ -370,16 +370,16 @@ export function PivotControls(props: {
                         );
                       })}
 
-                      {shownVals.length === 0 ? <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div> : null}
+                      {shownVals.length === 0 ? <div style={{ color: 'var(--muted)', fontSize: 12 }}>(no matches)</div> : null}
                     </div>
 
-                    <div style={{ marginTop: 10, fontSize: 12, color: '#666' }}>
+                    <div style={{ marginTop: 10, fontSize: 12, color: 'var(--muted)' }}>
                       Current: {selected.length === 0 ? 'All' : `${selected.length} selected`}
                     </div>
                   </div>
                 );
               })() : (
-                <div style={{ marginTop: 10, fontSize: 12, color: '#666' }}>(no row dims selected)</div>
+                <div style={{ marginTop: 10, fontSize: 12, color: 'var(--muted)' }}>(no row dims selected)</div>
               )}
             </div>
           ) : null}
@@ -440,9 +440,9 @@ export function PivotControls(props: {
                   style={{
                     padding: '6px 10px',
                     borderRadius: 999,
-                    border: '1px solid #ddd',
-                    background: '#f6f6f6',
-                    boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px #4f46e5' : 'none',
+                    border: '1px solid var(--border)',
+                    background: 'var(--surface2)',
+                    boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px var(--accent)' : 'none',
                     fontSize: 12,
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -472,12 +472,13 @@ export function PivotControls(props: {
                 style={{
                   padding: '6px 10px',
                   borderRadius: 999,
-                  border: '1px solid #ddd',
-                  background: '#fff',
+                  border: '1px solid var(--border)',
+                  background: 'var(--surface)',
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: 'pointer',
                   flex: '0 0 auto',
+                  color: 'var(--text)',
                 }}
               >
                 Clear
@@ -517,7 +518,15 @@ export function PivotControls(props: {
                 value={slicerSearch}
                 onChange={(e) => setSlicerSearch(e.target.value)}
                 placeholder="Search…"
-                style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
+                style={{
+                  width: '100%',
+                  marginTop: 8,
+                  padding: '6px 8px',
+                  border: '1px solid var(--border)',
+                  borderRadius: 8,
+                  background: 'var(--surface)',
+                  color: 'var(--text)',
+                }}
               />
 
               <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
@@ -567,7 +576,7 @@ export function PivotControls(props: {
                 })}
 
                 {activeOptions.length === 0 ? (
-                  <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div>
+                  <div style={{ color: 'var(--muted)', fontSize: 12 }}>(no matches)</div>
                 ) : null}
               </div>
             </div>
@@ -692,8 +701,8 @@ export function PivotControls(props: {
               width: 320,
               maxHeight: 360,
               overflow: 'auto',
-              background: '#fff',
-              border: '1px solid #ddd',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
               borderRadius: 10,
               boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
               padding: 10,
@@ -764,7 +773,7 @@ export function PivotControls(props: {
               })}
 
               {activeOptions.length === 0 ? (
-                <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div>
+                <div style={{ color: 'var(--muted)', fontSize: 12 }}>(no matches)</div>
               ) : null}
             </div>
           </div>

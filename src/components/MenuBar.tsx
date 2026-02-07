@@ -52,9 +52,10 @@ function Menu(props: {
           padding: '6px 10px',
           borderRadius: 8,
           border: '1px solid transparent',
-          background: open ? '#f0f0f0' : 'transparent',
+          background: open ? 'var(--menuHover)' : 'transparent',
           fontSize: 13,
           fontWeight: 700,
+          color: 'var(--text)',
         }}
       >
         {label}
@@ -68,10 +69,10 @@ function Menu(props: {
             left: pos.left,
             top: pos.top,
             width: 220,
-            background: '#fff',
-            border: '1px solid #ddd',
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
             borderRadius: 10,
-            boxShadow: '0 16px 40px rgba(0,0,0,0.14)',
+            boxShadow: 'var(--shadow)',
             padding: 6,
             zIndex: 90,
           }}
@@ -100,6 +101,14 @@ function MenuItem(props: { label: string; onClick: () => void; disabled?: boolea
         fontWeight: 650,
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
+        color: 'var(--text)',
+      }}
+      onMouseEnter={(e) => {
+        if (disabled) return;
+        (e.currentTarget as HTMLButtonElement).style.background = 'var(--menuHover)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
       }}
     >
       {label}
@@ -108,7 +117,7 @@ function MenuItem(props: { label: string; onClick: () => void; disabled?: boolea
 }
 
 function Divider() {
-  return <div style={{ height: 1, background: '#eee', margin: '6px 4px' }} />;
+  return <div style={{ height: 1, background: 'var(--border2)', margin: '6px 4px' }} />;
 }
 
 export function MenuBar(props: {

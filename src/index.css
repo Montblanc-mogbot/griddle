@@ -2,12 +2,47 @@
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.4;
   font-weight: 400;
-  color: #111;
-  background-color: #fff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Theme tokens (light) */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface2: #f6f6f6;
+  --surface3: #f0f0f0;
+  --text: #111111;
+  --muted: #666666;
+  --border: #dddddd;
+  --border2: #eeeeee;
+  --accent: #4f46e5;
+  --accentSoft: #eef2ff;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+
+  /* Office-ish chrome */
+  --ribbonBg: #f3f5f9;
+  --menuHover: #e9edf6;
+  --focusRing: 0 0 0 3px rgba(79, 70, 229, 0.25);
+}
+
+:root[data-theme='dark'] {
+  /* Theme tokens (dark) */
+  --bg: #0f1115;
+  --surface: #141821;
+  --surface2: #1a2030;
+  --surface3: #20283b;
+  --text: #e8ebf2;
+  --muted: #a8b0c2;
+  --border: #2a3246;
+  --border2: #1f2637;
+  --accent: #8b87ff;
+  --accentSoft: rgba(139, 135, 255, 0.18);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+
+  --ribbonBg: #121624;
+  --menuHover: #1a2030;
+  --focusRing: 0 0 0 3px rgba(139, 135, 255, 0.22);
 }
 
 html,
@@ -18,21 +53,37 @@ body,
 
 body {
   margin: 0;
-  background: #fff;
+  background: var(--bg);
+  color: var(--text);
 }
 
 button {
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   padding: 8px 12px;
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
-  background-color: #f6f6f6;
-  color: #111;
+  background-color: var(--surface2);
+  color: var(--text);
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #f0f0f0;
+  background-color: var(--surface3);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--focusRing);
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }

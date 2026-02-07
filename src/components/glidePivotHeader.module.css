@@ -1,18 +1,18 @@
 .wrap {
   /* the outer container (App) owns border/radius; this stays flush with the grid */
-  background: #fafafa;
-  color: #111;
+  background: var(--surface2);
+  color: var(--text);
 }
 
 .row {
   display: flex;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border2);
 }
 
 .cell {
   box-sizing: border-box;
   padding: 6px 8px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--border2);
   text-align: center;
   font-weight: 700;
   white-space: nowrap;
@@ -22,18 +22,18 @@
 
 .left {
   display: flex;
-  background: #fafafa;
-  border-right: 1px solid #eee;
+  background: var(--surface2);
+  border-right: 1px solid var(--border2);
 }
 
 .rowMarkerStub {
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--border2);
 }
 
 .cellLeft {
   box-sizing: border-box;
   padding: 6px 8px;
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--border2);
   text-align: left;
   font-weight: 700;
   white-space: nowrap;
@@ -42,5 +42,5 @@
 }
 
 .leftStub {
-  border-right: 1px solid #eee;
+  border-right: 1px solid var(--border2);
 }

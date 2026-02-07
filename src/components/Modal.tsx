@@ -40,18 +40,18 @@ export function Modal(props: {
           maxWidth: 'calc(100vw - 32px)',
           maxHeight: 'calc(100vh - 32px)',
           overflow: 'auto',
-          background: '#fff',
-          border: '1px solid #ddd',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
           borderRadius: 12,
-          boxShadow: '0 24px 60px rgba(0,0,0,0.2)',
+          boxShadow: 'var(--shadow)',
         }}
       >
         <div
           style={{
             position: 'sticky',
             top: 0,
-            background: '#fff',
-            borderBottom: '1px solid #eee',
+            background: 'var(--surface)',
+            borderBottom: '1px solid var(--border2)',
             padding: '10px 12px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -61,7 +61,7 @@ export function Modal(props: {
           }}
         >
           <div style={{ fontWeight: 900 }}>{title ?? ''}</div>
-          <button onClick={onClose} style={{ padding: '6px 10px', fontSize: 12 }}>
+          <button onClick={onClose} style={{ padding: '6px 10px', fontSize: 12, background: 'var(--surface2)' }}>
             Close
           </button>
         </div>

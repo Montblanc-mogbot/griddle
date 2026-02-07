@@ -1,9 +1,9 @@
 .section {
-  border: 1px solid #eee;
+  border: 1px solid var(--border2);
   border-radius: 6px;
   padding: 10px;
-  color: #111;
-  background: #fff;
+  color: var(--text);
+  background: var(--surface);
 }
 
 .headerRow {
@@ -13,28 +13,29 @@
 }
 
 .muted {
-  color: #666;
+  color: var(--muted);
 }
 
 .tableWrap {
   margin-top: 8px;
   max-height: 360px;
   overflow: auto;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border2);
   border-radius: 6px;
+  background: var(--surface);
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  color: #111;
+  color: var(--text);
 }
 
 .th {
   position: sticky;
   top: 0;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border2);
   padding: 6px 8px;
   text-align: right;
   font-weight: 700;
@@ -45,7 +46,7 @@
 }
 
 .td {
-  border-bottom: 1px solid #f3f3f3;
+  border-bottom: 1px solid var(--border2);
   padding: 6px 8px;
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -60,19 +61,21 @@
 }
 
 .newEntryRow {
-  background: #fffbe6; /* light yellow focus */
+  background: rgba(250, 204, 21, 0.14);
 }
 
 .newEntryInput {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 4px 6px;
   font-variant-numeric: tabular-nums;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .newEntryInput:focus {
-  outline: 2px solid #13c2c2;
-  outline-offset: 0;
+  outline: none;
+  box-shadow: var(--focusRing);
 }

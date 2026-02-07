@@ -59,6 +59,10 @@ export default function App() {
   const [dataset, setDataset] = useState<DatasetFileV1 | null>(null);
   const fileOpenRef = useRef<HTMLInputElement | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const t = localStorage.getItem('griddle:theme:v1');
+    return t === 'dark' ? 'dark' : 'light';
+  });
 
   const defaultMeasure =
     dataset?.schema.fields.find((f) => f.roles.includes('measure'))?.key ??
@@ -176,6 +180,11 @@ export default function App() {
     }
   }
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('griddle:theme:v1', theme);
+  }, [theme]);
+
   // Persistence: keep a local draft of the last-opened griddle.
   useEffect(() => {
     if (!dataset) return;
@@ -224,8 +233,8 @@ export default function App() {
               left: 16,
               bottom: 16,
               color: '#c00',
-              background: '#fff',
-              border: '1px solid #f1f1f1',
+              background: 'var(--surface)',
+              border: '1px solid var(--border2)',
               padding: 10,
               borderRadius: 10,
             }}
@@ -252,14 +261,23 @@ export default function App() {
         }}
       />
 
-      <div className={styles.toolbar} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 0 }}>
+      <div
+        className={styles.toolbar}
+        style={{
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          gap: 0,
+          background: 'var(--ribbonBg)',
+          borderBottom: '1px solid var(--border)',
+        }}
+      >
         <div
           style={{
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center',
             gap: 12,
-            padding: '0 6px',
+            padding: '4px 6px',
           }}
         >
           {/* Menu bar (left-aligned, Excel-ish) */}
@@ -284,7 +302,7 @@ export default function App() {
 
           <div style={{ flex: 1 }} />
 
-          <div style={{ fontWeight: 900, color: '#444', fontSize: 13, paddingRight: 6 }}>Griddle</div>
+          <div style={{ fontWeight: 900, color: 'var(--muted)', fontSize: 13, paddingRight: 6 }}>Griddle</div>
         </div>
 
         {/* Ribbon row (grouped icons) */}
@@ -293,7 +311,7 @@ export default function App() {
             display: 'flex',
             gap: 12,
             padding: '8px 10px',
-            borderTop: '1px solid #eee',
+            borderTop: '1px solid var(--border)',
             alignItems: 'stretch',
             flexWrap: 'wrap',
           }}
@@ -317,8 +335,8 @@ export default function App() {
                     display: 'grid',
                     placeItems: 'center',
                     borderRadius: 8,
-                    border: '1px solid #ddd',
-                    background: props.pressed ? '#eef2ff' : '#fff',
+                    border: '1px solid var(--border)',
+                    background: props.pressed ? 'var(--accentSoft)' : 'var(--surface)',
                     cursor: 'pointer',
                   }}
                 >
@@ -330,7 +348,7 @@ export default function App() {
             function Icon(props: { d: string }) {
               return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d={props.d} stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d={props.d} stroke="var(--text)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               );
             }
@@ -343,11 +361,11 @@ export default function App() {
                     flexDirection: 'column',
                     gap: 6,
                     paddingRight: 12,
-                    borderRight: '1px solid #e5e5e5',
+                    borderRight: '1px solid var(--border)',
                   }}
                 >
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>{props.children}</div>
-                  <div style={{ fontSize: 11, color: '#666', fontWeight: 700, paddingLeft: 2 }}>{props.label}</div>
+                  <div style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 700, paddingLeft: 2 }}>{props.label}</div>
                 </div>
               );
             }
@@ -383,6 +401,14 @@ export default function App() {
                 </RibbonGroup>
 
                 <RibbonGroup label="View">
+                  <IconButton
+                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                    pressed={theme === 'dark'}
+                    onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+                  >
+                    <Icon d="M12 3a7 7 0 000 14 7 7 0 000-14zm0 0v-1m0 16v1m9-9h1M2 12H1m16.95 4.95l.7.7M6.35 6.35l-.7-.7m12 0l-.7.7M6.35 17.65l-.7.7" />
+                  </IconButton>
+
                   <IconButton title="Pivot layout…" onClick={() => setShowPivotLayout(true)}>
                     <Icon d="M4 4h16v6H4V4zm0 10h7v6H4v-6zm9 0h7v6h-7v-6" />
                   </IconButton>
@@ -420,7 +446,7 @@ export default function App() {
                       <Icon d="M4 6h16M4 12h16M4 18h16" />
                     </IconButton>
                   </div>
-                  <div style={{ fontSize: 11, color: '#666', fontWeight: 700, paddingLeft: 2 }}>Setup</div>
+                  <div style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 700, paddingLeft: 2 }}>Setup</div>
                 </div>
               </>
             );
@@ -489,9 +515,9 @@ export default function App() {
               <div
                 style={{
                   height: '100%',
-                  borderBottom: '1px solid #ddd',
+                  borderBottom: '1px solid var(--border)',
                   overflow: 'hidden',
-                  background: '#fff',
+                  background: 'var(--surface)',
                   display: 'grid',
                   gridTemplateRows: 'auto 1fr',
                   gap: 0,

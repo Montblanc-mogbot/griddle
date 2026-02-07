@@ -1,8 +1,8 @@
 .panel {
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
-  color: #111;
+  background: var(--surface);
+  color: var(--text);
   padding: 12px;
   display: grid;
   gap: 12px;
@@ -21,13 +21,14 @@
 }
 
 .section {
-  border: 1px solid #eee;
+  border: 1px solid var(--border2);
   border-radius: 6px;
   padding: 10px;
+  background: var(--surface);
 }
 
 .muted {
-  color: #666;
+  color: var(--muted);
 }
 
 .headerTop {
@@ -47,7 +48,7 @@
 
 .kLabel {
   width: 110px;
-  color: #666;
+  color: var(--muted);
 }
 
 .kValue {
