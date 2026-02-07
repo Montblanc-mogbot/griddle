@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { PivotControls } from './components/PivotControls';
-import { PivotGrid } from './components/PivotGrid';
+import { GlidePivotGrid } from './components/GlidePivotGrid';
+import { GlidePivotHeader } from './components/GlidePivotHeader';
 import { DatasetImportExport } from './components/DatasetImportExport';
 import { EntryPanel } from './components/EntryPanel';
 import { SchemaEditor } from './components/SchemaEditor';
@@ -60,6 +61,7 @@ export default function App() {
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [spikeView, setSpikeView] = useState<'none' | 'ag' | 'glide' | 'mui'>('none');
+  const [glideHeaderTx, setGlideHeaderTx] = useState(0);
 
   const pivot = useMemo(
     () => computePivot(dataset.records, dataset.schema, config),
@@ -169,8 +171,23 @@ export default function App() {
         <MuiDataGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
       ) : (
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <PivotGrid pivot={pivot} config={config} selected={selected} onSelect={setSelected} />
+          <div style={{ flex: 1, minWidth: 0, display: 'grid', gap: 8 }}>
+            <GlidePivotHeader
+              pivot={pivot}
+              config={config}
+              scrollTx={glideHeaderTx}
+              rowDimWidth={160}
+              valueColWidth={120}
+            />
+
+            <div style={{ height: 560 }}>
+              <GlidePivotGrid
+                pivot={pivot}
+                config={config}
+                onScrollTx={setGlideHeaderTx}
+                onSingleValueCellSelected={(sel) => setSelected(sel)}
+              />
+            </div>
           </div>
 
           {selected ? (

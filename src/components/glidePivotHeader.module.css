@@ -1,0 +1,27 @@
+.wrap {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fafafa;
+  color: #111;
+}
+
+.row {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+.cell {
+  padding: 6px 8px;
+  border-right: 1px solid #eee;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spacer {
+  background: #fafafa;
+  border-right: 1px solid #ddd;
+}
