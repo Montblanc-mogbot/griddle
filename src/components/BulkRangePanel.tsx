@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import type { DatasetFileV1, FieldDef, RecordEntity, SelectedCell } from '../domain/types';
+import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
+import { formatNumber } from '../domain/format';
 import { bulkSetMetadata, getRecordsForCell, upsertRecords } from '../domain/records';
 import { flagFields, measureFields } from '../domain/records';
 
@@ -130,13 +131,14 @@ function BulkFieldEditor(props: {
 
 export function BulkRangePanel(props: {
   dataset: DatasetFileV1;
+  config: PivotConfig;
   selected: SelectedCell | null;
   recordIds: string[];
   cellCount: number;
   onClose: () => void;
   onDatasetChange: (next: DatasetFileV1) => void;
 }) {
-  const { dataset, selected, recordIds, cellCount, onClose, onDatasetChange } = props;
+  const { dataset, config, selected, recordIds, cellCount, onClose, onDatasetChange } = props;
 
   const flags = flagFields(dataset.schema);
   const measures = new Set(measureFields(dataset.schema).map((f) => f.key));
@@ -147,13 +149,31 @@ export function BulkRangePanel(props: {
   const otherFields = dataset.schema.fields.filter((f) => !measures.has(f.key) && !f.roles.includes('flag'));
   const dimKeys = new Set([...(selected ? Object.keys(selected.row) : []), ...(selected ? Object.keys(selected.col) : [])]);
 
+  const currentMeasure = dataset.schema.fields.find((f) => f.key === config.measureKey);
+  const currentTotal = useMemo(() => {
+    if (!config.measureKey) return null;
+    let sum = 0;
+    let any = false;
+    for (const r of records) {
+      const v = r.data[config.measureKey];
+      if (typeof v === 'number' && Number.isFinite(v)) {
+        sum += v;
+        any = true;
+      }
+    }
+    return any ? sum : null;
+  }, [records, config.measureKey]);
+
   return (
     <div style={{ padding: 12, display: 'grid', gap: 12 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
         <div>
           <div style={{ fontWeight: 900 }}>Bulk edit</div>
-          <div style={{ fontSize: 12, color: '#666' }}>
+          <div style={{ fontSize: 12, color: 'var(--muted)' }}>
             {cellCount} cells selected • {records.length} records affected
+            {currentMeasure && currentTotal !== null ? (
+              <> • Current total ({currentMeasure.label}): {formatNumber(currentTotal)}</>
+            ) : null}
           </div>
         </div>
         <button onClick={onClose}>Close</button>

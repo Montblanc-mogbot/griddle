@@ -631,6 +631,7 @@ export default function App() {
           <div className={styles.drawer}>
             <BulkRangePanel
               dataset={dataset}
+              config={config}
               selected={selected}
               recordIds={bulkSel.recordIds}
               cellCount={bulkSel.cellCount}
