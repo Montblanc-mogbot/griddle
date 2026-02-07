@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
-import type { DatasetFileV1 } from '../domain/types';
+import type { DatasetFileV1, PivotConfig } from '../domain/types';
 import { parseDatasetJson, serializeDataset, validateDataset } from '../domain/datasetIo';
+import { buildGriddleFile, parseGriddleJson, serializeGriddleFile } from '../domain/griddleIo';
 
 function downloadTextFile(filename: string, content: string) {
   const blob = new Blob([content], { type: 'application/json' });
@@ -14,18 +15,27 @@ function downloadTextFile(filename: string, content: string) {
 
 export function DatasetImportExport(props: {
   dataset: DatasetFileV1;
-  onImport: (dataset: DatasetFileV1) => void;
+  pivotConfig: PivotConfig;
+  onImport: (args: { dataset: DatasetFileV1; pivotConfig?: PivotConfig }) => void;
 }) {
-  const { dataset, onImport } = props;
+  const { dataset, pivotConfig, onImport } = props;
 
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
 
-  function handleExport() {
+  function handleExportDatasetJson() {
     setError(null);
     const content = serializeDataset(dataset);
     const filename = `${dataset.name || 'dataset'}.json`;
+    downloadTextFile(filename, content);
+  }
+
+  function handleExportGriddle() {
+    setError(null);
+    const gf = buildGriddleFile({ dataset, pivotConfig });
+    const content = serializeGriddleFile(gf);
+    const filename = `${dataset.name || 'dataset'}.griddle`;
     downloadTextFile(filename, content);
   }
 
@@ -35,10 +45,20 @@ export function DatasetImportExport(props: {
 
     try {
       const text = await file.text();
+
+      // Prefer .griddle if provided
+      if (file.name.toLowerCase().endsWith('.griddle')) {
+        const gf = parseGriddleJson(text);
+        const w = validateDataset(gf.dataset);
+        setWarnings(w);
+        onImport({ dataset: gf.dataset, pivotConfig: gf.pivotConfig });
+        return;
+      }
+
       const next = parseDatasetJson(text);
       const w = validateDataset(next);
       setWarnings(w);
-      onImport(next);
+      onImport({ dataset: next });
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Import failed';
       setError(msg);
@@ -50,7 +70,7 @@ export function DatasetImportExport(props: {
       <input
         ref={fileRef}
         type="file"
-        accept="application/json,.json"
+        accept="application/json,.json,.griddle"
         style={{ display: 'none' }}
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -64,13 +84,21 @@ export function DatasetImportExport(props: {
       <button
         onClick={() => fileRef.current?.click()}
         style={{ cursor: 'pointer' }}
-        title="Import a DatasetFileV1 JSON"
+        title="Open a .griddle file (preferred) or dataset JSON"
       >
-        Import JSON
+        Open…
       </button>
 
-      <button onClick={handleExport} style={{ cursor: 'pointer' }} title="Export current dataset as JSON">
-        Export JSON
+      <button onClick={handleExportGriddle} style={{ cursor: 'pointer' }} title="Save current griddle (.griddle)">
+        Save .griddle
+      </button>
+
+      <button
+        onClick={handleExportDatasetJson}
+        style={{ cursor: 'pointer' }}
+        title="Export dataset only as JSON (no UI state)"
+      >
+        Export dataset.json
       </button>
 
       {error ? (

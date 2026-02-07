@@ -49,7 +49,15 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
     fd.enum = enumRaw.map((v, vi) => asString(v, `schema.fields[${idx}].enum[${vi}]`));
   }
 
-  // measure/flag blocks are optional and left largely unchecked for now
+  // entry/measure/flag blocks are optional and left largely unchecked for now
+  if (input.entry !== undefined && isObject(input.entry)) {
+    fd.entry = {
+      showInFastEntry:
+        typeof input.entry.showInFastEntry === 'boolean' ? input.entry.showInFastEntry : undefined,
+      order: typeof input.entry.order === 'number' ? input.entry.order : undefined,
+    };
+  }
+
   if (input.measure !== undefined && isObject(input.measure)) {
     fd.measure = {
       format:
@@ -61,12 +69,50 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
     };
   }
 
-  if (input.flag !== undefined && isObject(input.flag) && isObject(input.flag.style)) {
+  if (input.flag !== undefined && isObject(input.flag)) {
+    const style = isObject(input.flag.style)
+      ? {
+          cellClass:
+            typeof input.flag.style.cellClass === 'string' ? input.flag.style.cellClass : undefined,
+          priority: typeof input.flag.style.priority === 'number' ? input.flag.style.priority : undefined,
+        }
+      : undefined;
+
+    const styleRules = isObject(input.flag.styleRules)
+      ? {
+          none: isObject(input.flag.styleRules.none)
+            ? {
+                bg: typeof input.flag.styleRules.none.bg === 'string' ? input.flag.styleRules.none.bg : undefined,
+                text:
+                  typeof input.flag.styleRules.none.text === 'string'
+                    ? input.flag.styleRules.none.text
+                    : undefined,
+              }
+            : undefined,
+          some: isObject(input.flag.styleRules.some)
+            ? {
+                bg: typeof input.flag.styleRules.some.bg === 'string' ? input.flag.styleRules.some.bg : undefined,
+                text:
+                  typeof input.flag.styleRules.some.text === 'string'
+                    ? input.flag.styleRules.some.text
+                    : undefined,
+              }
+            : undefined,
+          all: isObject(input.flag.styleRules.all)
+            ? {
+                bg: typeof input.flag.styleRules.all.bg === 'string' ? input.flag.styleRules.all.bg : undefined,
+                text:
+                  typeof input.flag.styleRules.all.text === 'string'
+                    ? input.flag.styleRules.all.text
+                    : undefined,
+              }
+            : undefined,
+        }
+      : undefined;
+
     fd.flag = {
-      style: {
-        cellClass: typeof input.flag.style.cellClass === 'string' ? input.flag.style.cellClass : undefined,
-        priority: typeof input.flag.style.priority === 'number' ? input.flag.style.priority : undefined,
-      },
+      style,
+      styleRules,
     };
   }
 

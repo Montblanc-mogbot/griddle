@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { GlidePivotHeader } from './components/GlidePivotHeader';
 import { DatasetImportExport } from './components/DatasetImportExport';
+import { StartScreen } from './components/StartScreen';
 import { EntryPanel } from './components/EntryPanel';
 import { FullRecordsPanel } from './components/FullRecordsPanel';
 import { MetadataStyleEditor } from './components/MetadataStyleEditor';
@@ -16,10 +17,12 @@ import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRe
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
 import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
-import { sampleDataset } from './sample/sampleDataset';
 import { ensureDefaultFlagRules } from './domain/metadataStyling';
 import { ensureDefaultFastEntry } from './domain/entryDefaults';
 import { getRecordIdsForGridSelection } from './domain/gridSelection';
+import { buildGriddleFile, parseGriddleJson } from './domain/griddleIo';
+import { loadLastFile, saveLastFile } from './domain/localState';
+import { parseDatasetJson } from './domain/datasetIo';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -51,14 +54,13 @@ function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotCo
 }
 
 export default function App() {
-  const [dataset, setDataset] = useState<DatasetFileV1>({
-    ...sampleDataset,
-    schema: ensureDefaultFastEntry(ensureDefaultFlagRules(sampleDataset.schema)),
-  });
+  const [dataset, setDataset] = useState<DatasetFileV1 | null>(null);
+  const fileOpenRef = useRef<HTMLInputElement | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
 
   const defaultMeasure =
-    dataset.schema.fields.find((f) => f.roles.includes('measure'))?.key ??
-    dataset.schema.fields.find((f) => f.type === 'number')?.key ??
+    dataset?.schema.fields.find((f) => f.roles.includes('measure'))?.key ??
+    dataset?.schema.fields.find((f) => f.type === 'number')?.key ??
     '';
 
   const [config, setConfig] = useState<PivotConfig>({
@@ -82,8 +84,8 @@ export default function App() {
   });
 
   const pivot = useMemo(
-    () => computePivot(dataset.records, dataset.schema, config),
-    [dataset.records, dataset.schema, config],
+    () => (dataset ? computePivot(dataset.records, dataset.schema, config) : { rowTuples: [], colTuples: [], cells: {} }),
+    [dataset, config],
   );
 
   const bulkSel = (() => {
@@ -95,7 +97,7 @@ export default function App() {
 
   // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
   useEffect(() => {
-    if (!selected) return;
+    if (!selected || !dataset) return;
 
     function tupleEq(a: Tuple, b: Tuple, keys: string[]): boolean {
       return keys.every((k) => (a[k] ?? '') === (b[k] ?? ''));
@@ -115,14 +117,15 @@ export default function App() {
 
     if (sameIds && nextCell.value === selected.cell.value) return;
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelected({ ...selected, rowIndex: ri, colIndex: ci, cell: nextCell });
-  }, [dataset.records, pivot, config.colKeys, config.rowKeys, selected]);
+  }, [dataset?.records, pivot, config.colKeys, config.rowKeys, selected, dataset]);
 
   function applySchema(nextSchema: DatasetSchema) {
     setSelected(null);
 
     setDataset((prevDataset) => {
+      if (!prevDataset) return prevDataset;
+
       // Note: this call also migrates record data keys (best-effort rename + drop removed fields)
       const { dataset: nextDataset, pivotConfig: nextPivot } = migrateDatasetOnSchemaChange({
         dataset: prevDataset,
@@ -140,11 +143,73 @@ export default function App() {
     });
   }
 
-  function applyImportedDataset(next: DatasetFileV1) {
+  function applyImportedDataset(next: DatasetFileV1, nextPivot?: PivotConfig) {
     setSelected(null);
     setShowSchemaEditor(false);
-    setDataset({ ...next, schema: ensureDefaultFastEntry(ensureDefaultFlagRules(next.schema)) });
-    setConfig((prev) => reconcilePivotConfig(next.schema, prev));
+    setImportError(null);
+
+    const normalized = { ...next, schema: ensureDefaultFastEntry(ensureDefaultFlagRules(next.schema)) };
+    setDataset(normalized);
+    setConfig((prev) => reconcilePivotConfig(normalized.schema, nextPivot ?? prev));
+  }
+
+  async function handleOpenFile(file: File) {
+    setImportError(null);
+
+    try {
+      const text = await file.text();
+      if (file.name.toLowerCase().endsWith('.griddle')) {
+        const gf = parseGriddleJson(text);
+        // validateDataset(gf.dataset) available if we want to surface warnings
+        applyImportedDataset(gf.dataset, gf.pivotConfig);
+      } else {
+        const ds = parseDatasetJson(text);
+        // validateDataset(ds) available if we want to surface warnings
+        applyImportedDataset(ds);
+      }
+    } catch (e) {
+      setImportError(e instanceof Error ? e.message : 'Open failed');
+    }
+  }
+
+  // Persistence: keep a local draft of the last-opened griddle.
+  useEffect(() => {
+    if (!dataset) return;
+    saveLastFile(buildGriddleFile({ dataset, pivotConfig: config }));
+  }, [dataset, config]);
+
+  // On boot, if we have a last session, preload it (still allows opening a real file).
+  useEffect(() => {
+    if (dataset) return;
+    const last = loadLastFile();
+    if (!last) return;
+    applyImportedDataset(last.dataset, last.pivotConfig);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!dataset) {
+    return (
+      <>
+        <input
+          ref={fileOpenRef}
+          type="file"
+          accept="application/json,.json,.griddle"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            void handleOpenFile(file);
+            e.currentTarget.value = '';
+          }}
+        />
+        <StartScreen onOpen={() => fileOpenRef.current?.click()} />
+        {importError ? (
+          <div style={{ position: 'fixed', left: 16, bottom: 16, color: '#c00', background: '#fff', border: '1px solid #f1f1f1', padding: 10, borderRadius: 10 }}>
+            Open error: {importError}
+          </div>
+        ) : null}
+      </>
+    );
   }
 
   return (
@@ -168,7 +233,11 @@ export default function App() {
         </div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <DatasetImportExport dataset={dataset} onImport={applyImportedDataset} />
+          <DatasetImportExport
+            dataset={dataset}
+            pivotConfig={config}
+            onImport={({ dataset: next, pivotConfig }) => applyImportedDataset(next, pivotConfig)}
+          />
           <button onClick={() => setShowStyleEditor(true)} style={{ cursor: 'pointer' }}>
             Styles
           </button>
@@ -188,7 +257,7 @@ export default function App() {
         <MetadataStyleEditor
           schema={dataset.schema}
           onChange={(nextSchema) => {
-            setDataset((prev) => ({ ...prev, schema: nextSchema }));
+            setDataset((prev) => (prev ? { ...prev, schema: nextSchema } : prev));
           }}
           onClose={() => setShowStyleEditor(false)}
         />
@@ -280,10 +349,11 @@ export default function App() {
                   flags,
                   details,
                 });
-                setDataset((prev) => upsertRecords(prev, [record]));
+                setDataset((prev) => (prev ? upsertRecords(prev, [record]) : prev));
               }}
               onToggleFlag={(recordId, flagKey, value) => {
                 setDataset((prev) => {
+                  if (!prev) return prev;
                   const rec = prev.records.find((r) => r.id === recordId);
                   if (!rec) return prev;
                   return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
@@ -291,6 +361,7 @@ export default function App() {
               }}
               onBulkToggleFlag={(flagKey, value) => {
                 setDataset((prev) => {
+                  if (!prev) return prev;
                   const inCell = getRecordsForCell(prev, selected);
                   const updated = bulkSetMetadata(inCell, flagKey, value);
                   return upsertRecords(prev, updated);
