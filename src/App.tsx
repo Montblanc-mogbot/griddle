@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
@@ -255,59 +256,106 @@ export default function App() {
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-start',
             alignItems: 'center',
             gap: 12,
+            padding: '0 6px',
           }}
         >
-          <div style={{ fontWeight: 900 }}>Griddle</div>
-          <div style={{ flex: 1 }} />
-
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-            <MenuBar
-              onOpenFile={() => fileOpenRef.current?.click()}
-              onSaveGriddle={() => {
-                const gf = buildGriddleFile({ dataset, pivotConfig: config });
-                downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
-              }}
-              onExportDataset={() => {
-                downloadTextFile(`${dataset.name || 'dataset'}.json`, serializeDataset(dataset));
-              }}
-              onShowPivotLayout={() => setShowPivotLayout(true)}
-              onShowFilters={() => setShowFilters(true)}
-              onClearSelection={() => {
-                setSelected(null);
-                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
-              }}
-              onShowSchema={() => setShowSchemaEditor(true)}
-              onShowStyles={() => setShowStyleEditor(true)}
-            />
-          </div>
-        </div>
-
-        {/* Toolbar row (sterile) */}
-        <div style={{ display: 'flex', gap: 8, padding: '8px 10px', borderTop: '1px solid #eee' }}>
-          <button onClick={() => fileOpenRef.current?.click()} style={{ padding: '6px 10px', fontSize: 12 }}>
-            Open…
-          </button>
-          <button
-            onClick={() => {
+          {/* Menu bar (left-aligned, Excel-ish) */}
+          <MenuBar
+            onOpenFile={() => fileOpenRef.current?.click()}
+            onSaveGriddle={() => {
               const gf = buildGriddleFile({ dataset, pivotConfig: config });
               downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
             }}
-            style={{ padding: '6px 10px', fontSize: 12 }}
-          >
-            Save
-          </button>
-          <button onClick={() => setShowPivotLayout(true)} style={{ padding: '6px 10px', fontSize: 12 }}>
-            Pivot layout…
-          </button>
-          <button onClick={() => setShowFilters(true)} style={{ padding: '6px 10px', fontSize: 12 }}>
-            Filters…
-          </button>
-          <button onClick={() => setShowStyleEditor(true)} style={{ padding: '6px 10px', fontSize: 12 }}>
-            Styles…
-          </button>
+            onExportDataset={() => {
+              downloadTextFile(`${dataset.name || 'dataset'}.json`, serializeDataset(dataset));
+            }}
+            onShowPivotLayout={() => setShowPivotLayout(true)}
+            onShowFilters={() => setShowFilters(true)}
+            onClearSelection={() => {
+              setSelected(null);
+              setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+            }}
+            onShowSchema={() => setShowSchemaEditor(true)}
+            onShowStyles={() => setShowStyleEditor(true)}
+          />
+
+          <div style={{ flex: 1 }} />
+
+          <div style={{ fontWeight: 900, color: '#444', fontSize: 13, paddingRight: 6 }}>Griddle</div>
+        </div>
+
+        {/* Toolbar row (icons, sterile) */}
+        <div style={{ display: 'flex', gap: 6, padding: '8px 10px', borderTop: '1px solid #eee' }}>
+          {(() => {
+            function IconButton(props: {
+              title: string;
+              onClick: () => void;
+              children: ReactNode;
+            }) {
+              return (
+                <button
+                  onClick={props.onClick}
+                  title={props.title}
+                  aria-label={props.title}
+                  style={{
+                    width: 34,
+                    height: 30,
+                    display: 'grid',
+                    placeItems: 'center',
+                    borderRadius: 8,
+                    border: '1px solid #ddd',
+                    background: '#fff',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {props.children}
+                </button>
+              );
+            }
+
+            function Icon(props: { d: string }) {
+              return (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d={props.d} stroke="#222" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              );
+            }
+
+            return (
+              <>
+                <IconButton title="Open…" onClick={() => fileOpenRef.current?.click()}>
+                  <Icon d="M4 20h16M12 3v12m0 0l4-4m-4 4l-4-4" />
+                </IconButton>
+
+                <IconButton
+                  title="Save"
+                  onClick={() => {
+                    const gf = buildGriddleFile({ dataset, pivotConfig: config });
+                    downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+                  }}
+                >
+                  <Icon d="M5 3h12l2 2v16H5V3zm3 0v6h8V3M7 21v-8h10v8" />
+                </IconButton>
+
+                <div style={{ width: 1, background: '#e5e5e5', margin: '0 4px' }} />
+
+                <IconButton title="Pivot layout…" onClick={() => setShowPivotLayout(true)}>
+                  <Icon d="M4 4h16v6H4V4zm0 10h7v6H4v-6zm9 0h7v6h-7v-6" />
+                </IconButton>
+
+                <IconButton title="Filters…" onClick={() => setShowFilters(true)}>
+                  <Icon d="M4 5h16l-6 7v6l-4 2v-8L4 5z" />
+                </IconButton>
+
+                <IconButton title="Styles…" onClick={() => setShowStyleEditor(true)}>
+                  <Icon d="M12 3l7 7-9 9H3v-7l9-9zm-1 2l-7 7v5h5l7-7-5-5z" />
+                </IconButton>
+              </>
+            );
+          })()}
         </div>
       </div>
 
