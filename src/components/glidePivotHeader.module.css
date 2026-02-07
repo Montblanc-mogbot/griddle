@@ -10,6 +10,7 @@
 }
 
 .cell {
+  box-sizing: border-box;
   padding: 6px 8px;
   border-right: 1px solid #eee;
   text-align: center;
@@ -30,6 +31,7 @@
 }
 
 .cellLeft {
+  box-sizing: border-box;
   padding: 6px 8px;
   border-right: 1px solid #eee;
   text-align: left;

@@ -34,38 +34,38 @@ export function RecordTape(props: {
         <div className={styles.muted} style={{ marginTop: 8 }}>
           (none)
         </div>
-      ) : (
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                {measures.map((m) => (
-                  <th key={m.key} className={styles.th}>
-                    {m.label}
-                  </th>
-                ))}
-                {flags.map((f) => (
-                  <th key={f.key} className={`${styles.th} ${styles.thLeft}`} style={{ textAlign: 'center' }}>
-                    {f.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((r) => (
-                <RecordTapeRow
-                  key={r.id}
-                  record={r}
-                  measures={measureKeys}
-                  flags={flagKeys}
-                  onToggleFlag={onToggleFlag}
-                />
+      ) : null}
+
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              {measures.map((m) => (
+                <th key={m.key} className={styles.th}>
+                  {m.label}
+                </th>
               ))}
-              <TapeNewEntryRow schema={dataset.schema} onSubmit={onSubmit} />
-            </tbody>
-          </table>
-        </div>
-      )}
+              {flags.map((f) => (
+                <th key={f.key} className={`${styles.th} ${styles.thLeft}`} style={{ textAlign: 'center' }}>
+                  {f.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {records.map((r) => (
+              <RecordTapeRow
+                key={r.id}
+                record={r}
+                measures={measureKeys}
+                flags={flagKeys}
+                onToggleFlag={onToggleFlag}
+              />
+            ))}
+            <TapeNewEntryRow schema={dataset.schema} onSubmit={onSubmit} />
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

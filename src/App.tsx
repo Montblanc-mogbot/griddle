@@ -146,35 +146,46 @@ export default function App() {
 
       <div className={styles.main}>
         <div className={styles.gridArea}>
-          <div
-            style={{
-              height: '100%',
-              borderBottom: '1px solid #ddd',
-              overflow: 'hidden',
-              background: '#fff',
-              display: 'grid',
-              gridTemplateRows: 'auto 1fr',
-              gap: 0,
-            }}
-          >
-            <GlidePivotHeader
-              pivot={pivot}
-              config={config}
-              scrollTx={glideHeaderTx}
-              rowDimWidth={160}
-              valueColWidth={120}
-              rowMarkersWidth={44}
-            />
+          {(() => {
+            const rowDimWidth = 160;
+            const valueColWidth = 120;
+            const rowMarkersWidth = 44;
 
-            <div style={{ minHeight: 0 }}>
-              <GlidePivotGrid
-                pivot={pivot}
-                config={config}
-                onScrollTx={setGlideHeaderTx}
-                onSingleValueCellSelected={(sel) => setSelected(sel)}
-              />
-            </div>
-          </div>
+            return (
+              <div
+                style={{
+                  height: '100%',
+                  borderBottom: '1px solid #ddd',
+                  overflow: 'hidden',
+                  background: '#fff',
+                  display: 'grid',
+                  gridTemplateRows: 'auto 1fr',
+                  gap: 0,
+                }}
+              >
+                <GlidePivotHeader
+                  pivot={pivot}
+                  config={config}
+                  scrollTx={glideHeaderTx}
+                  rowDimWidth={rowDimWidth}
+                  valueColWidth={valueColWidth}
+                  rowMarkersWidth={rowMarkersWidth}
+                />
+
+                <div style={{ minHeight: 0 }}>
+                  <GlidePivotGrid
+                    pivot={pivot}
+                    config={config}
+                    rowDimWidth={rowDimWidth}
+                    valueColWidth={valueColWidth}
+                    rowMarkersWidth={rowMarkersWidth}
+                    onScrollTx={setGlideHeaderTx}
+                    onSingleValueCellSelected={(sel) => setSelected(sel)}
+                  />
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {selected ? (

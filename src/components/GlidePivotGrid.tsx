@@ -14,14 +14,13 @@ import { formatNumber } from '../domain/format';
 export function GlidePivotGrid(props: {
   pivot: PivotResult;
   config: PivotConfig;
+  rowDimWidth: number;
+  valueColWidth: number;
+  rowMarkersWidth: number;
   onScrollTx: (tx: number) => void;
   onSingleValueCellSelected: (sel: SelectedCell) => void;
 }) {
-  const { pivot, config, onScrollTx, onSingleValueCellSelected } = props;
-
-  const rowDimWidth = 160;
-  const valueColWidth = 120;
-  const rowMarkersWidth = 44;
+  const { pivot, config, rowDimWidth, valueColWidth, rowMarkersWidth, onScrollTx, onSingleValueCellSelected } = props;
 
   const [selection, setSelection] = useState<GridSelection>({
     columns: CompactSelection.empty(),
@@ -34,7 +33,7 @@ export function GlidePivotGrid(props: {
       // Column titles are hidden (headerHeight=0). We still need stable ids + widths.
       ...pivot.colTuples.map((_ct, idx) => ({ title: '', id: `c${idx}`, width: valueColWidth })),
     ],
-    [config.rowKeys, pivot.colTuples],
+    [config.rowKeys, pivot.colTuples, rowDimWidth, valueColWidth],
   );
 
   const rowCount = pivot.rowTuples.length;
