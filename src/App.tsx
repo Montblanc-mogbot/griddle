@@ -10,6 +10,8 @@ import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
 import { AgGridPivotSpike } from './spikes/AgGridPivotSpike';
+import { GlidePivotSpike } from './spikes/GlidePivotSpike';
+import { MuiDataGridPivotSpike } from './spikes/MuiDataGridPivotSpike';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 
@@ -57,7 +59,7 @@ export default function App() {
 
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
-  const [showAgGridSpike, setShowAgGridSpike] = useState(false);
+  const [spikeView, setSpikeView] = useState<'none' | 'ag' | 'glide' | 'mui'>('none');
 
   const pivot = useMemo(
     () => computePivot(dataset.records, dataset.schema, config),
@@ -135,9 +137,19 @@ export default function App() {
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <DatasetImportExport dataset={dataset} onImport={applyImportedDataset} />
 
-          <button onClick={() => setShowAgGridSpike((s) => !s)} style={{ cursor: 'pointer' }}>
-            {showAgGridSpike ? 'Hide AG Grid spike' : 'Show AG Grid spike'}
-          </button>
+          <label style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: '#666' }}>Spike view</span>
+            <select
+              value={spikeView}
+              onChange={(e) => setSpikeView(e.target.value as typeof spikeView)}
+              style={{ cursor: 'pointer' }}
+            >
+              <option value="none">None</option>
+              <option value="ag">AG Grid</option>
+              <option value="glide">Glide</option>
+              <option value="mui">MUI DataGrid</option>
+            </select>
+          </label>
 
           <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
             {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
@@ -149,8 +161,12 @@ export default function App() {
         <SchemaEditor schema={dataset.schema} onChange={applySchema} />
       ) : null}
 
-      {showAgGridSpike ? (
+      {spikeView === 'ag' ? (
         <AgGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
+      ) : spikeView === 'glide' ? (
+        <GlidePivotSpike dataset={dataset} pivot={pivot} config={config} />
+      ) : spikeView === 'mui' ? (
+        <MuiDataGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
       ) : (
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
           <div style={{ flex: 1, minWidth: 0 }}>
