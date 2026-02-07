@@ -73,7 +73,11 @@ export function pickCellStyle(schema: DatasetSchema, cell: PivotCell): { bg?: st
     else if (t === n) cov = 'all';
     else cov = 'some';
 
-    const rule = cov === 'all' ? rules.all : cov === 'some' ? rules.some : rules.none;
+    // Important: "none" coverage should inherit the app theme (so dark mode works).
+    // Only apply styling for some/all.
+    if (cov === 'none') continue;
+
+    const rule = cov === 'all' ? rules.all : rules.some;
     if (rule?.bg || rule?.text) return { bg: rule.bg, text: rule.text };
   }
 

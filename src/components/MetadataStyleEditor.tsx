@@ -27,21 +27,21 @@ function FlagRow(props: {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: '160px 1fr 1fr 1fr auto',
+        gridTemplateColumns: '160px 1fr 1fr auto',
         gap: 10,
         alignItems: 'center',
         padding: '8px 0',
-        borderBottom: '1px solid #f1f1f1',
+        borderBottom: '1px solid var(--border2)',
       }}
     >
-      <div style={{ fontWeight: 800 }}>{field.label}</div>
+      <div style={{ fontWeight: 800, color: 'var(--text)' }}>{field.label}</div>
 
-      {(['none', 'some', 'all'] as const).map((k) => {
+      {(['some', 'all'] as const).map((k) => {
         const bg = rules[k]?.bg;
         const text = rules[k]?.text;
         return (
           <div key={k} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div style={{ width: 46, fontSize: 12, color: '#666', fontWeight: 800 }}>{k}</div>
+            <div style={{ width: 46, fontSize: 12, color: 'var(--muted)', fontWeight: 800 }}>{k}</div>
             <input
               type="color"
               value={bg ?? '#ffffff'}
@@ -59,9 +59,9 @@ function FlagRow(props: {
                 width: 68,
                 height: 22,
                 borderRadius: 6,
-                border: '1px solid #ddd',
-                background: bg ?? '#fff',
-                color: text ?? '#111',
+                border: '1px solid var(--border)',
+                background: bg ?? 'var(--surface)',
+                color: text ?? 'var(--text)',
                 fontSize: 12,
                 display: 'flex',
                 alignItems: 'center',
@@ -102,19 +102,19 @@ export function MetadataStyleEditor(props: {
         maxWidth: 'calc(100vw - 24px)',
         maxHeight: 'calc(100vh - 80px)',
         overflow: 'auto',
-        background: '#fff',
-        border: '1px solid #ddd',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
         borderRadius: 12,
-        boxShadow: '0 16px 40px rgba(0,0,0,0.14)',
+        boxShadow: 'var(--shadow)',
         padding: 12,
         zIndex: 80,
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
         <div>
-          <div style={{ fontWeight: 900 }}>Metadata styling</div>
-          <div style={{ fontSize: 12, color: '#666' }}>
-            Styles are derived per pivot cell from the underlying records. For each flag: none / some / all.
+          <div style={{ fontWeight: 900, color: 'var(--text)' }}>Metadata styling</div>
+          <div style={{ fontSize: 12, color: 'var(--muted)' }}>
+            Styles are derived per pivot cell from underlying records. "None" inherits the app theme; configure only some/all.
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -131,16 +131,16 @@ export function MetadataStyleEditor(props: {
       </div>
 
       {flags.length === 0 ? (
-        <div style={{ marginTop: 10, fontSize: 13, color: '#666' }}>
+        <div style={{ marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>
           No flag fields in the schema yet. Mark a boolean field with role <b>flag</b> to enable metadata styling.
         </div>
       ) : (
         <div style={{ marginTop: 12 }}>
-          <div style={{ fontSize: 12, color: '#666', fontWeight: 800, marginBottom: 8 }}>
-            Each row is a flag. Pick background + text colors for none/some/all.
+          <div style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 800, marginBottom: 8 }}>
+            Each row is a flag. Pick background + text colors for some/all. "None" inherits the app theme.
           </div>
 
-          <div style={{ borderTop: '1px solid #f1f1f1' }}>
+          <div style={{ borderTop: '1px solid var(--border2)' }}>
             {flags.map((f) => (
               <FlagRow
                 key={f.key}
