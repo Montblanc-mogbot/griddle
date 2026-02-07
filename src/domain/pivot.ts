@@ -23,7 +23,17 @@ function recordMatchesSlicers(record: RecordEntity, config: PivotConfig): boolea
   for (const k of config.slicerKeys) {
     const desired = config.slicers[k];
     if (desired === undefined || desired === null || desired === '') continue;
-    if (asKeyPart(record.data[k]) !== asKeyPart(desired)) return false;
+
+    const actual = asKeyPart(record.data[k]);
+
+    if (Array.isArray(desired)) {
+      // Multi-select slicer: record passes if actual is included.
+      const set = new Set(desired.map(asKeyPart));
+      if (!set.has(actual)) return false;
+    } else {
+      // Single value slicer.
+      if (actual !== asKeyPart(desired)) return false;
+    }
   }
   return true;
 }

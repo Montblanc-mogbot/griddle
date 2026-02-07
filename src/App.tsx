@@ -126,6 +126,7 @@ export default function App() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <PivotControls
             schema={dataset.schema}
+            records={dataset.records}
             config={config}
             onChange={(cfg) => {
               setSelected(null);

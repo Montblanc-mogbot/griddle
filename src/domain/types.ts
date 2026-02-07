@@ -47,7 +47,11 @@ export interface PivotConfig {
   rowKeys: string[];
   colKeys: string[];
   slicerKeys: string[];
-  slicers: Record<string, unknown>;
+  /**
+   * Slicer values are exact-match filters.
+   * Each key may be set to a single value or an array of allowed values.
+   */
+  slicers: Record<string, unknown | unknown[]>;
   measureKey: string;
 }
 
