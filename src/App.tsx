@@ -185,6 +185,75 @@ export default function App() {
     localStorage.setItem('griddle:theme:v1', theme);
   }, [theme]);
 
+  // Keyboard shortcuts (Excel-ish)
+  useEffect(() => {
+    function isEditableTarget(t: EventTarget | null): boolean {
+      if (!(t instanceof HTMLElement)) return false;
+      const tag = t.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return true;
+      if (t.isContentEditable) return true;
+      return false;
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (isEditableTarget(e.target)) return;
+
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+
+      const k = e.key.toLowerCase();
+
+      // File
+      if (k === 'o') {
+        e.preventDefault();
+        fileOpenRef.current?.click();
+        return;
+      }
+
+      if (k === 's') {
+        e.preventDefault();
+        const gf = buildGriddleFile({ dataset, pivotConfig: config });
+        downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+        return;
+      }
+
+      // View dialogs
+      if (k === 'l') {
+        e.preventDefault();
+        setShowPivotLayout(true);
+        return;
+      }
+
+      if (k === 'f' && e.shiftKey) {
+        e.preventDefault();
+        setShowFilters(true);
+        return;
+      }
+
+      // Panels
+      if (k === '1') {
+        e.preventDefault();
+        setPanelMode((m) => (m === 'entry' ? 'none' : 'entry'));
+        return;
+      }
+
+      if (k === '2') {
+        e.preventDefault();
+        setPanelMode((m) => (m === 'fullRecords' ? 'none' : 'fullRecords'));
+        return;
+      }
+
+      // Theme
+      if (k === 'd') {
+        e.preventDefault();
+        setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [config, dataset]);
+
   // Persistence: keep a local draft of the last-opened griddle.
   useEffect(() => {
     if (!dataset) return;
