@@ -165,7 +165,16 @@ export function PivotControls(props: {
         />
 
         {config.slicerKeys.length > 0 ? (
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxWidth: 520 }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 6,
+              flexWrap: 'nowrap',
+              overflowX: 'auto',
+              maxWidth: 520,
+              paddingBottom: 2,
+            }}
+          >
             {config.slicerKeys.map((k) => {
               const field = slicerFields.find((f) => f.key === k);
               if (!field) return null;
@@ -196,6 +205,11 @@ export function PivotControls(props: {
                     display: 'flex',
                     gap: 6,
                     alignItems: 'center',
+                    whiteSpace: 'nowrap',
+                    flex: '0 0 auto',
+                    maxWidth: 220,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                   title={`${field.label}: ${label}`}
                 >
