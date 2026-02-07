@@ -118,7 +118,7 @@ export function MenuBar(props: {
   onShowPivotLayout: () => void;
   onShowFilters: () => void;
   onClearSelection: () => void;
-  onShowSchema: () => void;
+  onShowFields: () => void;
   onShowStyles: () => void;
 }) {
   const {
@@ -128,7 +128,7 @@ export function MenuBar(props: {
     onShowPivotLayout,
     onShowFilters,
     onClearSelection,
-    onShowSchema,
+    onShowFields,
     onShowStyles,
   } = props;
 
@@ -149,7 +149,7 @@ export function MenuBar(props: {
         <MenuItem label="Filters…" onClick={onShowFilters} />
         <Divider />
         <MenuItem label="Styles…" onClick={onShowStyles} />
-        <MenuItem label="Schema…" onClick={onShowSchema} />
+        <MenuItem label="Fields…" onClick={onShowFields} />
       </Menu>
 
       <Menu label="Help">

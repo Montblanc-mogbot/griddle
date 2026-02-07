@@ -79,7 +79,7 @@ export default function App() {
   const [showPivotLayout, setShowPivotLayout] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [glideHeaderTx, setGlideHeaderTx] = useState(0);
-  const [panelMode, setPanelMode] = useState<'entry' | 'fullRecords'>('entry');
+  const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'fullRecords'>('entry');
   const [showStyleEditor, setShowStyleEditor] = useState(false);
 
   const [gridSelection, setGridSelection] = useState<GridSelection>({
@@ -278,7 +278,7 @@ export default function App() {
               setSelected(null);
               setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
             }}
-            onShowSchema={() => setShowSchemaEditor(true)}
+            onShowFields={() => setShowSchemaEditor(true)}
             onShowStyles={() => setShowStyleEditor(true)}
           />
 
@@ -287,12 +287,22 @@ export default function App() {
           <div style={{ fontWeight: 900, color: '#444', fontSize: 13, paddingRight: 6 }}>Griddle</div>
         </div>
 
-        {/* Toolbar row (icons, sterile) */}
-        <div style={{ display: 'flex', gap: 6, padding: '8px 10px', borderTop: '1px solid #eee' }}>
+        {/* Ribbon row (grouped icons) */}
+        <div
+          style={{
+            display: 'flex',
+            gap: 12,
+            padding: '8px 10px',
+            borderTop: '1px solid #eee',
+            alignItems: 'stretch',
+            flexWrap: 'wrap',
+          }}
+        >
           {(() => {
             function IconButton(props: {
               title: string;
               onClick: () => void;
+              pressed?: boolean;
               children: ReactNode;
             }) {
               return (
@@ -300,6 +310,7 @@ export default function App() {
                   onClick={props.onClick}
                   title={props.title}
                   aria-label={props.title}
+                  aria-pressed={props.pressed}
                   style={{
                     width: 34,
                     height: 30,
@@ -307,7 +318,7 @@ export default function App() {
                     placeItems: 'center',
                     borderRadius: 8,
                     border: '1px solid #ddd',
-                    background: '#fff',
+                    background: props.pressed ? '#eef2ff' : '#fff',
                     cursor: 'pointer',
                   }}
                 >
@@ -324,35 +335,93 @@ export default function App() {
               );
             }
 
-            return (
-              <>
-                <IconButton title="Open…" onClick={() => fileOpenRef.current?.click()}>
-                  <Icon d="M4 20h16M12 3v12m0 0l4-4m-4 4l-4-4" />
-                </IconButton>
-
-                <IconButton
-                  title="Save"
-                  onClick={() => {
-                    const gf = buildGriddleFile({ dataset, pivotConfig: config });
-                    downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+            function RibbonGroup(props: { label: string; children: ReactNode }) {
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 6,
+                    paddingRight: 12,
+                    borderRight: '1px solid #e5e5e5',
                   }}
                 >
-                  <Icon d="M5 3h12l2 2v16H5V3zm3 0v6h8V3M7 21v-8h10v8" />
-                </IconButton>
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>{props.children}</div>
+                  <div style={{ fontSize: 11, color: '#666', fontWeight: 700, paddingLeft: 2 }}>{props.label}</div>
+                </div>
+              );
+            }
 
-                <div style={{ width: 1, background: '#e5e5e5', margin: '0 4px' }} />
+            const entryPressed = panelMode === 'entry';
+            const fullPressed = panelMode === 'fullRecords';
 
-                <IconButton title="Pivot layout…" onClick={() => setShowPivotLayout(true)}>
-                  <Icon d="M4 4h16v6H4V4zm0 10h7v6H4v-6zm9 0h7v6h-7v-6" />
-                </IconButton>
+            return (
+              <>
+                <RibbonGroup label="File">
+                  <IconButton title="Open…" onClick={() => fileOpenRef.current?.click()}>
+                    <Icon d="M4 20h16M12 3v12m0 0l4-4m-4 4l-4-4" />
+                  </IconButton>
 
-                <IconButton title="Filters…" onClick={() => setShowFilters(true)}>
-                  <Icon d="M4 5h16l-6 7v6l-4 2v-8L4 5z" />
-                </IconButton>
+                  <IconButton
+                    title="Save"
+                    onClick={() => {
+                      const gf = buildGriddleFile({ dataset, pivotConfig: config });
+                      downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+                    }}
+                  >
+                    <Icon d="M5 3h12l2 2v16H5V3zm3 0v6h8V3M7 21v-8h10v8" />
+                  </IconButton>
 
-                <IconButton title="Styles…" onClick={() => setShowStyleEditor(true)}>
-                  <Icon d="M12 3l7 7-9 9H3v-7l9-9zm-1 2l-7 7v5h5l7-7-5-5z" />
-                </IconButton>
+                  <IconButton
+                    title="Export dataset.json"
+                    onClick={() => {
+                      downloadTextFile(`${dataset.name || 'dataset'}.json`, serializeDataset(dataset));
+                    }}
+                  >
+                    <Icon d="M4 4h16v16H4V4zm8 3v7m0 0l3-3m-3 3l-3-3" />
+                  </IconButton>
+                </RibbonGroup>
+
+                <RibbonGroup label="View">
+                  <IconButton title="Pivot layout…" onClick={() => setShowPivotLayout(true)}>
+                    <Icon d="M4 4h16v6H4V4zm0 10h7v6H4v-6zm9 0h7v6h-7v-6" />
+                  </IconButton>
+
+                  <IconButton title="Filters…" onClick={() => setShowFilters(true)}>
+                    <Icon d="M4 5h16l-6 7v6l-4 2v-8L4 5z" />
+                  </IconButton>
+
+                  <IconButton
+                    title={entryPressed ? 'Hide Entry panel' : 'Show Entry panel'}
+                    pressed={entryPressed}
+                    onClick={() => setPanelMode((m) => (m === 'entry' ? 'none' : 'entry'))}
+                  >
+                    <Icon d="M4 4h16v16H4V4zm10 0v16" />
+                  </IconButton>
+
+                  <IconButton
+                    title={fullPressed ? 'Hide Full records' : 'Show Full records'}
+                    pressed={fullPressed}
+                    onClick={() => setPanelMode((m) => (m === 'fullRecords' ? 'none' : 'fullRecords'))}
+                  >
+                    <Icon d="M4 4h16v16H4V4zm0 11h16" />
+                  </IconButton>
+                </RibbonGroup>
+
+                <RibbonGroup label="Format">
+                  <IconButton title="Styles…" onClick={() => setShowStyleEditor(true)}>
+                    <Icon d="M12 3l7 7-9 9H3v-7l9-9zm-1 2l-7 7v5h5l7-7-5-5z" />
+                  </IconButton>
+                </RibbonGroup>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                    <IconButton title="Fields…" onClick={() => setShowSchemaEditor(true)}>
+                      <Icon d="M4 6h16M4 12h16M4 18h16" />
+                    </IconButton>
+                  </div>
+                  <div style={{ fontSize: 11, color: '#666', fontWeight: 700, paddingLeft: 2 }}>Setup</div>
+                </div>
               </>
             );
           })()}
@@ -360,7 +429,7 @@ export default function App() {
       </div>
 
       {showSchemaEditor ? (
-        <Modal title="Schema editor" onClose={() => setShowSchemaEditor(false)}>
+        <Modal title="Fields" onClose={() => setShowSchemaEditor(false)}>
           <SchemaEditor schema={dataset.schema} onChange={applySchema} />
         </Modal>
       ) : null}
@@ -483,7 +552,7 @@ export default function App() {
               selected={selected}
               onClose={() => {
                 setSelected(null);
-                setPanelMode('entry');
+                setPanelMode('none');
               }}
               onGoToFullRecords={() => setPanelMode('fullRecords')}
               onSubmit={({ measureValues, flags, details }) => {
@@ -533,7 +602,7 @@ export default function App() {
             selected={selected}
             onClose={() => {
               setSelected(null);
-              setPanelMode('entry');
+              setPanelMode('none');
             }}
             onDone={() => setPanelMode('entry')}
             onDatasetChange={(next) => setDataset(next)}
