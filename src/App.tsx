@@ -4,9 +4,9 @@ import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { GlidePivotHeader } from './components/GlidePivotHeader';
-import { DatasetImportExport } from './components/DatasetImportExport';
 import { StartScreen } from './components/StartScreen';
 import { EntryPanel } from './components/EntryPanel';
+import { MenuBar } from './components/MenuBar';
 import { FullRecordsPanel } from './components/FullRecordsPanel';
 import { MetadataStyleEditor } from './components/MetadataStyleEditor';
 import { BulkRangePanel } from './components/BulkRangePanel';
@@ -20,9 +20,9 @@ import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { ensureDefaultFlagRules } from './domain/metadataStyling';
 import { ensureDefaultFastEntry } from './domain/entryDefaults';
 import { getRecordIdsForGridSelection } from './domain/gridSelection';
-import { buildGriddleFile, parseGriddleJson } from './domain/griddleIo';
+import { buildGriddleFile, parseGriddleJson, serializeGriddleFile } from './domain/griddleIo';
 import { loadLastFile, saveLastFile } from './domain/localState';
-import { parseDatasetJson } from './domain/datasetIo';
+import { parseDatasetJson, serializeDataset } from './domain/datasetIo';
 import { setRecordField } from './domain/updateRecord';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
@@ -75,6 +75,8 @@ export default function App() {
 
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
+  const [showPivotLayout, setShowPivotLayout] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [glideHeaderTx, setGlideHeaderTx] = useState(0);
   const [panelMode, setPanelMode] = useState<'entry' | 'fullRecords'>('entry');
   const [showStyleEditor, setShowStyleEditor] = useState(false);
@@ -188,6 +190,16 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function downloadTextFile(filename: string, content: string) {
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   if (!dataset) {
     return (
       <>
@@ -205,7 +217,18 @@ export default function App() {
         />
         <StartScreen onOpen={() => fileOpenRef.current?.click()} />
         {importError ? (
-          <div style={{ position: 'fixed', left: 16, bottom: 16, color: '#c00', background: '#fff', border: '1px solid #f1f1f1', padding: 10, borderRadius: 10 }}>
+          <div
+            style={{
+              position: 'fixed',
+              left: 16,
+              bottom: 16,
+              color: '#c00',
+              background: '#fff',
+              border: '1px solid #f1f1f1',
+              padding: 10,
+              borderRadius: 10,
+            }}
+          >
             Open error: {importError}
           </div>
         ) : null}
@@ -215,13 +238,87 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <div className={styles.toolbar}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <div style={{ fontWeight: 800 }}>Griddle</div>
-          <div style={{ color: '#666', fontSize: 12 }}>Schema-driven pivot</div>
+      <input
+        ref={fileOpenRef}
+        type="file"
+        accept="application/json,.json,.griddle"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          void handleOpenFile(file);
+          e.currentTarget.value = '';
+        }}
+      />
+
+      <div className={styles.toolbar} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 0 }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <div style={{ fontWeight: 900 }}>Griddle</div>
+          <div style={{ flex: 1 }} />
+
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            <MenuBar
+              onOpenFile={() => fileOpenRef.current?.click()}
+              onSaveGriddle={() => {
+                const gf = buildGriddleFile({ dataset, pivotConfig: config });
+                downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+              }}
+              onExportDataset={() => {
+                downloadTextFile(`${dataset.name || 'dataset'}.json`, serializeDataset(dataset));
+              }}
+              onShowPivotLayout={() => setShowPivotLayout(true)}
+              onShowFilters={() => setShowFilters(true)}
+              onClearSelection={() => {
+                setSelected(null);
+                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+              }}
+              onShowSchema={() => setShowSchemaEditor(true)}
+              onShowStyles={() => setShowStyleEditor(true)}
+            />
+          </div>
         </div>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Toolbar row (sterile) */}
+        <div style={{ display: 'flex', gap: 8, padding: '8px 10px', borderTop: '1px solid #eee' }}>
+          <button onClick={() => fileOpenRef.current?.click()} style={{ padding: '6px 10px', fontSize: 12 }}>
+            Open…
+          </button>
+          <button
+            onClick={() => {
+              const gf = buildGriddleFile({ dataset, pivotConfig: config });
+              downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+            }}
+            style={{ padding: '6px 10px', fontSize: 12 }}
+          >
+            Save
+          </button>
+          <button onClick={() => setShowPivotLayout(true)} style={{ padding: '6px 10px', fontSize: 12 }}>
+            Pivot layout…
+          </button>
+          <button onClick={() => setShowFilters(true)} style={{ padding: '6px 10px', fontSize: 12 }}>
+            Filters…
+          </button>
+          <button onClick={() => setShowStyleEditor(true)} style={{ padding: '6px 10px', fontSize: 12 }}>
+            Styles…
+          </button>
+        </div>
+      </div>
+
+      {showSchemaEditor ? (
+        <Modal title="Schema editor" onClose={() => setShowSchemaEditor(false)}>
+          <SchemaEditor schema={dataset.schema} onChange={applySchema} />
+        </Modal>
+      ) : null}
+
+      {showPivotLayout ? (
+        <Modal title="Pivot layout" onClose={() => setShowPivotLayout(false)}>
           <PivotControls
             schema={dataset.schema}
             records={dataset.records}
@@ -230,27 +327,27 @@ export default function App() {
               setSelected(null);
               setConfig(cfg);
             }}
+            showRowsColsMeasure
+            showSlicers={false}
+            showRowFilters={false}
           />
-        </div>
+        </Modal>
+      ) : null}
 
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <DatasetImportExport
-            dataset={dataset}
-            pivotConfig={config}
-            onImport={({ dataset: next, pivotConfig }) => applyImportedDataset(next, pivotConfig)}
+      {showFilters ? (
+        <Modal title="Filters" onClose={() => setShowFilters(false)}>
+          <PivotControls
+            schema={dataset.schema}
+            records={dataset.records}
+            config={config}
+            onChange={(cfg) => {
+              setSelected(null);
+              setConfig(cfg);
+            }}
+            showRowsColsMeasure={false}
+            showSlicers
+            showRowFilters
           />
-          <button onClick={() => setShowStyleEditor(true)} style={{ cursor: 'pointer' }}>
-            Styles
-          </button>
-          <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
-            {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
-          </button>
-        </div>
-      </div>
-
-      {showSchemaEditor ? (
-        <Modal title="Schema editor" onClose={() => setShowSchemaEditor(false)}>
-          <SchemaEditor schema={dataset.schema} onChange={applySchema} />
         </Modal>
       ) : null}
 

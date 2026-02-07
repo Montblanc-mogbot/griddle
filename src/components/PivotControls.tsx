@@ -56,8 +56,19 @@ export function PivotControls(props: {
   records: RecordEntity[];
   config: PivotConfig;
   onChange: (cfg: PivotConfig) => void;
+  showRowsColsMeasure?: boolean;
+  showSlicers?: boolean;
+  showRowFilters?: boolean;
 }) {
-  const { schema, records, config, onChange } = props;
+  const {
+    schema,
+    records,
+    config,
+    onChange,
+    showRowsColsMeasure = true,
+    showSlicers = true,
+    showRowFilters = true,
+  } = props;
 
   const [rowFilterOpen, setRowFilterOpen] = useState(false);
   const [rowFilterPos, setRowFilterPos] = useState<{ left: number; top: number } | null>(null);
@@ -171,187 +182,398 @@ export function PivotControls(props: {
 
   return (
     <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
-        <MultiSelect
-          label="Rows"
-          options={dimOptions}
-          values={config.rowKeys}
-          onChange={(rowKeys) => {
-            // Drop filters for keys that are no longer row dims.
-            const nextRowFilters = Object.fromEntries(
-              Object.entries(config.rowFilters ?? {}).filter(([k]) => rowKeys.includes(k)),
-            );
-            setActiveRowFilterKey((prev) => (prev && rowKeys.includes(prev) ? prev : null));
-            onChange({ ...config, rowKeys, rowFilters: nextRowFilters });
-          }}
-        />
-
-        <button
-          ref={rowFilterBtnRef}
-          onClick={() => {
-            setRowFilterSearch('');
-            setRowFilterOpen((s) => !s);
-            if (!activeRowFilterKey) setActiveRowFilterKey(config.rowKeys[0] ?? null);
-          }}
-          style={{ padding: '8px 10px', borderRadius: 10, fontSize: 12, whiteSpace: 'nowrap' }}
-          title="Filter which row members are shown"
-        >
-          Row filters{rowFiltersActiveCount > 0 ? ` (${rowFiltersActiveCount})` : ''}…
-        </button>
-
-        {rowFilterOpen && rowFilterPos ? (
-          <div
-            id="griddle-rowfilter-popover"
-            style={{
-              position: 'fixed',
-              left: rowFilterPos.left,
-              top: rowFilterPos.top,
-              width: 420,
-              maxHeight: 420,
-              overflow: 'auto',
-              background: '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 10,
-              boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
-              padding: 10,
-              zIndex: 60,
+      {showRowsColsMeasure ? (
+        <>
+          <MultiSelect
+            label="Rows"
+            options={dimOptions}
+            values={config.rowKeys}
+            onChange={(rowKeys) => {
+              const nextRowFilters = Object.fromEntries(
+                Object.entries(config.rowFilters ?? {}).filter(([k]) => rowKeys.includes(k)),
+              );
+              setActiveRowFilterKey((prev) => (prev && rowKeys.includes(prev) ? prev : null));
+              onChange({ ...config, rowKeys, rowFilters: nextRowFilters });
             }}
+          />
+
+          <MultiSelect
+            label="Columns"
+            options={dimOptions}
+            values={config.colKeys}
+            onChange={(colKeys) => onChange({ ...config, colKeys })}
+          />
+
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ fontSize: 12, color: '#444' }}>Measure</div>
+            <select
+              value={config.measureKey}
+              onChange={(e) => onChange({ ...config, measureKey: e.target.value })}
+              style={{ minWidth: 220 }}
+            >
+              {measureOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      ) : null}
+
+      {showRowFilters ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ fontSize: 12, color: '#444' }}>Row filters</div>
+          <button
+            ref={rowFilterBtnRef}
+            onClick={() => {
+              setRowFilterSearch('');
+              setRowFilterOpen((s) => !s);
+              if (!activeRowFilterKey) setActiveRowFilterKey(config.rowKeys[0] ?? null);
+            }}
+            style={{ padding: '8px 10px', borderRadius: 10, fontSize: 12, whiteSpace: 'nowrap' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center' }}>
-              <div style={{ fontWeight: 900, fontSize: 13 }}>Row filters</div>
-              <button onClick={() => setRowFilterOpen(false)} style={{ padding: '4px 8px', fontSize: 12 }}>
-                Close
-              </button>
-            </div>
+            Configure{rowFiltersActiveCount > 0 ? ` (${rowFiltersActiveCount})` : ''}…
+          </button>
 
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-              {rowFilterKeys.map((k) => {
-                const field = rowFilterFieldByKey.get(k);
+          {rowFilterOpen && rowFilterPos ? (
+            <div
+              id="griddle-rowfilter-popover"
+              style={{
+                position: 'fixed',
+                left: rowFilterPos.left,
+                top: rowFilterPos.top,
+                width: 420,
+                maxHeight: 420,
+                overflow: 'auto',
+                background: '#fff',
+                border: '1px solid #ddd',
+                borderRadius: 10,
+                boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+                padding: 10,
+                zIndex: 60,
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center' }}>
+                <div style={{ fontWeight: 900, fontSize: 13 }}>Row filters</div>
+                <button onClick={() => setRowFilterOpen(false)} style={{ padding: '4px 8px', fontSize: 12 }}>
+                  Close
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
+                {rowFilterKeys.map((k) => {
+                  const field = rowFilterFieldByKey.get(k);
+                  return (
+                    <button
+                      key={k}
+                      onClick={() => {
+                        setRowFilterSearch('');
+                        setActiveRowFilterKey(k);
+                      }}
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: 999,
+                        border: '1px solid #ddd',
+                        background: activeRowFilterKey === k ? '#eef2ff' : '#f6f6f6',
+                        fontSize: 12,
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {field?.label ?? k}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {activeRowFilterKey ? (() => {
+                const field = rowFilterFieldByKey.get(activeRowFilterKey);
+                if (!field) return null;
+                const allVals = (field.enum ?? uniqValues(records, activeRowFilterKey)).map(String);
+                const q = rowFilterSearch.trim().toLowerCase();
+                const shownVals = q ? allVals.filter((v) => v.toLowerCase().includes(q)) : allVals;
+                const selected = (config.rowFilters?.[activeRowFilterKey] ?? []).map(String);
+                const selectedSet = new Set(selected);
+
                 return (
-                  <button
-                    key={k}
-                    onClick={() => {
-                      setRowFilterSearch('');
-                      setActiveRowFilterKey(k);
-                    }}
-                    style={{
-                      padding: '6px 10px',
-                      borderRadius: 999,
-                      border: '1px solid #ddd',
-                      background: activeRowFilterKey === k ? '#eef2ff' : '#f6f6f6',
-                      fontSize: 12,
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {field?.label ?? k}
-                  </button>
-                );
-              })}
-            </div>
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                      <div style={{ fontWeight: 800 }}>{field.label}</div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button
+                          onClick={() => {
+                            onChange({
+                              ...config,
+                              rowFilters: {
+                                ...(config.rowFilters ?? {}),
+                                [activeRowFilterKey]: allVals,
+                              },
+                            });
+                          }}
+                          style={{ padding: '6px 10px', fontSize: 12 }}
+                        >
+                          Select all
+                        </button>
+                        <button
+                          onClick={() => {
+                            onChange({
+                              ...config,
+                              rowFilters: {
+                                ...(config.rowFilters ?? {}),
+                                [activeRowFilterKey]: [],
+                              },
+                            });
+                          }}
+                          style={{ padding: '6px 10px', fontSize: 12 }}
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    </div>
 
-            {activeRowFilterKey ? (() => {
-              const field = rowFilterFieldByKey.get(activeRowFilterKey);
-              if (!field) return null;
-              const allVals = (field.enum ?? uniqValues(records, activeRowFilterKey)).map(String);
-              const q = rowFilterSearch.trim().toLowerCase();
-              const shownVals = q ? allVals.filter((v) => v.toLowerCase().includes(q)) : allVals;
-              const selected = (config.rowFilters?.[activeRowFilterKey] ?? []).map(String);
-              const selectedSet = new Set(selected);
+                    <input
+                      value={rowFilterSearch}
+                      onChange={(e) => setRowFilterSearch(e.target.value)}
+                      placeholder="Search values…"
+                      style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
+                    />
 
-              return (
-                <div style={{ marginTop: 10 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                    <div style={{ fontWeight: 800 }}>{field.label}</div>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button
-                        onClick={() => {
-                          onChange({
-                            ...config,
-                            rowFilters: {
-                              ...(config.rowFilters ?? {}),
-                              [activeRowFilterKey]: allVals,
-                            },
-                          });
-                        }}
-                        style={{ padding: '6px 10px', fontSize: 12 }}
-                      >
-                        Select all
-                      </button>
-                      <button
-                        onClick={() => {
-                          onChange({
-                            ...config,
-                            rowFilters: {
-                              ...(config.rowFilters ?? {}),
-                              [activeRowFilterKey]: [],
-                            },
-                          });
-                        }}
-                        style={{ padding: '6px 10px', fontSize: 12 }}
-                      >
-                        Clear
-                      </button>
+                    <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
+                      {shownVals.map((v) => {
+                        const effectiveChecked = selected.length === 0 ? true : selectedSet.has(v);
+                        return (
+                          <label key={v} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13 }}>
+                            <input
+                              type="checkbox"
+                              checked={effectiveChecked}
+                              onChange={() => {
+                                let next: string[];
+                                if (selected.length === 0) next = allVals.slice();
+                                else next = selected.slice();
+
+                                const idx = next.indexOf(v);
+                                if (idx >= 0) next.splice(idx, 1);
+                                else next.push(v);
+
+                                onChange({
+                                  ...config,
+                                  rowFilters: {
+                                    ...(config.rowFilters ?? {}),
+                                    [activeRowFilterKey]: next,
+                                  },
+                                });
+                              }}
+                            />
+                            <span>{asLabel(v)}</span>
+                          </label>
+                        );
+                      })}
+
+                      {shownVals.length === 0 ? <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div> : null}
+                    </div>
+
+                    <div style={{ marginTop: 10, fontSize: 12, color: '#666' }}>
+                      Current: {selected.length === 0 ? 'All' : `${selected.length} selected`}
                     </div>
                   </div>
+                );
+              })() : (
+                <div style={{ marginTop: 10, fontSize: 12, color: '#666' }}>(no row dims selected)</div>
+              )}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
-                  <input
-                    value={rowFilterSearch}
-                    onChange={(e) => setRowFilterSearch(e.target.value)}
-                    placeholder="Search values…"
-                    style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
-                  />
-
-                  <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
-                    {shownVals.map((v) => {
-                      // Note: empty selected means "All"; in UI we treat it as all checked.
-                      const effectiveChecked = selected.length === 0 ? true : selectedSet.has(v);
-                      return (
-                        <label key={v} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13 }}>
-                          <input
-                            type="checkbox"
-                            checked={effectiveChecked}
-                            onChange={() => {
-                              let next: string[];
-                              if (selected.length === 0) {
-                                // switching from All to explicit set: start with all values
-                                next = allVals.slice();
-                              } else {
-                                next = selected.slice();
-                              }
-
-                              const idx = next.indexOf(v);
-                              if (idx >= 0) next.splice(idx, 1);
-                              else next.push(v);
-
-                              onChange({
-                                ...config,
-                                rowFilters: {
-                                  ...(config.rowFilters ?? {}),
-                                  [activeRowFilterKey]: next,
-                                },
-                              });
-                            }}
-                          />
-                          <span>{asLabel(v)}</span>
-                        </label>
-                      );
-                    })}
-
-                    {shownVals.length === 0 ? <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div> : null}
-                  </div>
-
-                  <div style={{ marginTop: 10, fontSize: 12, color: '#666' }}>
-                    Current: {selected.length === 0 ? 'All' : `${selected.length} selected`}
-                  </div>
-                </div>
+      {showSlicers ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, position: 'relative' }}>
+          <MultiSelect
+            label="Slicers"
+            options={slicerOptions}
+            values={config.slicerKeys}
+            onChange={(slicerKeys) => {
+              const nextSlicers = Object.fromEntries(
+                Object.entries(config.slicers).filter(([k]) => slicerKeys.includes(k)),
               );
-            })() : (
-              <div style={{ marginTop: 10, fontSize: 12, color: '#666' }}>(no row dims selected)</div>
-            )}
+              setActiveSlicerKey(null);
+              setSlicerSearch('');
+              onChange({ ...config, slicerKeys, slicers: nextSlicers });
+            }}
+          />
+
+          <div
+            style={{
+              display: 'flex',
+              gap: 6,
+              flexWrap: 'nowrap',
+              overflowX: 'auto',
+              maxWidth: 520,
+              paddingBottom: 2,
+              minHeight: 34,
+              alignItems: 'center',
+            }}
+          >
+            {config.slicerKeys.map((k) => {
+              const field = slicerFields.find((f) => f.key === k);
+              if (!field) return null;
+
+              const desired = config.slicers[k];
+              const values = Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
+              const label =
+                values.length === 0
+                  ? 'All'
+                  : values.length <= 2
+                    ? values.join(', ')
+                    : `${values.length} selected`;
+
+              return (
+                <button
+                  key={k}
+                  ref={(el) => {
+                    chipRefs.current[k] = el;
+                  }}
+                  onClick={() => {
+                    setSlicerSearch('');
+                    setActiveSlicerKey((prev) => (prev === k ? null : k));
+                  }}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    border: '1px solid #ddd',
+                    background: '#f6f6f6',
+                    boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px #4f46e5' : 'none',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    gap: 6,
+                    alignItems: 'center',
+                    whiteSpace: 'nowrap',
+                    flex: '0 0 auto',
+                    maxWidth: 220,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                  title={`${field.label}: ${label}`}
+                >
+                  <span style={{ color: '#555' }}>{field.label}:</span>
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+
+            {config.slicerKeys.length > 0 ? (
+              <button
+                onClick={() => {
+                  const cleared = Object.fromEntries(config.slicerKeys.map((k) => [k, []]));
+                  onChange({ ...config, slicers: { ...config.slicers, ...cleared } });
+                }}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 999,
+                  border: '1px solid #ddd',
+                  background: '#fff',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  flex: '0 0 auto',
+                }}
+              >
+                Clear
+              </button>
+            ) : null}
           </div>
-        ) : null}
-      </div>
+
+          {activeSlicerField && popoverPos ? (
+            <div
+              id="griddle-slicer-popover"
+              style={{
+                position: 'fixed',
+                left: popoverPos.left,
+                top: popoverPos.top,
+                width: 320,
+                maxHeight: 360,
+                overflow: 'auto',
+                background: '#fff',
+                border: '1px solid #ddd',
+                borderRadius: 10,
+                boxShadow: '0 12px 30px rgba(0,0,0,0.12)',
+                padding: 10,
+                zIndex: 50,
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontWeight: 800, fontSize: 13 }}>{activeSlicerField.label}</div>
+                <button
+                  onClick={() => setActiveSlicerKey(null)}
+                  style={{ padding: '4px 8px', borderRadius: 8, fontSize: 12 }}
+                >
+                  Close
+                </button>
+              </div>
+
+              <input
+                value={slicerSearch}
+                onChange={(e) => setSlicerSearch(e.target.value)}
+                placeholder="Search…"
+                style={{ width: '100%', marginTop: 8, padding: '6px 8px', border: '1px solid #ddd', borderRadius: 8 }}
+              />
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                <button
+                  onClick={() => {
+                    const all = (activeSlicerField.enum ?? uniqValues(records, activeSlicerField.key)).map(String);
+                    onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: all } });
+                  }}
+                  style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
+                >
+                  Select all
+                </button>
+                <button
+                  onClick={() => {
+                    onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: [] } });
+                  }}
+                  style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
+                >
+                  Clear
+                </button>
+              </div>
+
+              <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
+                {activeOptions.map((o) => {
+                  const checked = activeSelected.includes(o.value);
+                  return (
+                    <label key={o.value} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13 }}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => {
+                          const next = checked
+                            ? activeSelected.filter((v) => v !== o.value)
+                            : [...activeSelected, o.value];
+                          onChange({
+                            ...config,
+                            slicers: {
+                              ...config.slicers,
+                              [activeSlicerField.key]: next,
+                            },
+                          });
+                        }}
+                      />
+                      <span>{o.label}</span>
+                    </label>
+                  );
+                })}
+
+                {activeOptions.length === 0 ? (
+                  <div style={{ color: '#666', fontSize: 12 }}>(no matches)</div>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       <MultiSelect
         label="Columns"
