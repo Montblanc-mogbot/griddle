@@ -11,10 +11,21 @@ export function EntryPanel(props: {
   onClose: () => void;
   onGoToFullRecords: () => void;
   onSubmit: (args: { measureValues: Record<string, number | ''>; flags: Record<string, boolean>; details?: Record<string, unknown> }) => void;
+  onUpdateRecordField: (recordId: string, key: string, value: unknown) => void;
   onToggleFlag: (recordId: string, flagKey: string, value: boolean) => void;
   onBulkToggleFlag: (flagKey: string, value: boolean) => void;
 }) {
-  const { dataset, config, selected, onClose, onGoToFullRecords, onSubmit, onToggleFlag, onBulkToggleFlag } = props;
+  const {
+    dataset,
+    config,
+    selected,
+    onClose,
+    onGoToFullRecords,
+    onSubmit,
+    onUpdateRecordField,
+    onToggleFlag,
+    onBulkToggleFlag,
+  } = props;
 
   return (
     <div className={styles.panel}>
@@ -39,6 +50,7 @@ export function EntryPanel(props: {
       <RecordTape
         dataset={dataset}
         selected={selected}
+        onUpdateRecordField={onUpdateRecordField}
         onToggleFlag={onToggleFlag}
         onSubmit={onSubmit}
       />

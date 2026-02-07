@@ -23,6 +23,7 @@ import { getRecordIdsForGridSelection } from './domain/gridSelection';
 import { buildGriddleFile, parseGriddleJson } from './domain/griddleIo';
 import { loadLastFile, saveLastFile } from './domain/localState';
 import { parseDatasetJson } from './domain/datasetIo';
+import { setRecordField } from './domain/updateRecord';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -350,6 +351,15 @@ export default function App() {
                   details,
                 });
                 setDataset((prev) => (prev ? upsertRecords(prev, [record]) : prev));
+              }}
+              onUpdateRecordField={(recordId, key, value) => {
+                setDataset((prev) => {
+                  if (!prev) return prev;
+                  const rec = prev.records.find((r) => r.id === recordId);
+                  if (!rec) return prev;
+                  const updated = setRecordField(rec, key, value);
+                  return upsertRecords(prev, [updated]);
+                });
               }}
               onToggleFlag={(recordId, flagKey, value) => {
                 setDataset((prev) => {

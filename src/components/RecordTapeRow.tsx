@@ -8,17 +8,32 @@ export function RecordTapeRow(props: {
   measures: string[];
   flags: TapeFlag[];
   onToggleFlag: (recordId: string, flagKey: string, value: boolean) => void;
+  onUpdateMeasure: (measureKey: string, value: number | '' ) => void;
 }) {
-  const { record, measures, flags, onToggleFlag } = props;
+  const { record, measures, flags, onToggleFlag, onUpdateMeasure } = props;
 
   return (
     <>
       {measures.map((k) => {
         const v = record.data[k];
-        const num = typeof v === 'number' && Number.isFinite(v) ? formatNumber(v) : v ? String(v) : '';
+        const sv = v === null || v === undefined ? '' : String(v);
+        const display = typeof v === 'number' && Number.isFinite(v) ? formatNumber(v) : sv;
+
         return (
           <td key={k} className={styles.td}>
-            {num || ''}
+            <input
+              type="number"
+              defaultValue={sv}
+              title={display}
+              onBlur={(e) => {
+                const raw = e.target.value;
+                if (raw === '') return onUpdateMeasure(k, '');
+                const n = Number(raw);
+                if (!Number.isFinite(n)) return;
+                onUpdateMeasure(k, n);
+              }}
+              style={{ width: 110 }}
+            />
           </td>
         );
       })}
