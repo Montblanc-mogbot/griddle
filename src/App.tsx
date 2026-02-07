@@ -6,13 +6,10 @@ import { GlidePivotHeader } from './components/GlidePivotHeader';
 import { DatasetImportExport } from './components/DatasetImportExport';
 import { EntryPanel } from './components/EntryPanel';
 import { SchemaEditor } from './components/SchemaEditor';
-import { SelectionInspector } from './components/SelectionInspector';
 import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
 import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
-import { AgGridPivotSpike } from './spikes/AgGridPivotSpike';
-import { GlidePivotSpike } from './spikes/GlidePivotSpike';
-import { MuiDataGridPivotSpike } from './spikes/MuiDataGridPivotSpike';
+import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { sampleDataset } from './sample/sampleDataset';
 
@@ -60,7 +57,6 @@ export default function App() {
 
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
-  const [spikeView, setSpikeView] = useState<'none' | 'ag' | 'glide' | 'mui'>('none');
   const [glideHeaderTx, setGlideHeaderTx] = useState(0);
 
   const pivot = useMemo(
@@ -120,124 +116,103 @@ export default function App() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 16 }}>
-      <header style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <h2 style={{ margin: 0 }}>Griddle</h2>
-        <div style={{ color: '#666' }}>Schema-driven pivot</div>
-      </header>
+    <div className={styles.app}>
+      <div className={styles.toolbar}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div style={{ fontWeight: 800 }}>Griddle</div>
+          <div style={{ color: '#666', fontSize: 12 }}>Schema-driven pivot</div>
+        </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-        <PivotControls
-          schema={dataset.schema}
-          config={config}
-          onChange={(cfg) => {
-            setSelected(null);
-            setConfig(cfg);
-          }}
-        />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <PivotControls
+            schema={dataset.schema}
+            config={config}
+            onChange={(cfg) => {
+              setSelected(null);
+              setConfig(cfg);
+            }}
+          />
+        </div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
           <DatasetImportExport dataset={dataset} onImport={applyImportedDataset} />
-
-          <label style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            <span style={{ fontSize: 12, color: '#666' }}>Spike view</span>
-            <select
-              value={spikeView}
-              onChange={(e) => setSpikeView(e.target.value as typeof spikeView)}
-              style={{ cursor: 'pointer' }}
-            >
-              <option value="none">None</option>
-              <option value="ag">AG Grid</option>
-              <option value="glide">Glide</option>
-              <option value="mui">MUI DataGrid</option>
-            </select>
-          </label>
-
           <button onClick={() => setShowSchemaEditor((s) => !s)} style={{ cursor: 'pointer' }}>
             {showSchemaEditor ? 'Hide schema editor' : 'Edit schema'}
           </button>
         </div>
       </div>
 
-      {showSchemaEditor ? (
-        <SchemaEditor schema={dataset.schema} onChange={applySchema} />
-      ) : null}
+      {showSchemaEditor ? <SchemaEditor schema={dataset.schema} onChange={applySchema} /> : null}
 
-      {spikeView === 'ag' ? (
-        <AgGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
-      ) : spikeView === 'glide' ? (
-        <GlidePivotSpike dataset={dataset} pivot={pivot} config={config} />
-      ) : spikeView === 'mui' ? (
-        <MuiDataGridPivotSpike dataset={dataset} pivot={pivot} config={config} />
-      ) : (
-        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: 8,
-                overflow: 'hidden',
-                background: '#fff',
-                display: 'grid',
-                gap: 0,
-              }}
-            >
-              <GlidePivotHeader
+      <div className={styles.main}>
+        <div className={styles.gridArea}>
+          <div
+            style={{
+              border: '1px solid #ddd',
+              borderRadius: 8,
+              overflow: 'hidden',
+              background: '#fff',
+              display: 'grid',
+              gap: 0,
+            }}
+          >
+            <GlidePivotHeader
+              pivot={pivot}
+              config={config}
+              scrollTx={glideHeaderTx}
+              rowDimWidth={160}
+              valueColWidth={120}
+              rowMarkersWidth={44}
+            />
+
+            <div style={{ height: 'calc(100vh - 56px - 24px - 44px)' }}>
+              <GlidePivotGrid
                 pivot={pivot}
                 config={config}
-                scrollTx={glideHeaderTx}
-                rowDimWidth={160}
-                valueColWidth={120}
-                rowMarkersWidth={44}
+                onScrollTx={setGlideHeaderTx}
+                onSingleValueCellSelected={(sel) => setSelected(sel)}
               />
-
-              <div style={{ height: 560 }}>
-                <GlidePivotGrid
-                  pivot={pivot}
-                  config={config}
-                  onScrollTx={setGlideHeaderTx}
-                  onSingleValueCellSelected={(sel) => setSelected(sel)}
-                />
-              </div>
             </div>
           </div>
-
-          {selected ? (
-            <EntryPanel
-              dataset={dataset}
-              config={config}
-              selected={selected}
-              onClose={() => setSelected(null)}
-              onSubmit={({ measureValues, flags }) => {
-                const record = createRecordFromSelection({
-                  schema: dataset.schema,
-                  config,
-                  selected,
-                  measureValues,
-                  flags,
-                });
-                setDataset((prev) => upsertRecords(prev, [record]));
-              }}
-              onToggleFlag={(recordId, flagKey, value) => {
-                setDataset((prev) => {
-                  const rec = prev.records.find((r) => r.id === recordId);
-                  if (!rec) return prev;
-                  return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
-                });
-              }}
-              onBulkToggleFlag={(flagKey, value) => {
-                setDataset((prev) => {
-                  const inCell = getRecordsForCell(prev, selected);
-                  const updated = bulkSetMetadata(inCell, flagKey, value);
-                  return upsertRecords(prev, updated);
-                });
-              }}
-            />
-          ) : (
-            <SelectionInspector dataset={dataset} selected={selected} onClose={() => setSelected(null)} />
-          )}
         </div>
-      )}
+
+        <div className={styles.drawerWrap}>
+          <div className={`${styles.drawer} ${selected ? styles.drawerOpen : ''}`}>
+            {selected ? (
+              <EntryPanel
+                dataset={dataset}
+                config={config}
+                selected={selected}
+                onClose={() => setSelected(null)}
+                onSubmit={({ measureValues, flags }) => {
+                  const record = createRecordFromSelection({
+                    schema: dataset.schema,
+                    config,
+                    selected,
+                    measureValues,
+                    flags,
+                  });
+                  setDataset((prev) => upsertRecords(prev, [record]));
+                }}
+                onToggleFlag={(recordId, flagKey, value) => {
+                  setDataset((prev) => {
+                    const rec = prev.records.find((r) => r.id === recordId);
+                    if (!rec) return prev;
+                    return upsertRecords(prev, [updateRecordMetadata(rec, flagKey, value)]);
+                  });
+                }}
+                onBulkToggleFlag={(flagKey, value) => {
+                  setDataset((prev) => {
+                    const inCell = getRecordsForCell(prev, selected);
+                    const updated = bulkSetMetadata(inCell, flagKey, value);
+                    return upsertRecords(prev, updated);
+                  });
+                }}
+              />
+            ) : null}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

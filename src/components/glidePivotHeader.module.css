@@ -19,7 +19,26 @@
   text-overflow: ellipsis;
 }
 
-.spacer {
+.left {
+  display: flex;
   background: #fafafa;
+  border-right: 1px solid #eee;
+}
+
+.rowMarkerStub {
+  border-right: 1px solid #eee;
+}
+
+.cellLeft {
+  padding: 6px 8px;
+  border-right: 1px solid #eee;
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leftStub {
   border-right: 1px solid #eee;
 }

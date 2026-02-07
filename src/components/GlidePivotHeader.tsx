@@ -20,10 +20,21 @@ export function GlidePivotHeader(props: {
 
   return (
     <div className={styles.wrap}>
-      {headerRows.map((hr) => (
+      {headerRows.map((hr, rowIdx) => (
         <div key={hr.key} className={styles.row}>
-          {/* left spacer for row dimension columns */}
-          <div className={styles.spacer} style={{ width: leftWidth }} />
+          {/* left header area: row marker + row dimension column titles (only on last header row) */}
+          <div className={styles.left} style={{ width: leftWidth }}>
+            <div className={styles.rowMarkerStub} style={{ width: rowMarkersWidth }} />
+            {rowIdx === headerRows.length - 1
+              ? config.rowKeys.map((rk) => (
+                  <div key={rk} className={styles.cellLeft} style={{ width: rowDimWidth }} title={rk}>
+                    {rk}
+                  </div>
+                ))
+              : config.rowKeys.map((rk) => (
+                  <div key={rk} className={styles.leftStub} style={{ width: rowDimWidth }} />
+                ))}
+          </div>
 
           <div style={{ display: 'flex', transform: `translateX(${-scrollTx}px)` }}>
             {hr.spans.map((s, idx) => (
