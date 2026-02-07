@@ -1,0 +1,5149 @@
+{
+  "version": 1,
+  "name": "Bills of Lading (2 weeks, 15 permutations)",
+  "schema": {
+    "version": 1,
+    "fields": [
+      {
+        "key": "date",
+        "label": "Date",
+        "type": "date",
+        "roles": [
+          "rowDim"
+        ]
+      },
+      {
+        "key": "material",
+        "label": "Material",
+        "type": "string",
+        "roles": [
+          "rowDim"
+        ],
+        "enum": [
+          "Stone",
+          "Dirt",
+          "Sand",
+          "Gravel",
+          "Clay"
+        ]
+      },
+      {
+        "key": "vendor",
+        "label": "Vendor",
+        "type": "string",
+        "roles": [
+          "colDim"
+        ],
+        "enum": [
+          "Acme",
+          "Globex",
+          "Initech"
+        ]
+      },
+      {
+        "key": "location",
+        "label": "Location",
+        "type": "string",
+        "roles": [
+          "colDim"
+        ],
+        "enum": [
+          "North",
+          "South",
+          "East"
+        ]
+      },
+      {
+        "key": "tons",
+        "label": "Tons",
+        "type": "number",
+        "roles": [
+          "measure"
+        ],
+        "measure": {
+          "format": "decimal"
+        }
+      },
+      {
+        "key": "isCorrection",
+        "label": "Correction",
+        "type": "boolean",
+        "roles": [
+          "flag"
+        ],
+        "flag": {
+          "style": {
+            "cellClass": "cell-flagged",
+            "priority": 1
+          }
+        }
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "r1",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 5,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r2",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 8
+      }
+    },
+    {
+      "id": "r3",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 13.25
+      }
+    },
+    {
+      "id": "r4",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 11
+      }
+    },
+    {
+      "id": "r5",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 16.25
+      }
+    },
+    {
+      "id": "r6",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 21.5
+      }
+    },
+    {
+      "id": "r7",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 14
+      }
+    },
+    {
+      "id": "r8",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 17
+      }
+    },
+    {
+      "id": "r9",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 22.25
+      }
+    },
+    {
+      "id": "r10",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 20
+      }
+    },
+    {
+      "id": "r11",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 25.25
+      }
+    },
+    {
+      "id": "r12",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 30.5
+      }
+    },
+    {
+      "id": "r13",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 23
+      }
+    },
+    {
+      "id": "r14",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 26
+      }
+    },
+    {
+      "id": "r15",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 31.25
+      }
+    },
+    {
+      "id": "r16",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 29
+      }
+    },
+    {
+      "id": "r17",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 34.25
+      }
+    },
+    {
+      "id": "r18",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 39.5
+      }
+    },
+    {
+      "id": "r19",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 32
+      }
+    },
+    {
+      "id": "r20",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 35
+      }
+    },
+    {
+      "id": "r21",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 40.25
+      }
+    },
+    {
+      "id": "r22",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 38
+      }
+    },
+    {
+      "id": "r23",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 43.25
+      }
+    },
+    {
+      "id": "r24",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 48.5
+      }
+    },
+    {
+      "id": "r25",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 41
+      }
+    },
+    {
+      "id": "r26",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 44
+      }
+    },
+    {
+      "id": "r27",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 49.25
+      }
+    },
+    {
+      "id": "r28",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 47
+      }
+    },
+    {
+      "id": "r29",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 52.25
+      }
+    },
+    {
+      "id": "r30",
+      "createdAt": "2026-02-01T00:00:00Z",
+      "updatedAt": "2026-02-01T00:00:00Z",
+      "data": {
+        "date": "2026-02-01",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 57.5
+      }
+    },
+    {
+      "id": "r31",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 12
+      }
+    },
+    {
+      "id": "r32",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 17.25
+      }
+    },
+    {
+      "id": "r33",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 15
+      }
+    },
+    {
+      "id": "r34",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 20.25
+      }
+    },
+    {
+      "id": "r35",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 25.5
+      }
+    },
+    {
+      "id": "r36",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 18
+      }
+    },
+    {
+      "id": "r37",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 21
+      }
+    },
+    {
+      "id": "r38",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 26.25
+      }
+    },
+    {
+      "id": "r39",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 24
+      }
+    },
+    {
+      "id": "r40",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 29.25
+      }
+    },
+    {
+      "id": "r41",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 34.5
+      }
+    },
+    {
+      "id": "r42",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 27
+      }
+    },
+    {
+      "id": "r43",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 30
+      }
+    },
+    {
+      "id": "r44",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 35.25
+      }
+    },
+    {
+      "id": "r45",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 33
+      }
+    },
+    {
+      "id": "r46",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 38.25
+      }
+    },
+    {
+      "id": "r47",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 43.5
+      }
+    },
+    {
+      "id": "r48",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 36
+      }
+    },
+    {
+      "id": "r49",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 39
+      }
+    },
+    {
+      "id": "r50",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 44.25
+      }
+    },
+    {
+      "id": "r51",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 42
+      }
+    },
+    {
+      "id": "r52",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 47.25
+      }
+    },
+    {
+      "id": "r53",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 52.5
+      }
+    },
+    {
+      "id": "r54",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 45
+      }
+    },
+    {
+      "id": "r55",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 48
+      }
+    },
+    {
+      "id": "r56",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 53.25
+      }
+    },
+    {
+      "id": "r57",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 51
+      }
+    },
+    {
+      "id": "r58",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 56.25
+      }
+    },
+    {
+      "id": "r59",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 61.5
+      }
+    },
+    {
+      "id": "r60",
+      "createdAt": "2026-02-02T00:00:00Z",
+      "updatedAt": "2026-02-02T00:00:00Z",
+      "data": {
+        "date": "2026-02-02",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 54
+      }
+    },
+    {
+      "id": "r61",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 19
+      }
+    },
+    {
+      "id": "r62",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 24.25
+      }
+    },
+    {
+      "id": "r63",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 29.5
+      }
+    },
+    {
+      "id": "r64",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 22
+      }
+    },
+    {
+      "id": "r65",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 25
+      }
+    },
+    {
+      "id": "r66",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 30.25
+      }
+    },
+    {
+      "id": "r67",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 28
+      }
+    },
+    {
+      "id": "r68",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 33.25
+      }
+    },
+    {
+      "id": "r69",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 38.5
+      }
+    },
+    {
+      "id": "r70",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 31
+      }
+    },
+    {
+      "id": "r71",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 34
+      }
+    },
+    {
+      "id": "r72",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 39.25
+      }
+    },
+    {
+      "id": "r73",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 37
+      }
+    },
+    {
+      "id": "r74",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 42.25
+      }
+    },
+    {
+      "id": "r75",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 47.5
+      }
+    },
+    {
+      "id": "r76",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 40
+      }
+    },
+    {
+      "id": "r77",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 43
+      }
+    },
+    {
+      "id": "r78",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 48.25
+      }
+    },
+    {
+      "id": "r79",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 46
+      }
+    },
+    {
+      "id": "r80",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 51.25
+      }
+    },
+    {
+      "id": "r81",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 56.5
+      }
+    },
+    {
+      "id": "r82",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 49
+      }
+    },
+    {
+      "id": "r83",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 52
+      }
+    },
+    {
+      "id": "r84",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 57.25
+      }
+    },
+    {
+      "id": "r85",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 55
+      }
+    },
+    {
+      "id": "r86",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 60.25
+      }
+    },
+    {
+      "id": "r87",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 65.5
+      }
+    },
+    {
+      "id": "r88",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 58
+      }
+    },
+    {
+      "id": "r89",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 61
+      }
+    },
+    {
+      "id": "r90",
+      "createdAt": "2026-02-03T00:00:00Z",
+      "updatedAt": "2026-02-03T00:00:00Z",
+      "data": {
+        "date": "2026-02-03",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 66.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r91",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 26
+      }
+    },
+    {
+      "id": "r92",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 29
+      }
+    },
+    {
+      "id": "r93",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 34.25
+      }
+    },
+    {
+      "id": "r94",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 32
+      }
+    },
+    {
+      "id": "r95",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 37.25
+      }
+    },
+    {
+      "id": "r96",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 42.5
+      }
+    },
+    {
+      "id": "r97",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 35
+      }
+    },
+    {
+      "id": "r98",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 38
+      }
+    },
+    {
+      "id": "r99",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 43.25
+      }
+    },
+    {
+      "id": "r100",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 41
+      }
+    },
+    {
+      "id": "r101",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 46.25
+      }
+    },
+    {
+      "id": "r102",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 51.5
+      }
+    },
+    {
+      "id": "r103",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 44
+      }
+    },
+    {
+      "id": "r104",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 47
+      }
+    },
+    {
+      "id": "r105",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 52.25
+      }
+    },
+    {
+      "id": "r106",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 50
+      }
+    },
+    {
+      "id": "r107",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 55.25
+      }
+    },
+    {
+      "id": "r108",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 60.5
+      }
+    },
+    {
+      "id": "r109",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 53
+      }
+    },
+    {
+      "id": "r110",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 56
+      }
+    },
+    {
+      "id": "r111",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 61.25
+      }
+    },
+    {
+      "id": "r112",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 59
+      }
+    },
+    {
+      "id": "r113",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 64.25
+      }
+    },
+    {
+      "id": "r114",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 69.5
+      }
+    },
+    {
+      "id": "r115",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 62
+      }
+    },
+    {
+      "id": "r116",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 65
+      }
+    },
+    {
+      "id": "r117",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 70.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r118",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 68,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r119",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 73.25
+      }
+    },
+    {
+      "id": "r120",
+      "createdAt": "2026-02-04T00:00:00Z",
+      "updatedAt": "2026-02-04T00:00:00Z",
+      "data": {
+        "date": "2026-02-04",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 8.5
+      }
+    },
+    {
+      "id": "r121",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 33
+      }
+    },
+    {
+      "id": "r122",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 38.25
+      }
+    },
+    {
+      "id": "r123",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 36
+      }
+    },
+    {
+      "id": "r124",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 41.25
+      }
+    },
+    {
+      "id": "r125",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 46.5
+      }
+    },
+    {
+      "id": "r126",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 39
+      }
+    },
+    {
+      "id": "r127",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 42
+      }
+    },
+    {
+      "id": "r128",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 47.25
+      }
+    },
+    {
+      "id": "r129",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 45
+      }
+    },
+    {
+      "id": "r130",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 50.25
+      }
+    },
+    {
+      "id": "r131",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 55.5
+      }
+    },
+    {
+      "id": "r132",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 48
+      }
+    },
+    {
+      "id": "r133",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 51
+      }
+    },
+    {
+      "id": "r134",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 56.25
+      }
+    },
+    {
+      "id": "r135",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 54
+      }
+    },
+    {
+      "id": "r136",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 59.25
+      }
+    },
+    {
+      "id": "r137",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 64.5
+      }
+    },
+    {
+      "id": "r138",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 57
+      }
+    },
+    {
+      "id": "r139",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 60
+      }
+    },
+    {
+      "id": "r140",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 65.25
+      }
+    },
+    {
+      "id": "r141",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 63
+      }
+    },
+    {
+      "id": "r142",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 68.25
+      }
+    },
+    {
+      "id": "r143",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 73.5
+      }
+    },
+    {
+      "id": "r144",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 66
+      }
+    },
+    {
+      "id": "r145",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 69
+      }
+    },
+    {
+      "id": "r146",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 74.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r147",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 72,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r148",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 7.25
+      }
+    },
+    {
+      "id": "r149",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 12.5
+      }
+    },
+    {
+      "id": "r150",
+      "createdAt": "2026-02-05T00:00:00Z",
+      "updatedAt": "2026-02-05T00:00:00Z",
+      "data": {
+        "date": "2026-02-05",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 5
+      }
+    },
+    {
+      "id": "r151",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 40
+      }
+    },
+    {
+      "id": "r152",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 45.25
+      }
+    },
+    {
+      "id": "r153",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 50.5
+      }
+    },
+    {
+      "id": "r154",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 43
+      }
+    },
+    {
+      "id": "r155",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 46
+      }
+    },
+    {
+      "id": "r156",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 51.25
+      }
+    },
+    {
+      "id": "r157",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 49
+      }
+    },
+    {
+      "id": "r158",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 54.25
+      }
+    },
+    {
+      "id": "r159",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 59.5
+      }
+    },
+    {
+      "id": "r160",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 52
+      }
+    },
+    {
+      "id": "r161",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 55
+      }
+    },
+    {
+      "id": "r162",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 60.25
+      }
+    },
+    {
+      "id": "r163",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 58
+      }
+    },
+    {
+      "id": "r164",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 63.25
+      }
+    },
+    {
+      "id": "r165",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 68.5
+      }
+    },
+    {
+      "id": "r166",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 61
+      }
+    },
+    {
+      "id": "r167",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 64
+      }
+    },
+    {
+      "id": "r168",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 69.25
+      }
+    },
+    {
+      "id": "r169",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 67
+      }
+    },
+    {
+      "id": "r170",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 72.25
+      }
+    },
+    {
+      "id": "r171",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 7.5
+      }
+    },
+    {
+      "id": "r172",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 70
+      }
+    },
+    {
+      "id": "r173",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 73
+      }
+    },
+    {
+      "id": "r174",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 8.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r175",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 6,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r176",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 11.25
+      }
+    },
+    {
+      "id": "r177",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 16.5
+      }
+    },
+    {
+      "id": "r178",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 9
+      }
+    },
+    {
+      "id": "r179",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 12
+      }
+    },
+    {
+      "id": "r180",
+      "createdAt": "2026-02-06T00:00:00Z",
+      "updatedAt": "2026-02-06T00:00:00Z",
+      "data": {
+        "date": "2026-02-06",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 17.25
+      }
+    },
+    {
+      "id": "r181",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 47
+      }
+    },
+    {
+      "id": "r182",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 50
+      }
+    },
+    {
+      "id": "r183",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 55.25
+      }
+    },
+    {
+      "id": "r184",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 53
+      }
+    },
+    {
+      "id": "r185",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 58.25
+      }
+    },
+    {
+      "id": "r186",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 63.5
+      }
+    },
+    {
+      "id": "r187",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 56
+      }
+    },
+    {
+      "id": "r188",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 59
+      }
+    },
+    {
+      "id": "r189",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 64.25
+      }
+    },
+    {
+      "id": "r190",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 62
+      }
+    },
+    {
+      "id": "r191",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 67.25
+      }
+    },
+    {
+      "id": "r192",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 72.5
+      }
+    },
+    {
+      "id": "r193",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 65
+      }
+    },
+    {
+      "id": "r194",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 68
+      }
+    },
+    {
+      "id": "r195",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 73.25
+      }
+    },
+    {
+      "id": "r196",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 71
+      }
+    },
+    {
+      "id": "r197",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 6.25
+      }
+    },
+    {
+      "id": "r198",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 11.5
+      }
+    },
+    {
+      "id": "r199",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 74
+      }
+    },
+    {
+      "id": "r200",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 7
+      }
+    },
+    {
+      "id": "r201",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 12.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r202",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 10,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r203",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 15.25
+      }
+    },
+    {
+      "id": "r204",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 20.5
+      }
+    },
+    {
+      "id": "r205",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 13
+      }
+    },
+    {
+      "id": "r206",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 16
+      }
+    },
+    {
+      "id": "r207",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 21.25
+      }
+    },
+    {
+      "id": "r208",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 19
+      }
+    },
+    {
+      "id": "r209",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 24.25
+      }
+    },
+    {
+      "id": "r210",
+      "createdAt": "2026-02-07T00:00:00Z",
+      "updatedAt": "2026-02-07T00:00:00Z",
+      "data": {
+        "date": "2026-02-07",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 29.5
+      }
+    },
+    {
+      "id": "r211",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 54
+      }
+    },
+    {
+      "id": "r212",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 59.25
+      }
+    },
+    {
+      "id": "r213",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 57
+      }
+    },
+    {
+      "id": "r214",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 62.25
+      }
+    },
+    {
+      "id": "r215",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 67.5
+      }
+    },
+    {
+      "id": "r216",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 60
+      }
+    },
+    {
+      "id": "r217",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 63
+      }
+    },
+    {
+      "id": "r218",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 68.25
+      }
+    },
+    {
+      "id": "r219",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 66
+      }
+    },
+    {
+      "id": "r220",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 71.25
+      }
+    },
+    {
+      "id": "r221",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 6.5
+      }
+    },
+    {
+      "id": "r222",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 69
+      }
+    },
+    {
+      "id": "r223",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 72
+      }
+    },
+    {
+      "id": "r224",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 7.25
+      }
+    },
+    {
+      "id": "r225",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 5
+      }
+    },
+    {
+      "id": "r226",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 10.25
+      }
+    },
+    {
+      "id": "r227",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 15.5
+      }
+    },
+    {
+      "id": "r228",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 8
+      }
+    },
+    {
+      "id": "r229",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 11
+      }
+    },
+    {
+      "id": "r230",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 16.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r231",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 14,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r232",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 19.25
+      }
+    },
+    {
+      "id": "r233",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 24.5
+      }
+    },
+    {
+      "id": "r234",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 17
+      }
+    },
+    {
+      "id": "r235",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 20
+      }
+    },
+    {
+      "id": "r236",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 25.25
+      }
+    },
+    {
+      "id": "r237",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 23
+      }
+    },
+    {
+      "id": "r238",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 28.25
+      }
+    },
+    {
+      "id": "r239",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 33.5
+      }
+    },
+    {
+      "id": "r240",
+      "createdAt": "2026-02-08T00:00:00Z",
+      "updatedAt": "2026-02-08T00:00:00Z",
+      "data": {
+        "date": "2026-02-08",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 26
+      }
+    },
+    {
+      "id": "r241",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 61
+      }
+    },
+    {
+      "id": "r242",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 66.25
+      }
+    },
+    {
+      "id": "r243",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 71.5
+      }
+    },
+    {
+      "id": "r244",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 64
+      }
+    },
+    {
+      "id": "r245",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 67
+      }
+    },
+    {
+      "id": "r246",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 72.25
+      }
+    },
+    {
+      "id": "r247",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 70
+      }
+    },
+    {
+      "id": "r248",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 5.25
+      }
+    },
+    {
+      "id": "r249",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 10.5
+      }
+    },
+    {
+      "id": "r250",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 73
+      }
+    },
+    {
+      "id": "r251",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 6
+      }
+    },
+    {
+      "id": "r252",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 11.25
+      }
+    },
+    {
+      "id": "r253",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 9
+      }
+    },
+    {
+      "id": "r254",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 14.25
+      }
+    },
+    {
+      "id": "r255",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 19.5
+      }
+    },
+    {
+      "id": "r256",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 12
+      }
+    },
+    {
+      "id": "r257",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 15
+      }
+    },
+    {
+      "id": "r258",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 20.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r259",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 18,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r260",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 23.25
+      }
+    },
+    {
+      "id": "r261",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 28.5
+      }
+    },
+    {
+      "id": "r262",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 21
+      }
+    },
+    {
+      "id": "r263",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 24
+      }
+    },
+    {
+      "id": "r264",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 29.25
+      }
+    },
+    {
+      "id": "r265",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 27
+      }
+    },
+    {
+      "id": "r266",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 32.25
+      }
+    },
+    {
+      "id": "r267",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 37.5
+      }
+    },
+    {
+      "id": "r268",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 30
+      }
+    },
+    {
+      "id": "r269",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 33
+      }
+    },
+    {
+      "id": "r270",
+      "createdAt": "2026-02-09T00:00:00Z",
+      "updatedAt": "2026-02-09T00:00:00Z",
+      "data": {
+        "date": "2026-02-09",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 38.25
+      }
+    },
+    {
+      "id": "r271",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 68
+      }
+    },
+    {
+      "id": "r272",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 71
+      }
+    },
+    {
+      "id": "r273",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 6.25
+      }
+    },
+    {
+      "id": "r274",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 74
+      }
+    },
+    {
+      "id": "r275",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 9.25
+      }
+    },
+    {
+      "id": "r276",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 14.5
+      }
+    },
+    {
+      "id": "r277",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 7
+      }
+    },
+    {
+      "id": "r278",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 10
+      }
+    },
+    {
+      "id": "r279",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 15.25
+      }
+    },
+    {
+      "id": "r280",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 13
+      }
+    },
+    {
+      "id": "r281",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 18.25
+      }
+    },
+    {
+      "id": "r282",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 23.5
+      }
+    },
+    {
+      "id": "r283",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 16
+      }
+    },
+    {
+      "id": "r284",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 19
+      }
+    },
+    {
+      "id": "r285",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 24.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r286",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 22,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r287",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 27.25
+      }
+    },
+    {
+      "id": "r288",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 32.5
+      }
+    },
+    {
+      "id": "r289",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 25
+      }
+    },
+    {
+      "id": "r290",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 28
+      }
+    },
+    {
+      "id": "r291",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 33.25
+      }
+    },
+    {
+      "id": "r292",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 31
+      }
+    },
+    {
+      "id": "r293",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 36.25
+      }
+    },
+    {
+      "id": "r294",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 41.5
+      }
+    },
+    {
+      "id": "r295",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 34
+      }
+    },
+    {
+      "id": "r296",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 37
+      }
+    },
+    {
+      "id": "r297",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 42.25
+      }
+    },
+    {
+      "id": "r298",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 40
+      }
+    },
+    {
+      "id": "r299",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 45.25
+      }
+    },
+    {
+      "id": "r300",
+      "createdAt": "2026-02-10T00:00:00Z",
+      "updatedAt": "2026-02-10T00:00:00Z",
+      "data": {
+        "date": "2026-02-10",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 50.5
+      }
+    },
+    {
+      "id": "r301",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 5
+      }
+    },
+    {
+      "id": "r302",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 10.25
+      }
+    },
+    {
+      "id": "r303",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 8
+      }
+    },
+    {
+      "id": "r304",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 13.25
+      }
+    },
+    {
+      "id": "r305",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 18.5
+      }
+    },
+    {
+      "id": "r306",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 11
+      }
+    },
+    {
+      "id": "r307",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 14
+      }
+    },
+    {
+      "id": "r308",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 19.25
+      }
+    },
+    {
+      "id": "r309",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 17
+      }
+    },
+    {
+      "id": "r310",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 22.25
+      }
+    },
+    {
+      "id": "r311",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 27.5
+      }
+    },
+    {
+      "id": "r312",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 20
+      }
+    },
+    {
+      "id": "r313",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 23
+      }
+    },
+    {
+      "id": "r314",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 28.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r315",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 26,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r316",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 31.25
+      }
+    },
+    {
+      "id": "r317",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 36.5
+      }
+    },
+    {
+      "id": "r318",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 29
+      }
+    },
+    {
+      "id": "r319",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 32
+      }
+    },
+    {
+      "id": "r320",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 37.25
+      }
+    },
+    {
+      "id": "r321",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 35
+      }
+    },
+    {
+      "id": "r322",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 40.25
+      }
+    },
+    {
+      "id": "r323",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 45.5
+      }
+    },
+    {
+      "id": "r324",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 38
+      }
+    },
+    {
+      "id": "r325",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 41
+      }
+    },
+    {
+      "id": "r326",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 46.25
+      }
+    },
+    {
+      "id": "r327",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 44
+      }
+    },
+    {
+      "id": "r328",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 49.25
+      }
+    },
+    {
+      "id": "r329",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 54.5
+      }
+    },
+    {
+      "id": "r330",
+      "createdAt": "2026-02-11T00:00:00Z",
+      "updatedAt": "2026-02-11T00:00:00Z",
+      "data": {
+        "date": "2026-02-11",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 47
+      }
+    },
+    {
+      "id": "r331",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 12
+      }
+    },
+    {
+      "id": "r332",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 17.25
+      }
+    },
+    {
+      "id": "r333",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 22.5
+      }
+    },
+    {
+      "id": "r334",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 15
+      }
+    },
+    {
+      "id": "r335",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 18
+      }
+    },
+    {
+      "id": "r336",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 23.25
+      }
+    },
+    {
+      "id": "r337",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 21
+      }
+    },
+    {
+      "id": "r338",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 26.25
+      }
+    },
+    {
+      "id": "r339",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 31.5
+      }
+    },
+    {
+      "id": "r340",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 24
+      }
+    },
+    {
+      "id": "r341",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 27
+      }
+    },
+    {
+      "id": "r342",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 32.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r343",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 30,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r344",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 35.25
+      }
+    },
+    {
+      "id": "r345",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 40.5
+      }
+    },
+    {
+      "id": "r346",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 33
+      }
+    },
+    {
+      "id": "r347",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 36
+      }
+    },
+    {
+      "id": "r348",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 41.25
+      }
+    },
+    {
+      "id": "r349",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 39
+      }
+    },
+    {
+      "id": "r350",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 44.25
+      }
+    },
+    {
+      "id": "r351",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 49.5
+      }
+    },
+    {
+      "id": "r352",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 42
+      }
+    },
+    {
+      "id": "r353",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 45
+      }
+    },
+    {
+      "id": "r354",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 50.25
+      }
+    },
+    {
+      "id": "r355",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 48
+      }
+    },
+    {
+      "id": "r356",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 53.25
+      }
+    },
+    {
+      "id": "r357",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 58.5
+      }
+    },
+    {
+      "id": "r358",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 51
+      }
+    },
+    {
+      "id": "r359",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 54
+      }
+    },
+    {
+      "id": "r360",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "updatedAt": "2026-02-12T00:00:00Z",
+      "data": {
+        "date": "2026-02-12",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 59.25
+      }
+    },
+    {
+      "id": "r361",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 19
+      }
+    },
+    {
+      "id": "r362",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 22
+      }
+    },
+    {
+      "id": "r363",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 27.25
+      }
+    },
+    {
+      "id": "r364",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 25
+      }
+    },
+    {
+      "id": "r365",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 30.25
+      }
+    },
+    {
+      "id": "r366",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 35.5
+      }
+    },
+    {
+      "id": "r367",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 28
+      }
+    },
+    {
+      "id": "r368",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 31
+      }
+    },
+    {
+      "id": "r369",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 36.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r370",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 34,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r371",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 39.25
+      }
+    },
+    {
+      "id": "r372",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 44.5
+      }
+    },
+    {
+      "id": "r373",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 37
+      }
+    },
+    {
+      "id": "r374",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 40
+      }
+    },
+    {
+      "id": "r375",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 45.25
+      }
+    },
+    {
+      "id": "r376",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 43
+      }
+    },
+    {
+      "id": "r377",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 48.25
+      }
+    },
+    {
+      "id": "r378",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 53.5
+      }
+    },
+    {
+      "id": "r379",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 46
+      }
+    },
+    {
+      "id": "r380",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 49
+      }
+    },
+    {
+      "id": "r381",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 54.25
+      }
+    },
+    {
+      "id": "r382",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 52
+      }
+    },
+    {
+      "id": "r383",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 57.25
+      }
+    },
+    {
+      "id": "r384",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 62.5
+      }
+    },
+    {
+      "id": "r385",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 55
+      }
+    },
+    {
+      "id": "r386",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 58
+      }
+    },
+    {
+      "id": "r387",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 63.25
+      }
+    },
+    {
+      "id": "r388",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 61
+      }
+    },
+    {
+      "id": "r389",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 66.25
+      }
+    },
+    {
+      "id": "r390",
+      "createdAt": "2026-02-13T00:00:00Z",
+      "updatedAt": "2026-02-13T00:00:00Z",
+      "data": {
+        "date": "2026-02-13",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 71.5
+      }
+    },
+    {
+      "id": "r391",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 26
+      }
+    },
+    {
+      "id": "r392",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 31.25
+      }
+    },
+    {
+      "id": "r393",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 29
+      }
+    },
+    {
+      "id": "r394",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 34.25
+      }
+    },
+    {
+      "id": "r395",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 39.5
+      }
+    },
+    {
+      "id": "r396",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 32
+      }
+    },
+    {
+      "id": "r397",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 35
+      }
+    },
+    {
+      "id": "r398",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 40.25,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r399",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 38,
+        "isCorrection": true
+      }
+    },
+    {
+      "id": "r400",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 43.25
+      }
+    },
+    {
+      "id": "r401",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 48.5
+      }
+    },
+    {
+      "id": "r402",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 41
+      }
+    },
+    {
+      "id": "r403",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 44
+      }
+    },
+    {
+      "id": "r404",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "East",
+        "tons": 49.25
+      }
+    },
+    {
+      "id": "r405",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 47
+      }
+    },
+    {
+      "id": "r406",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 52.25
+      }
+    },
+    {
+      "id": "r407",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "North",
+        "tons": 57.5
+      }
+    },
+    {
+      "id": "r408",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Clay",
+        "vendor": "Initech",
+        "location": "South",
+        "tons": 50
+      }
+    },
+    {
+      "id": "r409",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 53
+      }
+    },
+    {
+      "id": "r410",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "East",
+        "tons": 58.25
+      }
+    },
+    {
+      "id": "r411",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 56
+      }
+    },
+    {
+      "id": "r412",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 61.25
+      }
+    },
+    {
+      "id": "r413",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "North",
+        "tons": 66.5
+      }
+    },
+    {
+      "id": "r414",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Acme",
+        "location": "South",
+        "tons": 59
+      }
+    },
+    {
+      "id": "r415",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 62
+      }
+    },
+    {
+      "id": "r416",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "East",
+        "tons": 67.25
+      }
+    },
+    {
+      "id": "r417",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 65
+      }
+    },
+    {
+      "id": "r418",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 70.25
+      }
+    },
+    {
+      "id": "r419",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "North",
+        "tons": 5.5
+      }
+    },
+    {
+      "id": "r420",
+      "createdAt": "2026-02-14T00:00:00Z",
+      "updatedAt": "2026-02-14T00:00:00Z",
+      "data": {
+        "date": "2026-02-14",
+        "material": "Dirt",
+        "vendor": "Globex",
+        "location": "South",
+        "tons": 68
+      }
+    }
+  ]
+}
