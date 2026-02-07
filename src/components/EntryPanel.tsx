@@ -9,19 +9,25 @@ export function EntryPanel(props: {
   config: PivotConfig;
   selected: SelectedCell;
   onClose: () => void;
+  onGoToFullRecords: () => void;
   onSubmit: (args: { measureValues: Record<string, number | ''>; flags: Record<string, boolean> }) => void;
   onToggleFlag: (recordId: string, flagKey: string, value: boolean) => void;
   onBulkToggleFlag: (flagKey: string, value: boolean) => void;
 }) {
-  const { dataset, config, selected, onClose, onSubmit, onToggleFlag, onBulkToggleFlag } = props;
+  const { dataset, config, selected, onClose, onGoToFullRecords, onSubmit, onToggleFlag, onBulkToggleFlag } = props;
 
   return (
     <div className={styles.panel}>
       <div className={styles.titleRow}>
         <div className={styles.title}>Entry</div>
-        <button onClick={onClose} style={{ cursor: 'pointer' }}>
-          Close
-        </button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button onClick={onGoToFullRecords} style={{ cursor: 'pointer' }}>
+            Full records…
+          </button>
+          <button onClick={onClose} style={{ cursor: 'pointer' }}>
+            Close
+          </button>
+        </div>
       </div>
 
       <EntryHeader dataset={dataset} config={config} selected={selected} />

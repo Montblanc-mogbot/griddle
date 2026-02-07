@@ -5,6 +5,7 @@ import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { GlidePivotHeader } from './components/GlidePivotHeader';
 import { DatasetImportExport } from './components/DatasetImportExport';
 import { EntryPanel } from './components/EntryPanel';
+import { FullRecordsPanel } from './components/FullRecordsPanel';
 import { SchemaEditor } from './components/SchemaEditor';
 import { computePivot } from './domain/pivot';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
@@ -58,6 +59,7 @@ export default function App() {
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [glideHeaderTx, setGlideHeaderTx] = useState(0);
+  const [panelMode, setPanelMode] = useState<'entry' | 'fullRecords'>('entry');
 
   const pivot = useMemo(
     () => computePivot(dataset.records, dataset.schema, config),
@@ -189,13 +191,17 @@ export default function App() {
           })()}
         </div>
 
-        {selected ? (
+        {selected && panelMode === 'entry' ? (
           <div className={styles.drawer}>
             <EntryPanel
               dataset={dataset}
               config={config}
               selected={selected}
-              onClose={() => setSelected(null)}
+              onClose={() => {
+                setSelected(null);
+                setPanelMode('entry');
+              }}
+              onGoToFullRecords={() => setPanelMode('fullRecords')}
               onSubmit={({ measureValues, flags }) => {
                 const record = createRecordFromSelection({
                   schema: dataset.schema,
@@ -222,6 +228,20 @@ export default function App() {
               }}
             />
           </div>
+        ) : null}
+
+        {selected && panelMode === 'fullRecords' ? (
+          <FullRecordsPanel
+            dataset={dataset}
+            config={config}
+            selected={selected}
+            onClose={() => {
+              setSelected(null);
+              setPanelMode('entry');
+            }}
+            onDone={() => setPanelMode('entry')}
+            onDatasetChange={(next) => setDataset(next)}
+          />
         ) : null}
       </div>
     </div>
