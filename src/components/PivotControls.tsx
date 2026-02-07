@@ -164,82 +164,89 @@ export function PivotControls(props: {
           }}
         />
 
-        {config.slicerKeys.length > 0 ? (
-          <div
-            style={{
-              display: 'flex',
-              gap: 6,
-              flexWrap: 'nowrap',
-              overflowX: 'auto',
-              maxWidth: 520,
-              paddingBottom: 2,
-            }}
-          >
-            {config.slicerKeys.map((k) => {
-              const field = slicerFields.find((f) => f.key === k);
-              if (!field) return null;
+        {/* Reserve space for chip row to keep toolbar height stable */}
+        <div
+          style={{
+            display: 'flex',
+            gap: 6,
+            flexWrap: 'nowrap',
+            overflowX: 'auto',
+            maxWidth: 520,
+            paddingBottom: 2,
+            minHeight: 34,
+            alignItems: 'center',
+          }}
+        >
+          {config.slicerKeys.map((k) => {
+            const field = slicerFields.find((f) => f.key === k);
+            if (!field) return null;
 
-              const desired = config.slicers[k];
-              const values = Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
-              const label = values.length === 0 ? 'All' : values.length <= 2 ? values.join(', ') : `${values.length} selected`;
+            const desired = config.slicers[k];
+            const values = Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
+            const label =
+              values.length === 0
+                ? 'All'
+                : values.length <= 2
+                  ? values.join(', ')
+                  : `${values.length} selected`;
 
-              return (
-                <button
-                  key={k}
-                  ref={(el) => {
-                    chipRefs.current[k] = el;
-                  }}
-                  onClick={() => {
-                    setSlicerSearch('');
-                    setActiveSlicerKey((prev) => (prev === k ? null : k));
-                  }}
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: 999,
-                    border: '1px solid #ddd',
-                    background: '#f6f6f6',
-                    boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px #4f46e5' : 'none',
-                    fontSize: 12,
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    gap: 6,
-                    alignItems: 'center',
-                    whiteSpace: 'nowrap',
-                    flex: '0 0 auto',
-                    maxWidth: 220,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                  title={`${field.label}: ${label}`}
-                >
-                  <span style={{ color: '#555' }}>{field.label}:</span>
-                  <span>{label}</span>
-                </button>
-              );
-            })}
-
-            {config.slicerKeys.length > 0 ? (
+            return (
               <button
+                key={k}
+                ref={(el) => {
+                  chipRefs.current[k] = el;
+                }}
                 onClick={() => {
-                  const cleared = Object.fromEntries(config.slicerKeys.map((k) => [k, []]));
-                  onChange({ ...config, slicers: { ...config.slicers, ...cleared } });
+                  setSlicerSearch('');
+                  setActiveSlicerKey((prev) => (prev === k ? null : k));
                 }}
                 style={{
                   padding: '6px 10px',
                   borderRadius: 999,
                   border: '1px solid #ddd',
-                  background: '#fff',
+                  background: '#f6f6f6',
+                  boxShadow: activeSlicerKey === k ? 'inset 0 0 0 2px #4f46e5' : 'none',
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: 'pointer',
+                  display: 'flex',
+                  gap: 6,
+                  alignItems: 'center',
+                  whiteSpace: 'nowrap',
+                  flex: '0 0 auto',
+                  maxWidth: 220,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 }}
+                title={`${field.label}: ${label}`}
               >
-                Clear
+                <span style={{ color: '#555' }}>{field.label}:</span>
+                <span>{label}</span>
               </button>
-            ) : null}
-          </div>
-        ) : null}
+            );
+          })}
+
+          {config.slicerKeys.length > 0 ? (
+            <button
+              onClick={() => {
+                const cleared = Object.fromEntries(config.slicerKeys.map((k) => [k, []]));
+                onChange({ ...config, slicers: { ...config.slicers, ...cleared } });
+              }}
+              style={{
+                padding: '6px 10px',
+                borderRadius: 999,
+                border: '1px solid #ddd',
+                background: '#fff',
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: 'pointer',
+                flex: '0 0 auto',
+              }}
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
 
         {activeSlicerField && popoverPos ? (
           <div
