@@ -12,13 +12,52 @@ function coverageLabel(c: Coverage): string {
   return 'some';
 }
 
-function computeFlagCoverage(records: RecordEntity[], flagKey: string): Coverage {
-  if (records.length === 0) return 'none';
-  let t = 0;
-  for (const r of records) if (r.data[flagKey] === true) t++;
-  if (t === 0) return 'none';
-  if (t === records.length) return 'all';
-  return 'some';
+interface FlagAggregation {
+  flagKey: string;
+  label: string;
+  whenTrue: number | null;
+  whenFalse: number | null;
+  countTrue: number;
+  countFalse: number;
+  coverage: Coverage;
+}
+
+function computeFlagAggregations(
+  records: RecordEntity[],
+  flags: ReturnType<typeof flagFields>,
+  measureKey: string,
+): FlagAggregation[] {
+  return flags.map((f) => {
+    let sumTrue = 0;
+    let sumFalse = 0;
+    let countTrue = 0;
+    let countFalse = 0;
+
+    for (const r of records) {
+      const measureVal = r.data[measureKey];
+      const val = typeof measureVal === 'number' && Number.isFinite(measureVal) ? measureVal : 0;
+
+      if (r.data[f.key] === true) {
+        sumTrue += val;
+        countTrue++;
+      } else {
+        sumFalse += val;
+        countFalse++;
+      }
+    }
+
+    const coverage = countTrue === 0 ? 'none' : countTrue === records.length ? 'all' : 'some';
+
+    return {
+      flagKey: f.key,
+      label: f.label,
+      whenTrue: countTrue > 0 ? sumTrue : null,
+      whenFalse: countFalse > 0 ? sumFalse : null,
+      countTrue,
+      countFalse,
+      coverage,
+    };
+  });
 }
 
 function setRecordField(record: RecordEntity, field: FieldDef, value: unknown): RecordEntity {
@@ -147,6 +186,11 @@ export function BulkRangePanel(props: {
   const idSet = useMemo(() => new Set(recordIds), [recordIds]);
   const records = useMemo(() => dataset.records.filter((r) => idSet.has(r.id)), [dataset.records, idSet]);
 
+  const flagAggregations = useMemo(
+    () => computeFlagAggregations(records, flags, config.measureKey),
+    [records, flags, config.measureKey],
+  );
+
   const otherFields = dataset.schema.fields.filter((f) => !measures.has(f.key) && !f.roles.includes('flag'));
   const dimKeys = new Set([...(selected ? Object.keys(selected.row) : []), ...(selected ? Object.keys(selected.col) : [])]);
 
@@ -200,33 +244,30 @@ export function BulkRangePanel(props: {
       <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
         <div style={{ fontWeight: 900, marginBottom: 8 }}>Metadata (flags)</div>
 
-        {flags.length === 0 ? (
+        {flagAggregations.length === 0 ? (
           <div style={{ color: '#666' }}>(no flag fields)</div>
         ) : (
           <div style={{ display: 'grid', gap: 10 }}>
-            {flags.map((f) => {
-              const cov = computeFlagCoverage(records, f.key);
-              return (
-                <div
-                  key={f.key}
-                  style={{
-                    border: '1px solid #eee',
-                    borderRadius: 10,
-                    padding: 10,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: 10,
-                    alignItems: 'center',
-                  }}
-                >
+            {flagAggregations.map((agg) => (
+              <div
+                key={agg.flagKey}
+                style={{
+                  border: '1px solid #eee',
+                  borderRadius: 10,
+                  padding: 10,
+                  display: 'grid',
+                  gap: 8,
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
                   <div>
-                    <div style={{ fontWeight: 800 }}>{f.label}</div>
-                    <div style={{ fontSize: 12, color: '#666' }}>Coverage: {coverageLabel(cov)}</div>
+                    <div style={{ fontWeight: 800 }}>{agg.label}</div>
+                    <div style={{ fontSize: 12, color: '#666' }}>Coverage: {coverageLabel(agg.coverage)}</div>
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={() => {
-                        const updated = bulkSetMetadata(records, f.key, true);
+                        const updated = bulkSetMetadata(records, agg.flagKey, true);
                         onDatasetChange(upsertRecords(dataset, updated));
                       }}
                     >
@@ -234,7 +275,7 @@ export function BulkRangePanel(props: {
                     </button>
                     <button
                       onClick={() => {
-                        const updated = bulkSetMetadata(records, f.key, false);
+                        const updated = bulkSetMetadata(records, agg.flagKey, false);
                         onDatasetChange(upsertRecords(dataset, updated));
                       }}
                     >
@@ -242,7 +283,7 @@ export function BulkRangePanel(props: {
                     </button>
                     <button
                       onClick={() => {
-                        const updated = bulkToggleBoolean(records, f.key);
+                        const updated = bulkToggleBoolean(records, agg.flagKey);
                         onDatasetChange(upsertRecords(dataset, updated));
                       }}
                     >
@@ -250,8 +291,25 @@ export function BulkRangePanel(props: {
                     </button>
                   </div>
                 </div>
-              );
-            })}
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: 'var(--muted)',
+                    fontVariantNumeric: 'tabular-nums',
+                    paddingTop: 4,
+                    borderTop: '1px solid var(--border2)',
+                  }}
+                >
+                  {agg.whenTrue !== null ? formatNumber(agg.whenTrue) : '—'}
+                  {' '}
+                  <span style={{ opacity: 0.7 }}>({currentMeasure?.label ?? 'value'} when true)</span>
+                  {' · '}
+                  {agg.whenFalse !== null ? formatNumber(agg.whenFalse) : '—'}
+                  {' '}
+                  <span style={{ opacity: 0.7 }}>({currentMeasure?.label ?? 'value'} when false)</span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

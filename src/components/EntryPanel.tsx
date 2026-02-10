@@ -44,7 +44,7 @@ export function EntryPanel(props: {
       <EntryHeader dataset={dataset} config={config} selected={selected} />
 
       {/* Bulk metadata should live above the tape (approved layout) */}
-      <BulkMetadataEdit schema={dataset.schema} onToggle={onBulkToggleFlag} />
+      <BulkMetadataEdit dataset={dataset} config={config} selected={selected} onToggle={onBulkToggleFlag} />
 
       {/* Tape ledger includes the shaded bottom “new entry” row */}
       <RecordTape
