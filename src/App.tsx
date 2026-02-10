@@ -4,7 +4,6 @@ import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
-import { GlidePivotHeader } from './components/GlidePivotHeader';
 import { StartScreen } from './components/StartScreen';
 import { EntryPanel } from './components/EntryPanel';
 import { MenuBar } from './components/MenuBar';
@@ -82,7 +81,6 @@ export default function App() {
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [showPivotLayout, setShowPivotLayout] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [glideHeaderTx, setGlideHeaderTx] = useState(0);
   const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'fullRecords'>('entry');
   const [showStyleEditor, setShowStyleEditor] = useState(false);
 
@@ -586,42 +584,27 @@ export default function App() {
                 style={{
                   height: '100%',
                   borderBottom: '1px solid var(--border)',
-                  overflow: 'auto',
+                  overflow: 'hidden',
                   background: 'var(--surface)',
-                  display: 'grid',
-                  gridTemplateRows: 'auto 1fr',
-                  gap: 0,
                 }}
               >
-                <GlidePivotHeader
+                <GlidePivotGrid
                   pivot={pivot}
+                  schema={dataset.schema}
                   config={config}
-                  scrollTx={glideHeaderTx}
+                  theme={theme}
                   rowDimWidth={rowDimWidth}
                   valueColWidth={valueColWidth}
                   rowMarkersWidth={rowMarkersWidth}
+                  selection={gridSelection}
+                  onSelectionChange={(sel) => {
+                    setGridSelection(sel);
+                  }}
+                  onSingleValueCellSelected={(sel) => {
+                    setSelected(sel);
+                    setPanelMode('entry');
+                  }}
                 />
-
-                <div style={{ minHeight: 0 }}>
-                  <GlidePivotGrid
-                    pivot={pivot}
-                    schema={dataset.schema}
-                    config={config}
-                    theme={theme}
-                    rowDimWidth={rowDimWidth}
-                    valueColWidth={valueColWidth}
-                    rowMarkersWidth={rowMarkersWidth}
-                    selection={gridSelection}
-                    onSelectionChange={(sel) => {
-                      setGridSelection(sel);
-                    }}
-                    onScrollTx={setGlideHeaderTx}
-                    onSingleValueCellSelected={(sel) => {
-                      setSelected(sel);
-                      setPanelMode('entry');
-                    }}
-                  />
-                </div>
               </div>
             );
           })()}
