@@ -134,18 +134,16 @@ export function GlidePivotGrid(props: {
   }, [theme]);
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      <DataEditor
-        key={theme}
-        theme={glideTheme}
-        columns={columns}
-        rows={rowCount}
-        getCellContent={getCell}
-        headerHeight={0}
-        rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
-        rangeSelect="multi-rect"
-        freezeColumns={config.rowKeys.length}
-        gridSelection={selection}
+    <DataEditor
+      key={theme}
+      theme={glideTheme}
+      columns={columns}
+      rows={rowCount}
+      getCellContent={getCell}
+      headerHeight={0}
+      rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
+      rangeSelect="multi-rect"
+      gridSelection={selection}
       onGridSelectionChange={(sel) => {
         onSelectionChange(sel);
 
@@ -178,6 +176,5 @@ export function GlidePivotGrid(props: {
         onScrollTx(tx);
       }}
     />
-    </div>
   );
 }
