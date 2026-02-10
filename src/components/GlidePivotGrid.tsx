@@ -133,13 +133,19 @@ export function GlidePivotGrid(props: {
     };
   }, [theme]);
 
+  const totalContentWidth = useMemo(() => {
+    const rowDimsWidth = config.rowKeys.length * rowDimWidth;
+    const valuesWidth = pivot.colTuples.length * valueColWidth;
+    return rowDimsWidth + valuesWidth + rowMarkersWidth;
+  }, [config.rowKeys.length, pivot.colTuples.length, rowDimWidth, valueColWidth, rowMarkersWidth]);
+
   return (
     <DataEditor
       key={theme}
       theme={glideTheme}
       columns={columns}
       rows={rowCount}
-      width="100%"
+      width={totalContentWidth}
       getCellContent={getCell}
       headerHeight={0}
       rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
