@@ -586,7 +586,7 @@ export default function App() {
                 style={{
                   height: '100%',
                   borderBottom: '1px solid var(--border)',
-                  overflow: 'hidden',
+                  overflow: 'auto',
                   background: 'var(--surface)',
                   display: 'grid',
                   gridTemplateRows: 'auto 1fr',

@@ -139,14 +139,10 @@ export function GlidePivotGrid(props: {
       theme={glideTheme}
       columns={columns}
       rows={rowCount}
-      width="100%"
       getCellContent={getCell}
       headerHeight={0}
       rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
       rangeSelect="multi-rect"
-      freezeColumns={config.rowKeys.length}
-      smoothScrollX
-      smoothScrollY
       gridSelection={selection}
       onGridSelectionChange={(sel) => {
         onSelectionChange(sel);
