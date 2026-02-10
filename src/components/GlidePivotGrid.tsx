@@ -46,15 +46,16 @@ export function GlidePivotGrid(props: {
     }));
 
     const valueCols = pivot.colTuples.map((tuple, idx) => {
-      // Build grouped title: "Vendor/Location" or just "Vendor" if single dim
+      // Build grouped title - only show the last dimension in the title since group shows the first
       const groupParts = config.colKeys.map((key) => tuple[key] ?? '');
-      const title = groupParts.join(' / ');
+      // Title: only the last dimension value (not the full path)
+      const title = groupParts[groupParts.length - 1] ?? '';
 
       return {
         title,
         id: `c${idx}`,
         width: valueColWidth,
-        // Use group for the first column dimension
+        // Group: first dimension for grouping
         group: config.colKeys.length > 1 ? groupParts[0] : undefined,
       };
     });
@@ -136,7 +137,6 @@ export function GlidePivotGrid(props: {
   }, [theme]);
 
   const freezeColCount = config.rowKeys.length;
-  console.log('[GlidePivotGrid] freezeColumns:', freezeColCount, 'rowKeys:', config.rowKeys);
 
   return (
     <DataEditor
@@ -151,6 +151,10 @@ export function GlidePivotGrid(props: {
       freezeColumns={freezeColCount}
       smoothScrollX
       gridSelection={selection}
+      getGroupDetails={(g) => ({
+        name: g,
+        icon: undefined,
+      })}
       onGridSelectionChange={(sel) => {
         onSelectionChange(sel);
         const cur = sel.current;
