@@ -136,9 +136,10 @@ export function BulkRangePanel(props: {
   recordIds: string[];
   cellCount: number;
   onClose: () => void;
+  onGoToFullRecords: () => void;
   onDatasetChange: (next: DatasetFileV1) => void;
 }) {
-  const { dataset, config, selected, recordIds, cellCount, onClose, onDatasetChange } = props;
+  const { dataset, config, selected, recordIds, cellCount, onClose, onGoToFullRecords, onDatasetChange } = props;
 
   const flags = flagFields(dataset.schema);
   const measures = new Set(measureFields(dataset.schema).map((f) => f.key));
@@ -191,6 +192,10 @@ export function BulkRangePanel(props: {
       </div>
 
       <div style={{ fontSize: 12, color: 'var(--muted)' }}>Range selection = bulk edit. Single cell = Entry.</div>
+
+      <div style={{ display: 'flex', gap: 8, marginTop: -8 }}>
+        <button onClick={onGoToFullRecords}>Full records…</button>
+      </div>
 
       <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
         <div style={{ fontWeight: 900, marginBottom: 8 }}>Metadata (flags)</div>

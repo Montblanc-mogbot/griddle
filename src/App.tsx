@@ -622,6 +622,7 @@ export default function App() {
                 // keep selection, just close bulk panel
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
               }}
+              onGoToFullRecords={() => setPanelMode('fullRecords')}
               onDatasetChange={(next) => setDataset(next)}
             />
           </div>
