@@ -102,13 +102,7 @@ export function BulkMetadataEdit(props: {
                   marginLeft: 24,
                 }}
               >
-                {agg.whenTrue !== null ? formatNumber(agg.whenTrue) : '—'}
-                {' '}
-                <span style={{ color: 'var(--muted)', opacity: 0.7 }}>({measureLabel} when true)</span>
-                {' · '}
-                {agg.whenFalse !== null ? formatNumber(agg.whenFalse) : '—'}
-                {' '}
-                <span style={{ color: 'var(--muted)', opacity: 0.7 }}>({measureLabel} when false)</span>
+                {measureLabel} {agg.whenTrue !== null ? formatNumber(agg.whenTrue) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse) : '—'})
               </div>
             </div>
           </div>

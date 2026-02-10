@@ -300,13 +300,7 @@ export function BulkRangePanel(props: {
                     borderTop: '1px solid var(--border2)',
                   }}
                 >
-                  {agg.whenTrue !== null ? formatNumber(agg.whenTrue) : '—'}
-                  {' '}
-                  <span style={{ opacity: 0.7 }}>({currentMeasure?.label ?? 'value'} when true)</span>
-                  {' · '}
-                  {agg.whenFalse !== null ? formatNumber(agg.whenFalse) : '—'}
-                  {' '}
-                  <span style={{ opacity: 0.7 }}>({currentMeasure?.label ?? 'value'} when false)</span>
+                  {currentMeasure?.label ?? 'Value'} {agg.whenTrue !== null ? formatNumber(agg.whenTrue) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse) : '—'})
                 </div>
               </div>
             ))}
