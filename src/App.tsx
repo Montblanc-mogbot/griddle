@@ -586,7 +586,7 @@ export default function App() {
                 style={{
                   height: '100%',
                   borderBottom: '1px solid var(--border)',
-                  overflow: 'auto',
+                  overflow: 'hidden',
                   background: 'var(--surface)',
                   display: 'grid',
                   gridTemplateRows: 'auto 1fr',
@@ -602,7 +602,7 @@ export default function App() {
                   rowMarkersWidth={rowMarkersWidth}
                 />
 
-                <div style={{ minHeight: 0, overflow: 'auto' }}>
+                <div style={{ minHeight: 0 }}>
                   <GlidePivotGrid
                     pivot={pivot}
                     schema={dataset.schema}
