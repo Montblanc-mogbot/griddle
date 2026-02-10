@@ -141,6 +141,7 @@ export function GlidePivotGrid(props: {
       theme={glideTheme}
       columns={columns}
       rows={rowCount}
+      width="100%"
       getCellContent={getCell}
       rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
       rangeSelect="multi-rect"
