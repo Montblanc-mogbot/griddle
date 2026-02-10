@@ -143,6 +143,7 @@ export function GlidePivotGrid(props: {
       headerHeight={0}
       rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
       rangeSelect="multi-rect"
+      freezeColumns={config.rowKeys.length}
       gridSelection={selection}
       onGridSelectionChange={(sel) => {
         onSelectionChange(sel);
