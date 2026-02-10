@@ -135,6 +135,9 @@ export function GlidePivotGrid(props: {
     };
   }, [theme]);
 
+  const freezeColCount = config.rowKeys.length;
+  console.log('[GlidePivotGrid] freezeColumns:', freezeColCount, 'rowKeys:', config.rowKeys);
+
   return (
     <DataEditor
       key={theme}
@@ -145,7 +148,7 @@ export function GlidePivotGrid(props: {
       getCellContent={getCell}
       rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
       rangeSelect="multi-rect"
-      freezeColumns={config.rowKeys.length}
+      freezeColumns={freezeColCount}
       smoothScrollX
       gridSelection={selection}
       onGridSelectionChange={(sel) => {
