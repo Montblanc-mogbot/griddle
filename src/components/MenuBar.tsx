@@ -129,6 +129,7 @@ export function MenuBar(props: {
   onClearSelection: () => void;
   onShowFields: () => void;
   onShowStyles: () => void;
+  onScaffoldDates: () => void;
 }) {
   const {
     onOpenFile,
@@ -139,6 +140,7 @@ export function MenuBar(props: {
     onClearSelection,
     onShowFields,
     onShowStyles,
+    onScaffoldDates,
   } = props;
 
   return (
@@ -159,6 +161,10 @@ export function MenuBar(props: {
         <Divider />
         <MenuItem label="Styles…" onClick={onShowStyles} />
         <MenuItem label="Fields…" onClick={onShowFields} />
+      </Menu>
+
+      <Menu label="Data">
+        <MenuItem label="Pre-populate dates…" onClick={onScaffoldDates} />
       </Menu>
 
       <Menu label="Help">

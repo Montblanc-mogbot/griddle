@@ -24,6 +24,7 @@ import { buildGriddleFile, parseGriddleJson, serializeGriddleFile } from './doma
 import { loadLastFile, saveLastFile } from './domain/localState';
 import { parseDatasetJson, serializeDataset } from './domain/datasetIo';
 import { ResizableDrawer } from './components/ResizableDrawer';
+import { ScaffoldDialog } from './components/ScaffoldDialog';
 import { setRecordField } from './domain/updateRecord';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
@@ -84,6 +85,7 @@ export default function App() {
   const [showFilters, setShowFilters] = useState(false);
   const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'fullRecords'>('entry');
   const [showStyleEditor, setShowStyleEditor] = useState(false);
+  const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
 
   const [gridSelection, setGridSelection] = useState<GridSelection>({
     columns: CompactSelection.empty(),
@@ -367,6 +369,7 @@ export default function App() {
             }}
             onShowFields={() => setShowSchemaEditor(true)}
             onShowStyles={() => setShowStyleEditor(true)}
+            onScaffoldDates={() => setShowScaffoldDialog(true)}
           />
 
           <div style={{ flex: 1 }} />
@@ -695,6 +698,14 @@ export default function App() {
           </ResizableDrawer>
         ) : null}
       </div>
+
+      {showScaffoldDialog ? (
+        <ScaffoldDialog
+          dataset={dataset}
+          onClose={() => setShowScaffoldDialog(false)}
+          onDatasetChange={(next) => setDataset(next)}
+        />
+      ) : null}
     </div>
   );
 }
