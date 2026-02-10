@@ -682,6 +682,7 @@ export default function App() {
             dataset={dataset}
             config={config}
             selected={selected}
+            recordIds={bulkSel.hasMulti ? bulkSel.recordIds : undefined}
             onClose={() => {
               setSelected(null);
               setPanelMode('none');

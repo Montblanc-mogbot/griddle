@@ -1,9 +1,14 @@
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
 import { createRecordFromSelection, getRecordsForCell, upsertRecords } from '../domain/records';
 import styles from './bottomPanel.module.css';
+import { useMemo } from 'react';
 
-function ContextPills(props: { selected: SelectedCell; config: PivotConfig }) {
+function ContextPills(props: { selected: SelectedCell | null; config: PivotConfig }) {
   const { selected, config } = props;
+
+  if (!selected) {
+    return <div className={styles.context}><span>Bulk selection</span></div>;
+  }
 
   const dimKeys = Array.from(new Set([...config.rowKeys, ...config.colKeys]));
   return (
@@ -123,14 +128,25 @@ function CellEditor(props: {
 export function FullRecordsPanel(props: {
   dataset: DatasetFileV1;
   config: PivotConfig;
-  selected: SelectedCell;
+  selected: SelectedCell | null;
+  recordIds?: string[];
   onClose: () => void;
   onDone: () => void;
   onDatasetChange: (next: DatasetFileV1) => void;
 }) {
-  const { dataset, config, selected, onClose, onDone, onDatasetChange } = props;
+  const { dataset, config, selected, recordIds: explicitRecordIds, onClose, onDone, onDatasetChange } = props;
 
-  const records = getRecordsForCell(dataset, selected);
+  // Use explicit record IDs if provided (bulk mode), otherwise derive from selected cell
+  const records = useMemo(() => {
+    if (explicitRecordIds && explicitRecordIds.length > 0) {
+      const idSet = new Set(explicitRecordIds);
+      return dataset.records.filter((r) => idSet.has(r.id));
+    }
+    if (selected) {
+      return getRecordsForCell(dataset, selected);
+    }
+    return [];
+  }, [dataset, selected, explicitRecordIds]);
   const fields = dataset.schema.fields;
 
   function updateRecord(next: RecordEntity) {
@@ -138,6 +154,7 @@ export function FullRecordsPanel(props: {
   }
 
   function addNewRecord() {
+    if (!selected) return; // Can't add record in bulk mode without a specific cell context
     // Add a record prepopulated from selection dims; user can then fill any other fields.
     const rec = createRecordFromSelection({
       schema: dataset.schema,
@@ -158,7 +175,7 @@ export function FullRecordsPanel(props: {
         </div>
 
         <div className={styles.actions}>
-          <button onClick={addNewRecord}>Add record</button>
+          <button onClick={addNewRecord} disabled={!selected}>Add record</button>
           <button onClick={onDone}>Back to entry</button>
           <button onClick={onClose}>Close</button>
         </div>
