@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import type { DatasetFileV1, RecordEntity } from '../domain/types';
-import { flagFields } from '../domain/records';
 import { upsertRecords } from '../domain/records';
 import styles from './scaffoldDialog.module.css';
 
@@ -13,8 +12,8 @@ interface ScaffoldConfig {
   dateField: string;
   dateRange: DateRange;
   includeWeekends: boolean;
-  otherDims: string[]; // Keys of other dimensions to combine
-  defaultMeasureValue: number;
+  otherDims: string[];
+  minimal: boolean; // If true, only date field is set
 }
 
 function* generateDates(start: string, end: string, includeWeekends: boolean): Generator<string> {
@@ -72,32 +71,25 @@ function generateScaffoldRecords(
   // Get distinct values for other dimensions
   const dimValues = config.otherDims.map((key) => getDimValues(dataset.records, key));
   
-  // Create all combinations
-  const combinations = Array.from(cartesianProduct([dates, ...dimValues]));
+  // Create all combinations (or just dates if no other dims)
+  const combinations = dimValues.length > 0 
+    ? Array.from(cartesianProduct([dates, ...dimValues]))
+    : dates.map(d => [d]);
   
   const now = new Date().toISOString();
-  const flags = flagFields(dataset.schema);
   
   return combinations.map((combo, idx) => {
     const data: Record<string, unknown> = {
       [config.dateField]: combo[0],
     };
     
-    // Add other dimension values
+    // Add other dimension values (if any)
     for (let i = 0; i < config.otherDims.length; i++) {
       data[config.otherDims[i]] = combo[i + 1];
     }
     
-    // Find measure field (first measure in schema)
-    const measureField = dataset.schema.fields.find((f) => f.roles.includes('measure'));
-    if (measureField) {
-      data[measureField.key] = config.defaultMeasureValue;
-    }
-    
-    // Initialize flags to false
-    for (const f of flags) {
-      data[f.key] = false;
-    }
+    // In minimal mode, don't add measures or flags
+    // Just the date (and any selected dimensions)
     
     const id = `scaffold-${now}-${idx}`;
     return {
@@ -118,13 +110,11 @@ interface ScaffoldDialogProps {
 export function ScaffoldDialog(props: ScaffoldDialogProps) {
   const { dataset, onClose, onDatasetChange } = props;
   
-  // Find date fields
   const dateFields = useMemo(() => 
     dataset.schema.fields.filter((f) => f.type === 'date'),
     [dataset.schema],
   );
   
-  // Find dimension fields (currently in pivot or available)
   const dimFields = useMemo(() => 
     dataset.schema.fields.filter((f) => 
       f.roles.includes('rowDim') || f.roles.includes('colDim'),
@@ -137,7 +127,7 @@ export function ScaffoldDialog(props: ScaffoldDialogProps) {
     dateRange: { start: '', end: '' },
     includeWeekends: true,
     otherDims: [],
-    defaultMeasureValue: 0,
+    minimal: true, // Default to minimal
   }));
   
   const previewCount = useMemo(() => {
@@ -149,6 +139,10 @@ export function ScaffoldDialog(props: ScaffoldDialogProps) {
       scaffoldConfig.dateRange.end,
       scaffoldConfig.includeWeekends,
     )).length;
+    
+    if (scaffoldConfig.otherDims.length === 0) {
+      return dates;
+    }
     
     const combinations = scaffoldConfig.otherDims.reduce((acc, key) => {
       const values = getDimValues(dataset.records, key);
@@ -193,6 +187,21 @@ export function ScaffoldDialog(props: ScaffoldDialogProps) {
             Generate placeholder records for every date in a range. This ensures all dates appear in the pivot, 
             even when no shipments occurred.
           </p>
+          
+          <div className={styles.formGroup}>
+            <label className={styles.checkbox}>
+              <input
+                type="checkbox"
+                checked={scaffoldConfig.minimal}
+                onChange={(e) => setScaffoldConfig(c => ({ ...c, minimal: e.target.checked }))}
+              />
+              <strong>Minimal records (date only)</strong>
+            </label>
+            <p className={styles.hint}>
+              When enabled, records contain only the date field (and any selected dimensions below).
+              No measures or flags are set.
+            </p>
+          </div>
           
           <div className={styles.formGroup}>
             <label>Date field</label>
@@ -244,7 +253,7 @@ export function ScaffoldDialog(props: ScaffoldDialogProps) {
           
           {dimFields.length > 0 && (
             <div className={styles.formGroup}>
-              <label>Include dimension combinations</label>
+              <label>Include dimension combinations (optional)</label>
               <div className={styles.checkboxGroup}>
                 {dimFields.map((f) => (
                   <label key={f.key} className={styles.checkbox}>
@@ -264,28 +273,15 @@ export function ScaffoldDialog(props: ScaffoldDialogProps) {
                 ))}
               </div>
               <p className={styles.hint}>
-                Creates records for every combination of selected dimensions × dates.
+                Creates records for every combination of selected dimensions × dates. 
+                Leave unchecked for date-only records.
               </p>
             </div>
           )}
           
-          <div className={styles.formGroup}>
-            <label>Default measure value</label>
-            <input
-              type="number"
-              value={scaffoldConfig.defaultMeasureValue}
-              onChange={(e) => setScaffoldConfig(c => ({ 
-                ...c, 
-                defaultMeasureValue: e.target.value === '' ? 0 : Number(e.target.value),
-              }))}
-            />
-            <p className={styles.hint}>
-              Initial value for the measure (usually 0 for placeholder records).
-            </p>
-          </div>
-          
           <div className={styles.preview}>
             <strong>Preview:</strong> Will create {previewCount.toLocaleString()} placeholder records
+            {scaffoldConfig.minimal && ' (date field only)'}
           </div>
         </div>
         
