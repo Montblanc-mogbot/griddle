@@ -23,6 +23,7 @@ import { getRecordIdsForGridSelection } from './domain/gridSelection';
 import { buildGriddleFile, parseGriddleJson, serializeGriddleFile } from './domain/griddleIo';
 import { loadLastFile, saveLastFile } from './domain/localState';
 import { parseDatasetJson, serializeDataset } from './domain/datasetIo';
+import { ResizableDrawer } from './components/ResizableDrawer';
 import { setRecordField } from './domain/updateRecord';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
@@ -611,7 +612,7 @@ export default function App() {
         </div>
 
         {bulkSel.hasMulti ? (
-          <div className={styles.drawer}>
+          <ResizableDrawer>
             <BulkRangePanel
               dataset={dataset}
               config={config}
@@ -625,9 +626,9 @@ export default function App() {
               onGoToFullRecords={() => setPanelMode('fullRecords')}
               onDatasetChange={(next) => setDataset(next)}
             />
-          </div>
+          </ResizableDrawer>
         ) : selected && panelMode === 'entry' ? (
-          <div className={styles.drawer}>
+          <ResizableDrawer>
             <EntryPanel
               dataset={dataset}
               config={config}
@@ -674,22 +675,24 @@ export default function App() {
                 });
               }}
             />
-          </div>
+          </ResizableDrawer>
         ) : null}
 
         {selected && panelMode === 'fullRecords' ? (
-          <FullRecordsPanel
-            dataset={dataset}
-            config={config}
-            selected={selected}
-            recordIds={bulkSel.hasMulti ? bulkSel.recordIds : undefined}
-            onClose={() => {
-              setSelected(null);
-              setPanelMode('none');
-            }}
-            onDone={() => setPanelMode('entry')}
-            onDatasetChange={(next) => setDataset(next)}
-          />
+          <ResizableDrawer>
+            <FullRecordsPanel
+              dataset={dataset}
+              config={config}
+              selected={selected}
+              recordIds={bulkSel.hasMulti ? bulkSel.recordIds : undefined}
+              onClose={() => {
+                setSelected(null);
+                setPanelMode('none');
+              }}
+              onDone={() => setPanelMode('entry')}
+              onDatasetChange={(next) => setDataset(next)}
+            />
+          </ResizableDrawer>
         ) : null}
       </div>
     </div>

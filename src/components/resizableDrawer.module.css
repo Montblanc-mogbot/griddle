@@ -1,0 +1,31 @@
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -12px 0 24px rgba(0, 0, 0, 0.25);
+  overflow: auto;
+  z-index: 10;
+  display: flex;
+}
+
+.resizeHandle {
+  width: 6px;
+  flex: 0 0 6px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.resizeHandle:hover,
+.resizeHandle.active {
+  background: var(--accent, #6366f1);
+}
+
+.drawerContent {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
