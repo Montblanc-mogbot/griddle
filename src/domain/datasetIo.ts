@@ -80,31 +80,18 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
 
     const styleRules = isObject(input.flag.styleRules)
       ? {
-          none: isObject(input.flag.styleRules.none)
+          bg: isObject(input.flag.styleRules.bg)
             ? {
-                bg: typeof input.flag.styleRules.none.bg === 'string' ? input.flag.styleRules.none.bg : undefined,
-                text:
-                  typeof input.flag.styleRules.none.text === 'string'
-                    ? input.flag.styleRules.none.text
-                    : undefined,
+                enabled: input.flag.styleRules.bg.enabled === true,
+                some: typeof input.flag.styleRules.bg.some === 'string' ? input.flag.styleRules.bg.some : undefined,
+                all: typeof input.flag.styleRules.bg.all === 'string' ? input.flag.styleRules.bg.all : undefined,
               }
             : undefined,
-          some: isObject(input.flag.styleRules.some)
+          text: isObject(input.flag.styleRules.text)
             ? {
-                bg: typeof input.flag.styleRules.some.bg === 'string' ? input.flag.styleRules.some.bg : undefined,
-                text:
-                  typeof input.flag.styleRules.some.text === 'string'
-                    ? input.flag.styleRules.some.text
-                    : undefined,
-              }
-            : undefined,
-          all: isObject(input.flag.styleRules.all)
-            ? {
-                bg: typeof input.flag.styleRules.all.bg === 'string' ? input.flag.styleRules.all.bg : undefined,
-                text:
-                  typeof input.flag.styleRules.all.text === 'string'
-                    ? input.flag.styleRules.all.text
-                    : undefined,
+                enabled: input.flag.styleRules.text.enabled === true,
+                some: typeof input.flag.styleRules.text.some === 'string' ? input.flag.styleRules.text.some : undefined,
+                all: typeof input.flag.styleRules.text.all === 'string' ? input.flag.styleRules.text.all : undefined,
               }
             : undefined,
         }

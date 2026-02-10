@@ -29,9 +29,16 @@ export interface FieldDef {
       priority?: number;
     };
     styleRules?: {
-      none?: { bg?: string; text?: string };
-      some?: { bg?: string; text?: string };
-      all?: { bg?: string; text?: string };
+      bg?: {
+        enabled: boolean;
+        some?: string;
+        all?: string;
+      };
+      text?: {
+        enabled: boolean;
+        some?: string;
+        all?: string;
+      };
     };
   };
 }

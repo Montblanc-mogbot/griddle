@@ -1,6 +1,16 @@
 import type { DatasetSchema, FieldDef } from '../domain/types';
 import { ensureDefaultFlagRules } from '../domain/metadataStyling';
 
+interface StylePropertyConfig {
+  key: 'bg' | 'text';
+  label: string;
+}
+
+const STYLE_PROPERTIES: StylePropertyConfig[] = [
+  { key: 'bg', label: 'Background' },
+  { key: 'text', label: 'Text color' },
+];
+
 function FlagRow(props: {
   field: FieldDef;
   onChange: (next: FieldDef) => void;
@@ -9,15 +19,18 @@ function FlagRow(props: {
   const { field, onChange, onReset } = props;
   const rules = field.flag?.styleRules ?? {};
 
-  function setRule(kind: 'none' | 'some' | 'all', patch: { bg?: string; text?: string }) {
-    const prev = rules[kind] ?? {};
+  function setStyleProperty(
+    prop: 'bg' | 'text',
+    updates: { enabled?: boolean; some?: string; all?: string },
+  ) {
+    const current = rules[prop] ?? { enabled: false };
     onChange({
       ...field,
       flag: {
         ...field.flag,
         styleRules: {
           ...rules,
-          [kind]: { ...prev, ...patch },
+          [prop]: { ...current, ...updates },
         },
       },
     });
@@ -29,53 +42,72 @@ function FlagRow(props: {
         display: 'grid',
         gridTemplateColumns: '160px 1fr 1fr auto',
         gap: 10,
-        alignItems: 'center',
-        padding: '8px 0',
+        alignItems: 'start',
+        padding: '12px 0',
         borderBottom: '1px solid var(--border2)',
       }}
     >
-      <div style={{ fontWeight: 800, color: 'var(--text)' }}>{field.label}</div>
+      <div style={{ fontWeight: 800, color: 'var(--text)', paddingTop: 8 }}>{field.label}</div>
 
-      {(['some', 'all'] as const).map((k) => {
-        const bg = rules[k]?.bg;
-        const text = rules[k]?.text;
+      {STYLE_PROPERTIES.map((prop) => {
+        const config = rules[prop.key];
+        const enabled = config?.enabled ?? false;
+        const some = config?.some ?? '#ffffff';
+        const all = config?.all ?? '#ffffff';
+
         return (
-          <div key={k} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div style={{ width: 46, fontSize: 12, color: 'var(--muted)', fontWeight: 800 }}>{k}</div>
-            <input
-              type="color"
-              value={bg ?? '#ffffff'}
-              onChange={(e) => setRule(k, { bg: e.target.value })}
-              title="Background"
-            />
-            <input
-              type="color"
-              value={text ?? '#111111'}
-              onChange={(e) => setRule(k, { text: e.target.value })}
-              title="Text"
-            />
-            <div
-              style={{
-                width: 68,
-                height: 22,
-                borderRadius: 6,
-                border: '1px solid var(--border)',
-                background: bg ?? 'var(--surface)',
-                color: text ?? 'var(--text)',
-                fontSize: 12,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
-              }}
-            >
-              Aa
+          <div key={prop.key} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={(e) => setStyleProperty(prop.key, { enabled: e.target.checked })}
+                />
+                <span style={{ fontSize: 12, fontWeight: 700 }}>{prop.label}</span>
+              </label>
             </div>
+
+            {enabled ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginLeft: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 11, color: 'var(--muted)', width: 40 }}>Some:</span>
+                  <input
+                    type="color"
+                    value={some}
+                    onChange={(e) => setStyleProperty(prop.key, { some: e.target.value })}
+                    title={`${prop.label} - Some records`}
+                    style={{ width: 50 }}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 11, color: 'var(--muted)', width: 40 }}>All:</span>
+                  <input
+                    type="color"
+                    value={all}
+                    onChange={(e) => setStyleProperty(prop.key, { all: e.target.value })}
+                    title={`${prop.label} - All records`}
+                    style={{ width: 50 }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  marginLeft: 20,
+                  fontSize: 11,
+                  color: 'var(--muted)',
+                  fontStyle: 'italic',
+                }}
+              >
+                Using default
+              </div>
+            )}
           </div>
         );
       })}
 
-      <button onClick={onReset} style={{ padding: '6px 10px', fontSize: 12 }}>
+      <button onClick={onReset} style={{ padding: '6px 10px', fontSize: 12, marginTop: 8 }}>
         Reset
       </button>
     </div>
@@ -114,7 +146,8 @@ export function MetadataStyleEditor(props: {
         <div>
           <div style={{ fontWeight: 900, color: 'var(--text)' }}>Metadata styling</div>
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-            Styles are derived per pivot cell from underlying records. "None" inherits the app theme; configure only some/all.
+            Enable properties per flag. Disabled properties use the default theme. Priority order applies
+            when multiple flags match.
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -132,15 +165,30 @@ export function MetadataStyleEditor(props: {
 
       {flags.length === 0 ? (
         <div style={{ marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>
-          No flag fields in the schema yet. Mark a boolean field with role <b>flag</b> to enable metadata styling.
+          No flag fields in the schema yet. Mark a boolean field with role <b>flag</b> to enable metadata
+          styling.
         </div>
       ) : (
         <div style={{ marginTop: 12 }}>
-          <div style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 800, marginBottom: 8 }}>
-            Each row is a flag. Pick background + text colors for some/all. "None" inherits the app theme.
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '160px 1fr 1fr auto',
+              gap: 10,
+              padding: '8px 0',
+              borderBottom: '1px solid var(--border2)',
+              fontSize: 12,
+              color: 'var(--muted)',
+              fontWeight: 800,
+            }}
+          >
+            <div>Flag</div>
+            <div>Background</div>
+            <div>Text color</div>
+            <div></div>
           </div>
 
-          <div style={{ borderTop: '1px solid var(--border2)' }}>
+          <div>
             {flags.map((f) => (
               <FlagRow
                 key={f.key}
@@ -150,7 +198,6 @@ export function MetadataStyleEditor(props: {
                   onChange({ ...normalized, fields: nextFields });
                 }}
                 onReset={() => {
-                  // remove rules, then re-ensure defaults
                   const nextFields = normalized.fields.map((ff) => {
                     if (ff.key !== f.key) return ff;
                     return {
