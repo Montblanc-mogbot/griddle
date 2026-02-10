@@ -602,7 +602,7 @@ export default function App() {
                   rowMarkersWidth={rowMarkersWidth}
                 />
 
-                <div style={{ minHeight: 0 }}>
+                <div style={{ minHeight: 0, width: '100%' }}>
                   <GlidePivotGrid
                     pivot={pivot}
                     schema={dataset.schema}
