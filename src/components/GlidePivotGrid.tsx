@@ -21,7 +21,6 @@ export function GlidePivotGrid(props: {
   rowMarkersWidth: number;
   selection: GridSelection;
   onSelectionChange: (sel: GridSelection) => void;
-  onScrollTx: (tx: number) => void;
   onSingleValueCellSelected: (sel: SelectedCell) => void;
 }) {
   const {
@@ -34,17 +33,34 @@ export function GlidePivotGrid(props: {
     rowMarkersWidth,
     selection,
     onSelectionChange,
-    onScrollTx,
     onSingleValueCellSelected,
   } = props;
 
-  const columns = useMemo(
-    () => [
-      ...config.rowKeys.map((rk) => ({ title: rk, id: rk, width: rowDimWidth })),
-      ...pivot.colTuples.map((_ct, idx) => ({ title: '', id: `c${idx}`, width: valueColWidth })),
-    ],
-    [config.rowKeys, pivot.colTuples, rowDimWidth, valueColWidth],
-  );
+  // Build columns with grouping using "/" separator
+  const columns = useMemo(() => {
+    const rowDimCols = config.rowKeys.map((rk) => ({
+      title: rk,
+      id: rk,
+      width: rowDimWidth,
+      // Row dims don't have a group - they appear first
+    }));
+
+    const valueCols = pivot.colTuples.map((tuple, idx) => {
+      // Build grouped title: "Vendor/Location" or just "Vendor" if single dim
+      const groupParts = config.colKeys.map((key) => tuple[key] ?? '');
+      const title = groupParts.join(' / ');
+
+      return {
+        title,
+        id: `c${idx}`,
+        width: valueColWidth,
+        // Use group for the first column dimension
+        group: config.colKeys.length > 1 ? groupParts[0] : undefined,
+      };
+    });
+
+    return [...rowDimCols, ...valueCols];
+  }, [config.rowKeys, config.colKeys, pivot.colTuples, rowDimWidth, valueColWidth]);
 
   const rowCount = pivot.rowTuples.length;
 
@@ -119,16 +135,21 @@ export function GlidePivotGrid(props: {
     };
   }, [theme]);
 
+  const freezeColCount = config.rowKeys.length;
+  console.log('[GlidePivotGrid] freezeColumns:', freezeColCount, 'rowKeys:', config.rowKeys);
+
   return (
     <DataEditor
       key={theme}
       theme={glideTheme}
       columns={columns}
       rows={rowCount}
+      width="100%"
       getCellContent={getCell}
-      headerHeight={0}
       rowMarkers={{ kind: 'both', width: rowMarkersWidth }}
       rangeSelect="multi-rect"
+      freezeColumns={freezeColCount}
+      smoothScrollX
       gridSelection={selection}
       onGridSelectionChange={(sel) => {
         onSelectionChange(sel);
@@ -149,9 +170,6 @@ export function GlidePivotGrid(props: {
           col: pivot.colTuples[ci] ?? {},
           cell: pivotCell,
         });
-      }}
-      onVisibleRegionChanged={(_range, tx) => {
-        onScrollTx(tx);
       }}
     />
   );
