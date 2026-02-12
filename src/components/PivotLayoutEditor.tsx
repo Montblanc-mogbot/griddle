@@ -167,13 +167,13 @@ export function PivotLayoutEditor(props: {
   return (
     <div style={{ display: 'grid', gap: 14 }}>
       <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-        Choose which fields appear on each axis. <b>Filters</b> are dimensions not pivoted, but still available in the filter popup.
+        Choose which fields appear on each axis. <b>Slicers</b> are dimensions not pivoted, but still available in the filter popup.
       </div>
 
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <Section
-          title="Filters"
-          subtitle="Filter-only dimensions"
+          title="Slicers"
+          subtitle="Dimensions outside the pivot axes"
           options={dimOptionsAll}
           values={config.slicerKeys}
           onChange={setFilters}
