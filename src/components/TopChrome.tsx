@@ -90,7 +90,9 @@ export function TopChrome(props: {
       {/* Row 1 */}
       <div className={styles.menuRow}>
         <div className={styles.left}>
-          <div className={styles.mark} title="Griddle">G</div>
+          <div className={styles.mark} title="Griddle">
+            <img src="/griddle-logo.png" alt="Griddle" className={styles.logo} />
+          </div>
 
           <div className={styles.titleWrap}>
             {editingTitle ? (

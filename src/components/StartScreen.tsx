@@ -14,7 +14,10 @@ export function StartScreen(props: { onOpen: () => void; onNew: () => void }) {
     >
       <div style={{ maxWidth: 560, width: '100%', display: 'grid', gap: 12 }}>
         <div>
-          <div style={{ fontWeight: 1000, fontSize: 22 }}>Griddle</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img src="/griddle-logo.png" alt="Griddle" style={{ width: 34, height: 34 }} />
+            <div style={{ fontWeight: 1000, fontSize: 22 }}>Griddle</div>
+          </div>
           <div style={{ color: 'var(--muted)', marginTop: 4 }}>
             Open an existing <b>.griddle</b> file to get started.
           </div>
