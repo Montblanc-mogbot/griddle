@@ -1,5 +1,5 @@
-export function StartScreen(props: { onOpen: () => void }) {
-  const { onOpen } = props;
+export function StartScreen(props: { onOpen: () => void; onNew: () => void }) {
+  const { onOpen, onNew } = props;
 
   return (
     <div
@@ -21,13 +21,16 @@ export function StartScreen(props: { onOpen: () => void }) {
         </div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button onClick={onNew} style={{ padding: '10px 14px', fontWeight: 900 }}>
+            New…
+          </button>
           <button onClick={onOpen} style={{ padding: '10px 14px' }}>
             Open…
           </button>
         </div>
 
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-          Your data stays in your file. (We may later add a “New griddle” wizard.)
+          New creates an empty griddle; Open loads an existing <b>.griddle</b> file.
         </div>
       </div>
     </div>

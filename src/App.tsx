@@ -7,6 +7,7 @@ import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { FilterPopup } from './components/FilterPopup';
 import { ViewsDropdown } from './components/ViewsDropdown';
 import { StartScreen } from './components/StartScreen';
+import { NewGriddleWizard } from './components/NewGriddleWizard';
 import { EntryPanel } from './components/EntryPanel';
 import { MenuBar } from './components/MenuBar';
 import { FullRecordsPanel } from './components/FullRecordsPanel';
@@ -74,6 +75,7 @@ export default function App() {
 
   const [fileHandle, setFileHandle] = useState<FileHandle | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [showNewWizard, setShowNewWizard] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const t = localStorage.getItem('griddle:theme:v1');
     return t === 'dark' ? 'dark' : 'light';
@@ -401,7 +403,20 @@ export default function App() {
             e.currentTarget.value = '';
           }}
         />
-        <StartScreen onOpen={() => void openFileViaPicker()} />
+        <StartScreen onNew={() => setShowNewWizard(true)} onOpen={() => void openFileViaPicker()} />
+        {showNewWizard ? (
+          <Modal title="New griddle" onClose={() => setShowNewWizard(false)}>
+            <NewGriddleWizard
+              onCancel={() => setShowNewWizard(false)}
+              onCreate={(ds, pivotConfig) => {
+                applyImportedDataset(ds, pivotConfig);
+                setFileHandle(null);
+                setFileName(null);
+                setShowNewWizard(false);
+              }}
+            />
+          </Modal>
+        ) : null}
         {importError ? (
           <div
             style={{
