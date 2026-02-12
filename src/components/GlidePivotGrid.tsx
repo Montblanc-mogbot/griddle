@@ -83,19 +83,25 @@ export function GlidePivotGrid(props: {
     const txt = typeof v === 'number' ? formatNumber(v) : '';
     const st = cell ? pickCellStyle(schema, cell) : {};
 
+    const themeOverride = (() => {
+      if (!st.bg && !st.text) return undefined;
+      const out: Record<string, unknown> = {};
+      if (st.bg) {
+        out.bgCell = st.bg;
+        out.bgCellMedium = st.bg;
+      }
+      if (st.text) {
+        out.textDark = st.text;
+      }
+      return out;
+    })();
+
     return {
       kind: GridCellKind.Number,
       data: v ?? 0,
       displayData: txt,
       allowOverlay: false,
-      themeOverride:
-        st.bg || st.text
-          ? {
-              bgCell: st.bg ?? undefined,
-              bgCellMedium: st.bg ?? undefined,
-              textDark: st.text ?? undefined,
-            }
-          : undefined,
+      themeOverride,
     };
   }
 
