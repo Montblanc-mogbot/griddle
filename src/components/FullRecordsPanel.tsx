@@ -1,5 +1,5 @@
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
-import { createRecordFromSelection, getRecordsForCell, upsertRecords } from '../domain/records';
+import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
 import styles from './bottomPanel.module.css';
 import { useMemo } from 'react';
 
@@ -166,6 +166,19 @@ export function FullRecordsPanel(props: {
     onDatasetChange(upsertRecords(dataset, [rec]));
   }
 
+  function deleteRecord(id: string) {
+    const ok = window.confirm('Delete this record? This cannot be undone.');
+    if (!ok) return;
+    onDatasetChange(removeRecords(dataset, [id]));
+  }
+
+  function deleteAllShown() {
+    if (records.length === 0) return;
+    const ok = window.confirm(`Delete ${records.length} record(s) shown? This cannot be undone.`);
+    if (!ok) return;
+    onDatasetChange(removeRecords(dataset, records.map((r) => r.id)));
+  }
+
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
@@ -176,6 +189,9 @@ export function FullRecordsPanel(props: {
 
         <div className={styles.actions}>
           <button onClick={addNewRecord} disabled={!selected}>Add record</button>
+          <button onClick={deleteAllShown} disabled={records.length === 0}>
+            Delete shown
+          </button>
           <button onClick={onDone}>Back to entry</button>
           <button onClick={onClose}>Close</button>
         </div>
@@ -196,6 +212,7 @@ export function FullRecordsPanel(props: {
                     {f.label}
                   </th>
                 ))}
+                <th style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px' }} />
               </tr>
             </thead>
             <tbody>
@@ -207,6 +224,14 @@ export function FullRecordsPanel(props: {
                       <CellEditor record={r} field={f} onChange={updateRecord} />
                     </td>
                   ))}
+                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
+                    <button
+                      onClick={() => deleteRecord(r.id)}
+                      style={{ background: 'rgba(255, 77, 79, 0.12)', border: '1px solid rgba(255, 77, 79, 0.5)', color: 'var(--text)' }}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -116,6 +116,11 @@ export function bulkSetMetadata(
   return records.map((r) => updateRecordMetadata(r, flagKey, value));
 }
 
+export function removeRecords(dataset: DatasetFileV1, ids: string[]): DatasetFileV1 {
+  const idSet = new Set(ids);
+  return { ...dataset, records: dataset.records.filter((r) => !idSet.has(r.id)) };
+}
+
 export function upsertRecords(dataset: DatasetFileV1, updated: RecordEntity[]): DatasetFileV1 {
   const byId = new Map(updated.map((r) => [r.id, r] as const));
   const existingIds = new Set(dataset.records.map((r) => r.id));
