@@ -221,11 +221,8 @@ export function SchemaEditor(props: {
               />
             ) : null}
 
-            {selected.type === 'date' ? (
-              <PivotAxisDomainEditor
-                field={selected}
-                onChange={(next) => updateField(next)}
-              />
+            {selected.type === 'date' || selected.type === 'string' ? (
+              <PivotAxisDomainEditor field={selected} onChange={(next) => updateField(next)} />
             ) : null}
 
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

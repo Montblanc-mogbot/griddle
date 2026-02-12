@@ -18,6 +18,10 @@ export function PivotAxisDomainEditor(props: { field: FieldDef; onChange: (next:
     });
   }
 
+  const isEligible = field.roles.includes('rowDim') || field.roles.includes('colDim');
+
+  if (!isEligible) return null;
+
   return (
     <div style={{ display: 'grid', gap: 8, paddingTop: 6, borderTop: '1px solid var(--border)' }}>
       <div style={{ fontWeight: 700 }}>Pivot axis</div>
@@ -35,13 +39,16 @@ export function PivotAxisDomainEditor(props: { field: FieldDef; onChange: (next:
                 includeEmptyAxisItems,
                 axisDomain:
                   includeEmptyAxisItems
-                    ? field.pivot?.axisDomain ?? { kind: 'dateRange', start: '', end: '', includeWeekends: true }
+                    ? field.pivot?.axisDomain ??
+                      (field.type === 'date'
+                        ? { kind: 'dateRange', start: '', end: '', includeWeekends: true }
+                        : { kind: 'list', values: [] })
                     : field.pivot?.axisDomain,
               },
             });
           }}
         />
-        <span>Include empty items on axes (show dates even with no data)</span>
+        <span>Include empty items on axes (show members even with no data)</span>
       </label>
 
       {enabled ? (
@@ -57,9 +64,9 @@ export function PivotAxisDomainEditor(props: { field: FieldDef; onChange: (next:
                 if (kind === 'enum') setDomain({ kind: 'enum' });
               }}
             >
-              <option value="dateRange">dateRange</option>
+              {field.type === 'date' ? <option value="dateRange">dateRange</option> : null}
               <option value="list">list</option>
-              <option value="enum">enum</option>
+              {field.type === 'string' ? <option value="enum">enum</option> : null}
             </select>
           </div>
 
