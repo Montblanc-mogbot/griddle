@@ -7,6 +7,22 @@ const schema: DatasetSchema = {
   fields: [],
 };
 
+const schemaWithDateDomain: DatasetSchema = {
+  version: 1,
+  fields: [
+    {
+      key: 'y',
+      label: 'Date',
+      type: 'date',
+      roles: ['colDim'],
+      pivot: {
+        includeEmptyAxisItems: true,
+        axisDomain: { kind: 'dateRange', start: '2026-01-01', end: '2026-01-03', includeWeekends: true },
+      },
+    },
+  ],
+};
+
 const records: RecordEntity[] = [
   {
     id: 'a',
@@ -67,5 +83,22 @@ describe('computePivot', () => {
     });
     expect(p2.rowTuples).toHaveLength(1);
     expect(p2.cells['0:0'].value).toBe(5);
+  });
+
+  it('can include empty date axis members via domain (keeps empty columns)', () => {
+    const dateRecords: RecordEntity[] = [
+      { id: 'd1', createdAt: 't', updatedAt: 't', data: { x: 'X1', y: '2026-01-01', m: 2 } },
+      { id: 'd2', createdAt: 't', updatedAt: 't', data: { x: 'X1', y: '2026-01-03', m: 3 } },
+    ];
+
+    const p = computePivot(
+      dateRecords,
+      schemaWithDateDomain,
+      { ...cfg, colKeys: ['y'] },
+      { filters: [] },
+    );
+
+    // Domain is 01,02,03 even though 02 has no records.
+    expect(p.colTuples.map((t) => t.y)).toEqual(['2026-01-01', '2026-01-02', '2026-01-03']);
   });
 });

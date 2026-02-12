@@ -1,5 +1,6 @@
 import type { DatasetSchema, FilterSet, PivotConfig, PivotResult, RecordEntity, Tuple } from './types';
 import { applyFilterSet } from './filters';
+import { axisDomainValues } from './axisDomain';
 
 function asKeyPart(v: unknown): string {
   if (v === null || v === undefined) return '';
@@ -87,6 +88,40 @@ export function computePivot(
     activeFilterSet,
   );
 
+  function axisTuples(keys: string[], axis: 'row' | 'col'): Tuple[] {
+    // Minimal initial implementation:
+    // - if exactly one key and that field opts in to includeEmptyAxisItems with a domain, we use the domain values.
+    // - we union in any observed values from filtered records (so we never hide unexpected data).
+
+    if (keys.length !== 1) {
+      // fallback: discover from filtered records
+      const m = axis === 'row' ? rowMap : colMap;
+      return Array.from(m.values());
+    }
+
+    const k = keys[0];
+    const field = schema.fields.find((f) => f.key === k);
+
+    const observed = new Map<string, Tuple>();
+    for (const r of filtered) {
+      const t = buildTuple(keys, r);
+      observed.set(tupleKey(keys, t), t);
+    }
+
+    if (!field?.pivot?.includeEmptyAxisItems || !field.pivot.axisDomain) {
+      return Array.from(observed.values());
+    }
+
+    const domainValues = axisDomainValues(field.pivot.axisDomain, field.enum);
+    const domainTuples = domainValues.map((v) => ({ [k]: asKeyPart(v) } as Tuple));
+
+    const union = new Map<string, Tuple>();
+    for (const t of domainTuples) union.set(tupleKey(keys, t), t);
+    for (const t of observed.values()) union.set(tupleKey(keys, t), t);
+
+    return Array.from(union.values());
+  }
+
   for (const r of filtered) {
     const rt = buildTuple(config.rowKeys, r);
     const ct = buildTuple(config.colKeys, r);
@@ -94,7 +129,7 @@ export function computePivot(
     colMap.set(tupleKey(config.colKeys, ct), ct);
   }
 
-  const rowTuples = Array.from(rowMap.values()).sort((a, b) => {
+  const rowTuples = axisTuples(config.rowKeys, 'row').sort((a, b) => {
     for (const k of config.rowKeys) {
       const av = a[k] ?? '';
       const bv = b[k] ?? '';
@@ -104,7 +139,7 @@ export function computePivot(
     return 0;
   });
 
-  const colTuples = Array.from(colMap.values()).sort((a, b) => {
+  const colTuples = axisTuples(config.colKeys, 'col').sort((a, b) => {
     for (const k of config.colKeys) {
       const av = a[k] ?? '';
       const bv = b[k] ?? '';

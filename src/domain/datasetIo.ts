@@ -1,4 +1,14 @@
-import type { DatasetFileV1, DatasetSchema, FieldDef, FieldRole, FieldType, FilterSet, RecordEntity, View } from './types';
+import type {
+  AxisDomain,
+  DatasetFileV1,
+  DatasetSchema,
+  FieldDef,
+  FieldRole,
+  FieldType,
+  FilterSet,
+  RecordEntity,
+  View,
+} from './types';
 
 export class DatasetIoError extends Error {
   name = 'DatasetIoError';
@@ -49,7 +59,29 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
     fd.enum = enumRaw.map((v, vi) => asString(v, `schema.fields[${idx}].enum[${vi}]`));
   }
 
-  // entry/measure/flag blocks are optional and left largely unchecked for now
+  function ensureAxisDomain(x: unknown, field: string): AxisDomain | undefined {
+    if (!isObject(x)) return undefined;
+
+    const kind = x.kind;
+    if (kind === 'enum') return { kind: 'enum' };
+
+    if (kind === 'list') {
+      const valuesRaw = Array.isArray(x.values) ? x.values : [];
+      const values = valuesRaw.map((v, vi) => asString(v, `${field}.values[${vi}]`));
+      return { kind: 'list', values };
+    }
+
+    if (kind === 'dateRange') {
+      const start = typeof x.start === 'string' ? x.start : '';
+      const end = typeof x.end === 'string' ? x.end : '';
+      const includeWeekends = typeof x.includeWeekends === 'boolean' ? x.includeWeekends : undefined;
+      return { kind: 'dateRange', start, end, includeWeekends };
+    }
+
+    return undefined;
+  }
+
+  // entry/measure/flag/pivot blocks are optional and left largely unchecked for now
   if (input.entry !== undefined && isObject(input.entry)) {
     fd.entry = {
       showInFastEntry:
@@ -100,6 +132,14 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
     fd.flag = {
       style,
       styleRules,
+    };
+  }
+
+  if (input.pivot !== undefined && isObject(input.pivot)) {
+    fd.pivot = {
+      includeEmptyAxisItems:
+        typeof input.pivot.includeEmptyAxisItems === 'boolean' ? input.pivot.includeEmptyAxisItems : undefined,
+      axisDomain: ensureAxisDomain(input.pivot.axisDomain, `schema.fields[${idx}].pivot.axisDomain`),
     };
   }
 

@@ -2,6 +2,11 @@ export type FieldRole = 'rowDim' | 'colDim' | 'slicer' | 'measure' | 'flag';
 
 export type FieldType = 'string' | 'number' | 'boolean' | 'date';
 
+export type AxisDomain =
+  | { kind: 'enum' }
+  | { kind: 'list'; values: string[] }
+  | { kind: 'dateRange'; start: string; end: string; includeWeekends?: boolean };
+
 export interface FieldDef {
   key: string;
   label: string;
@@ -40,6 +45,15 @@ export interface FieldDef {
         all?: string;
       };
     };
+  };
+
+  pivot?: {
+    /**
+     * If enabled, axis tuple building will include the full domain even if no records
+     * are present for some members (Excel: "show items with no data").
+     */
+    includeEmptyAxisItems?: boolean;
+    axisDomain?: AxisDomain;
   };
 }
 

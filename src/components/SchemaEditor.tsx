@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { DatasetSchema, FieldDef, FieldRole, FieldType } from '../domain/types';
+import { PivotAxisDomainEditor } from './PivotAxisDomainEditor';
 
 const ALL_ROLES: FieldRole[] = ['rowDim', 'colDim', 'slicer', 'measure', 'flag'];
 const ALL_TYPES: FieldType[] = ['string', 'number', 'boolean', 'date'];
@@ -217,6 +218,13 @@ export function SchemaEditor(props: {
               <EnumEditor
                 value={selected.enum ?? []}
                 onChange={(next) => updateField({ ...selected, enum: next.length ? next : undefined })}
+              />
+            ) : null}
+
+            {selected.type === 'date' ? (
+              <PivotAxisDomainEditor
+                field={selected}
+                onChange={(next) => updateField(next)}
               />
             ) : null}
 
