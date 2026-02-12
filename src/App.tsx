@@ -782,7 +782,7 @@ export default function App() {
         </div>
 
         {bulkSel.hasMulti ? (
-          <ResizableDrawer>
+          <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
               dataset={dataset}
               config={config}
@@ -798,7 +798,7 @@ export default function App() {
             />
           </ResizableDrawer>
         ) : selected && panelMode === 'entry' ? (
-          <ResizableDrawer>
+          <ResizableDrawer storageKey="griddle:drawerWidth:entry:v1">
             <EntryPanel
               dataset={dataset}
               config={config}
@@ -849,7 +849,7 @@ export default function App() {
         ) : null}
 
         {selected && panelMode === 'fullRecords' ? (
-          <ResizableDrawer>
+          <ResizableDrawer storageKey="griddle:drawerWidth:fullRecords:v1">
             <FullRecordsPanel
               dataset={dataset}
               config={config}
