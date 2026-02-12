@@ -1,22 +1,21 @@
-import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { FilterPopup } from './components/FilterPopup';
-import { ViewsDropdown } from './components/ViewsDropdown';
+// ViewsDropdown used inside TopChrome
 import { PivotLayoutEditor } from './components/PivotLayoutEditor';
 import { StartScreen } from './components/StartScreen';
 import { NewGriddleWizard } from './components/NewGriddleWizard';
 import { EntryPanel } from './components/EntryPanel';
-import { MenuBar } from './components/MenuBar';
+import { TopChrome } from './components/TopChrome';
 import { FullRecordsPanel } from './components/FullRecordsPanel';
 import { MetadataStyleEditor } from './components/MetadataStyleEditor';
 import { BulkRangePanel } from './components/BulkRangePanel';
 import { SchemaEditor } from './components/SchemaEditor';
 import { Modal } from './components/Modal';
 import { computePivot } from './domain/pivot';
-import { filterSetActiveCount } from './domain/filters';
+// (filterSetActiveCount no longer used)
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
 import type { DatasetFileV1, DatasetSchema, FilterSet, PivotConfig, SelectedCell, Tuple, View } from './domain/types';
 import styles from './AppLayout.module.css';
@@ -34,7 +33,7 @@ import {
   type FileHandle,
 } from './domain/fileAccess';
 import { saveLastFile } from './domain/localState';
-import { parseDatasetJson, serializeDataset } from './domain/datasetIo';
+import { parseDatasetJson } from './domain/datasetIo';
 import { ResizableDrawer } from './components/ResizableDrawer';
 import { ScaffoldDialog } from './components/ScaffoldDialog';
 import { setRecordField } from './domain/updateRecord';
@@ -72,6 +71,8 @@ export default function App() {
   const [dataset, setDataset] = useState<DatasetFileV1 | null>(null);
   const fileOpenRef = useRef<HTMLInputElement | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
+  const suppressDirtyRef = useRef(false);
 
   const [fileHandle, setFileHandle] = useState<FileHandle | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -174,6 +175,8 @@ export default function App() {
   }
 
   function applyImportedDataset(next: DatasetFileV1, nextPivot?: PivotConfig) {
+    suppressDirtyRef.current = true;
+    setDirty(false);
     setSelected(null);
     setShowSchemaEditor(false);
     setImportError(null);
@@ -187,9 +190,20 @@ export default function App() {
     setActiveViewId(null);
     setActiveFilterSet({ filters: [] });
     setConfig((prev) => reconcilePivotConfig(normalized.schema, nextPivot ?? prev));
+
+    // allow subsequent edits to mark dirty
+    window.setTimeout(() => {
+      suppressDirtyRef.current = false;
+    }, 0);
+  }
+
+  async function confirmIfDirty(action: string): Promise<boolean> {
+    if (!dirty) return true;
+    return window.confirm(`You have unsaved changes. ${action}?`);
   }
 
   async function openFileViaPicker() {
+    if (!(await confirmIfDirty('Open anyway'))) return;
     setImportError(null);
 
     if (hasFileSystemAccessApi()) {
@@ -217,6 +231,12 @@ export default function App() {
     fileOpenRef.current?.click();
   }
 
+  function downloadGriddle() {
+    if (!dataset) return;
+    const gf = buildGriddleFile({ dataset, pivotConfig: config });
+    downloadTextFile(fileName ?? `${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+  }
+
   async function saveAsGriddle() {
     if (!dataset) return;
     const gf = buildGriddleFile({ dataset, pivotConfig: config });
@@ -228,6 +248,7 @@ export default function App() {
         const { handle, name } = await saveAsWithFileSystemAccess({ suggestedName, contents: text });
         setFileHandle(handle);
         setFileName(name);
+        setDirty(false);
         return;
       } catch (e) {
         if (e instanceof DOMException && e.name === 'AbortError') return;
@@ -236,6 +257,7 @@ export default function App() {
     }
 
     downloadTextFile(suggestedName, text);
+    setDirty(false);
   }
 
   async function saveGriddle() {
@@ -246,6 +268,7 @@ export default function App() {
     if (fileHandle && hasFileSystemAccessApi()) {
       try {
         await saveToHandle(fileHandle, text);
+        setDirty(false);
         return;
       } catch {
         // if handle becomes invalid, fall through to save as
@@ -253,6 +276,13 @@ export default function App() {
     }
 
     await saveAsGriddle();
+  }
+
+  function beginNewWizard() {
+    void (async () => {
+      if (!(await confirmIfDirty('Create a new griddle'))) return;
+      setShowNewWizard(true);
+    })();
   }
 
   function exportExcelTable() {
@@ -312,17 +342,27 @@ export default function App() {
       const k = e.key.toLowerCase();
 
       // File
+      if (k === 'n') {
+        e.preventDefault();
+        beginNewWizard();
+        return;
+      }
+
       if (k === 'o') {
         e.preventDefault();
-        fileOpenRef.current?.click();
+        void openFileViaPicker();
+        return;
+      }
+
+      if (k === 's' && e.shiftKey) {
+        e.preventDefault();
+        void saveAsGriddle();
         return;
       }
 
       if (k === 's') {
         e.preventDefault();
-        if (!dataset) return;
-        const gf = buildGriddleFile({ dataset, pivotConfig: config });
-        downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+        void saveGriddle();
         return;
       }
 
@@ -361,13 +401,20 @@ export default function App() {
 
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [config, dataset]);
+  }, [config, dataset, dirty]);
 
   // Persistence: keep a local draft of the last-opened griddle.
   useEffect(() => {
     if (!dataset) return;
     saveLastFile(buildGriddleFile({ dataset, pivotConfig: config }));
   }, [dataset, config]);
+
+  // Dirty tracking
+  useEffect(() => {
+    if (!dataset) return;
+    if (suppressDirtyRef.current) return;
+    setDirty(true);
+  }, [dataset, config, activeFilterSet]);
 
   // On boot: show the Start screen (New/Open). We keep last file as a draft in localStorage,
   // but we do NOT auto-load it.
@@ -446,256 +493,67 @@ export default function App() {
         }}
       />
 
-      <div
-        className={styles.toolbar}
-        style={{
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          gap: 0,
-          background: 'var(--ribbonBg)',
-          borderBottom: '1px solid var(--border)',
+      <TopChrome
+        docTitle={dataset.name || fileName || 'Untitled'}
+        dirty={dirty}
+        theme={theme}
+        activeViewId={activeViewId}
+        views={(dataset.views ?? []) as View[]}
+        activeFilterSet={activeFilterSet}
+        onDocTitleChange={(next) => {
+          setDataset((prev) => (prev ? { ...prev, name: next } : prev));
+          if (!fileHandle) setFileName(`${next}.griddle`);
+          setDirty(true);
         }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            gap: 12,
-            padding: '4px 6px',
-          }}
-        >
-          {/* Menu bar (left-aligned, Excel-ish) */}
-          <MenuBar
-            onOpenFile={() => fileOpenRef.current?.click()}
-            onSaveGriddle={() => {
-              const gf = buildGriddleFile({ dataset, pivotConfig: config });
-              downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+        onToggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+        onNew={() => beginNewWizard()}
+        onOpen={() => {
+          void openFileViaPicker();
+        }}
+        onDownload={() => downloadGriddle()}
+        onExport={() => exportExcelTable()}
+        onSaveAs={() => {
+          void saveAsGriddle();
+        }}
+        onSave={() => {
+          void saveGriddle();
+        }}
+        onUndo={() => {
+          // TODO: add undo stack
+        }}
+        onRedo={() => {
+          // TODO: add undo stack
+        }}
+        onClearSelection={() => {
+          setSelected(null);
+          setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+        }}
+        onLayout={() => setShowPivotLayout(true)}
+        onFilters={() => setShowFilters(true)}
+        onStyles={() => setShowStyleEditor(true)}
+        onFields={() => setShowSchemaEditor(true)}
+        onViewsChange={(next) => setDataset((prev) => (prev ? { ...prev, views: next } : prev))}
+        onLoadView={(viewId, fs) => {
+          setSelected(null);
+          setActiveViewId(viewId);
+          setActiveFilterSet(fs);
+        }}
+      />
+
+      {showNewWizard ? (
+        <Modal title="New griddle" onClose={() => setShowNewWizard(false)}>
+          <NewGriddleWizard
+            onCancel={() => setShowNewWizard(false)}
+            onCreate={(ds, pivotConfig) => {
+              applyImportedDataset(ds, pivotConfig);
+              setFileHandle(null);
+              setFileName(null);
+              setDirty(false);
+              setShowNewWizard(false);
             }}
-            onExportDataset={() => {
-              downloadTextFile(`${dataset.name || 'dataset'}.json`, serializeDataset(dataset));
-            }}
-            onShowPivotLayout={() => setShowPivotLayout(true)}
-            onShowFilters={() => setShowFilters(true)}
-            onClearSelection={() => {
-              setSelected(null);
-              setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
-            }}
-            onShowFields={() => setShowSchemaEditor(true)}
-            onShowStyles={() => setShowStyleEditor(true)}
-            onScaffoldDates={() => setShowScaffoldDialog(true)}
           />
-
-          <div style={{ flex: 1 }} />
-
-          <div style={{ fontWeight: 900, color: 'var(--muted)', fontSize: 13, paddingRight: 6 }}>Griddle</div>
-        </div>
-
-        {/* Ribbon row (grouped icons) */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 12,
-            padding: '8px 10px',
-            borderTop: '1px solid var(--border)',
-            alignItems: 'stretch',
-            flexWrap: 'wrap',
-          }}
-        >
-          {(() => {
-            function IconButton(props: {
-              title: string;
-              onClick: () => void;
-              pressed?: boolean;
-              children: ReactNode;
-            }) {
-              return (
-                <button
-                  onClick={props.onClick}
-                  title={props.title}
-                  aria-label={props.title}
-                  aria-pressed={props.pressed}
-                  style={{
-                    width: 34,
-                    height: 30,
-                    display: 'grid',
-                    placeItems: 'center',
-                    borderRadius: 8,
-                    border: '1px solid var(--border)',
-                    background: props.pressed ? 'var(--accentSoft)' : 'var(--surface)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {props.children}
-                </button>
-              );
-            }
-
-            function Icon(props: { d: string }) {
-              return (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d={props.d} stroke="var(--text)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              );
-            }
-
-            function RibbonGroup(props: { label: string; children: ReactNode }) {
-              return (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 6,
-                    paddingRight: 12,
-                    borderRight: '1px solid var(--border)',
-                  }}
-                >
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>{props.children}</div>
-                  <div style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 700, paddingLeft: 2 }}>{props.label}</div>
-                </div>
-              );
-            }
-
-            const entryPressed = panelMode === 'entry';
-            const fullPressed = panelMode === 'fullRecords';
-
-            return (
-              <>
-                <RibbonGroup label="File">
-                  <IconButton title="Open…" onClick={() => void openFileViaPicker()}>
-                    <Icon d="M4 20h16M12 3v12m0 0l4-4m-4 4l-4-4" />
-                  </IconButton>
-
-                  <IconButton
-                    title={fileName ? `Save (${fileName})` : 'Save'}
-                    onClick={() => {
-                      void saveGriddle();
-                    }}
-                  >
-                    <Icon d="M5 3h12l2 2v16H5V3zm3 0v6h8V3M7 21v-8h10v8" />
-                  </IconButton>
-
-                  <IconButton
-                    title="Save As…"
-                    onClick={() => {
-                      void saveAsGriddle();
-                    }}
-                  >
-                    <Icon d="M12 3v10m0 0l4-4m-4 4l-4-4M5 21h14" />
-                  </IconButton>
-
-                  <IconButton title="Export Excel table (CSV)" onClick={exportExcelTable}>
-                    <Icon d="M4 4h16v16H4V4zm4 4h8M8 8v8" />
-                  </IconButton>
-
-                  <IconButton
-                    title="Export dataset.json"
-                    onClick={() => {
-                      downloadTextFile(`${dataset.name || 'dataset'}.json`, serializeDataset(dataset));
-                    }}
-                  >
-                    <Icon d="M4 4h16v16H4V4zm8 3v7m0 0l3-3m-3 3l-3-3" />
-                  </IconButton>
-                </RibbonGroup>
-
-                <RibbonGroup label="View">
-                  <IconButton
-                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-                    pressed={theme === 'dark'}
-                    onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-                  >
-                    <Icon d="M12 3a7 7 0 000 14 7 7 0 000-14zm0 0v-1m0 16v1m9-9h1M2 12H1m16.95 4.95l.7.7M6.35 6.35l-.7-.7m12 0l-.7.7M6.35 17.65l-.7.7" />
-                  </IconButton>
-
-                  <IconButton title="Pivot layout…" onClick={() => setShowPivotLayout(true)}>
-                    <Icon d="M4 4h16v6H4V4zm0 10h7v6H4v-6zm9 0h7v6h-7v-6" />
-                  </IconButton>
-
-                  {(() => {
-                    const n = filterSetActiveCount(activeFilterSet);
-                    return (
-                      <div style={{ position: 'relative' }}>
-                        <IconButton title={n > 0 ? `Filters (${n})…` : 'Filters…'} onClick={() => setShowFilters(true)}>
-                          <Icon d="M4 5h16l-6 7v6l-4 2v-8L4 5z" />
-                        </IconButton>
-                        {n > 0 ? (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              right: -6,
-                              top: -6,
-                              minWidth: 16,
-                              height: 16,
-                              padding: '0 4px',
-                              borderRadius: 999,
-                              background: 'var(--accent)',
-                              color: 'white',
-                              fontSize: 11,
-                              fontWeight: 800,
-                              display: 'grid',
-                              placeItems: 'center',
-                              border: '1px solid var(--border)',
-                            }}
-                          >
-                            {n}
-                          </div>
-                        ) : null}
-                      </div>
-                    );
-                  })()}
-
-                  <IconButton
-                    title={entryPressed ? 'Hide Entry panel' : 'Show Entry panel'}
-                    pressed={entryPressed}
-                    onClick={() => setPanelMode((m) => (m === 'entry' ? 'none' : 'entry'))}
-                  >
-                    <Icon d="M4 4h16v16H4V4zm10 0v16" />
-                  </IconButton>
-
-                  <IconButton
-                    title={fullPressed ? 'Hide Full records' : 'Show Full records'}
-                    pressed={fullPressed}
-                    onClick={() => setPanelMode((m) => (m === 'fullRecords' ? 'none' : 'fullRecords'))}
-                  >
-                    <Icon d="M4 4h16v16H4V4zm0 11h16" />
-                  </IconButton>
-                </RibbonGroup>
-
-                <RibbonGroup label="Views">
-                  <ViewsDropdown
-                    views={(dataset.views ?? []) as View[]}
-                    activeViewId={activeViewId}
-                    activeFilterSet={activeFilterSet}
-                    onViewsChange={(next) => {
-                      setDataset((prev) => (prev ? { ...prev, views: next } : prev));
-                    }}
-                    onLoadView={(viewId, fs) => {
-                      setSelected(null);
-                      setActiveViewId(viewId);
-                      setActiveFilterSet(fs);
-                    }}
-                  />
-                </RibbonGroup>
-
-                <RibbonGroup label="Format">
-                  <IconButton title="Styles…" onClick={() => setShowStyleEditor(true)}>
-                    <Icon d="M12 3l7 7-9 9H3v-7l9-9zm-1 2l-7 7v5h5l7-7-5-5z" />
-                  </IconButton>
-                </RibbonGroup>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                    <IconButton title="Fields…" onClick={() => setShowSchemaEditor(true)}>
-                      <Icon d="M4 6h16M4 12h16M4 18h16" />
-                    </IconButton>
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 700, paddingLeft: 2 }}>Setup</div>
-                </div>
-              </>
-            );
-          })()}
-        </div>
-      </div>
+        </Modal>
+      ) : null}
 
       {showSchemaEditor ? (
         <Modal title="Fields" onClose={() => setShowSchemaEditor(false)}>

@@ -1,0 +1,153 @@
+.chrome {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border);
+  background: var(--ribbonBg);
+}
+
+.menuRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  gap: 10px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--accentSoft);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.titleWrap {
+  min-width: 0;
+}
+
+.titleButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  cursor: pointer;
+  max-width: 340px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titleButton:hover {
+  background: var(--menuHover);
+}
+
+.titleInput {
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 0 10px;
+  font-size: 15px;
+  font-weight: 800;
+  background: var(--surface);
+  color: var(--text);
+  width: min(340px, 60vw);
+}
+
+.dirtyDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--danger);
+}
+
+.menus {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.iconButton {
+  height: 30px;
+  width: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.toolbarRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.toolbarGroup {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.sep {
+  width: 1px;
+  height: 22px;
+  background: var(--border2);
+}
+
+.toolButton {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.toolButton:hover {
+  background: var(--surface2);
+}
+
+.viewsWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewsLabel {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 800;
+}

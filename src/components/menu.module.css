@@ -1,0 +1,72 @@
+.menuWrap {
+  position: relative;
+}
+
+.menuButton {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.menuButton:hover {
+  background: var(--menuHover);
+}
+
+.menuPopover {
+  position: fixed;
+  width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  z-index: 200;
+}
+
+.menuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.menuItem:hover:not(:disabled) {
+  background: var(--menuHover);
+}
+
+.menuItem:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shortcut {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border2);
+  margin: 6px 4px;
+}
+
+.danger {
+  color: var(--dangerText);
+}
