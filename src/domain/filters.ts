@@ -59,9 +59,10 @@ export function removeFilter(fs: FilterSet, dimensionKey: string): FilterSet {
   return { ...fs, filters: fs.filters.filter((f) => f.dimensionKey !== dimensionKey) };
 }
 
-export function dimensionKeysEligibleForFiltering(schema: DatasetSchema): string[] {
+export function dimensionKeysEligibleForFiltering(schema: DatasetSchema, allowedKeys?: Set<string>): string[] {
   // Any non-measure field is fair game. (Filtering on measure values can come later.)
-  return schema.fields.filter((f) => !f.roles.includes('measure')).map((f) => f.key);
+  const keys = schema.fields.filter((f) => !f.roles.includes('measure')).map((f) => f.key);
+  return allowedKeys ? keys.filter((k) => allowedKeys.has(k)) : keys;
 }
 
 export function uniqueDimensionValues(records: RecordEntity[], dimensionKey: string): string[] {

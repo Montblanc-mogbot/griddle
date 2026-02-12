@@ -13,13 +13,17 @@ import {
 export function FilterPopup(props: {
   schema: DatasetSchema;
   records: RecordEntity[];
+  allowedDimensionKeys?: string[];
   active: FilterSet;
   onApply: (next: FilterSet) => void;
   onClose: () => void;
 }) {
-  const { schema, records, active, onApply, onClose } = props;
+  const { schema, records, allowedDimensionKeys, active, onApply, onClose } = props;
 
-  const dimensionKeys = useMemo(() => dimensionKeysEligibleForFiltering(schema), [schema]);
+  const dimensionKeys = useMemo(() => {
+    const allowed = allowedDimensionKeys ? new Set(allowedDimensionKeys) : undefined;
+    return dimensionKeysEligibleForFiltering(schema, allowed);
+  }, [schema, allowedDimensionKeys]);
   const [draft, setDraft] = useState<FilterSet>(() => ({ name: active.name, filters: active.filters.map((f) => ({ ...f })) }));
 
   const [activeDim, setActiveDim] = useState<string>(() => dimensionKeys[0] ?? '');

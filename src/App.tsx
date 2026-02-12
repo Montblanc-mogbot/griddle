@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
-import { PivotControls } from './components/PivotControls';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { FilterPopup } from './components/FilterPopup';
 import { ViewsDropdown } from './components/ViewsDropdown';
+import { PivotLayoutEditor } from './components/PivotLayoutEditor';
 import { StartScreen } from './components/StartScreen';
 import { NewGriddleWizard } from './components/NewGriddleWizard';
 import { EntryPanel } from './components/EntryPanel';
@@ -705,17 +705,13 @@ export default function App() {
 
       {showPivotLayout ? (
         <Modal title="Pivot layout" onClose={() => setShowPivotLayout(false)}>
-          <PivotControls
+          <PivotLayoutEditor
             schema={dataset.schema}
-            records={dataset.records}
             config={config}
             onChange={(cfg) => {
               setSelected(null);
               setConfig(cfg);
             }}
-            showRowsColsMeasure
-            showSlicers={false}
-            showRowFilters={false}
           />
         </Modal>
       ) : null}
@@ -725,6 +721,7 @@ export default function App() {
           <FilterPopup
             schema={dataset.schema}
             records={dataset.records}
+            allowedDimensionKeys={[...new Set([...config.rowKeys, ...config.colKeys, ...config.slicerKeys])]}
             active={activeFilterSet}
             onApply={(next) => {
               setSelected(null);
