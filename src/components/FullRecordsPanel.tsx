@@ -172,11 +172,17 @@ export function FullRecordsPanel(props: {
     onDatasetChange(removeRecords(dataset, [id]));
   }
 
-  function deleteAllShown() {
-    if (records.length === 0) return;
-    const ok = window.confirm(`Delete ${records.length} record(s) shown? This cannot be undone.`);
-    if (!ok) return;
-    onDatasetChange(removeRecords(dataset, records.map((r) => r.id)));
+  function deleteAllRecords() {
+    if (dataset.records.length === 0) return;
+
+    // Strong confirm to avoid accidents.
+    const phrase = 'DELETE ALL';
+    const typed = window.prompt(
+      `This will permanently delete ALL ${dataset.records.length} records in the dataset.\n\nType "${phrase}" to confirm.`,
+    );
+    if (typed !== phrase) return;
+
+    onDatasetChange(removeRecords(dataset, dataset.records.map((r) => r.id)));
   }
 
   return (
@@ -189,8 +195,8 @@ export function FullRecordsPanel(props: {
 
         <div className={styles.actions}>
           <button onClick={addNewRecord} disabled={!selected}>Add record</button>
-          <button onClick={deleteAllShown} disabled={records.length === 0}>
-            Delete shown
+          <button onClick={deleteAllRecords} disabled={dataset.records.length === 0}>
+            Delete all
           </button>
           <button onClick={onDone}>Back to entry</button>
           <button onClick={onClose}>Close</button>
