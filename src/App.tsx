@@ -24,6 +24,14 @@ import { ensureDefaultFlagRules } from './domain/metadataStyling';
 import { ensureDefaultFastEntry } from './domain/entryDefaults';
 import { getRecordIdsForGridSelection } from './domain/gridSelection';
 import { buildGriddleFile, parseGriddleJson, serializeGriddleFile } from './domain/griddleIo';
+import { exportDatasetRecordsCsv } from './domain/csvExport';
+import {
+  hasFileSystemAccessApi,
+  openWithFileSystemAccess,
+  saveAsWithFileSystemAccess,
+  saveToHandle,
+  type FileHandle,
+} from './domain/fileAccess';
 import { loadLastFile, saveLastFile } from './domain/localState';
 import { parseDatasetJson, serializeDataset } from './domain/datasetIo';
 import { ResizableDrawer } from './components/ResizableDrawer';
@@ -63,6 +71,9 @@ export default function App() {
   const [dataset, setDataset] = useState<DatasetFileV1 | null>(null);
   const fileOpenRef = useRef<HTMLInputElement | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+
+  const [fileHandle, setFileHandle] = useState<FileHandle | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const t = localStorage.getItem('griddle:theme:v1');
     return t === 'dark' ? 'dark' : 'light';
@@ -174,6 +185,86 @@ export default function App() {
     setActiveViewId(null);
     setActiveFilterSet({ filters: [] });
     setConfig((prev) => reconcilePivotConfig(normalized.schema, nextPivot ?? prev));
+  }
+
+  async function openFileViaPicker() {
+    setImportError(null);
+
+    if (hasFileSystemAccessApi()) {
+      try {
+        const { handle, name, text } = await openWithFileSystemAccess();
+        // parse like handleOpenFile does
+        if (name.toLowerCase().endsWith('.griddle')) {
+          const gf = parseGriddleJson(text);
+          applyImportedDataset(gf.dataset, gf.pivotConfig);
+        } else {
+          const ds = parseDatasetJson(text);
+          applyImportedDataset(ds);
+        }
+        setFileHandle(handle);
+        setFileName(name);
+        return;
+      } catch (e) {
+        // user cancel is fine
+        if (e instanceof DOMException && e.name === 'AbortError') return;
+        setImportError(e instanceof Error ? e.message : 'Open failed');
+        return;
+      }
+    }
+
+    fileOpenRef.current?.click();
+  }
+
+  async function saveAsGriddle() {
+    if (!dataset) return;
+    const gf = buildGriddleFile({ dataset, pivotConfig: config });
+    const text = serializeGriddleFile(gf);
+    const suggestedName = `${dataset.name || 'dataset'}.griddle`;
+
+    if (hasFileSystemAccessApi()) {
+      try {
+        const { handle, name } = await saveAsWithFileSystemAccess({ suggestedName, contents: text });
+        setFileHandle(handle);
+        setFileName(name);
+        return;
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'AbortError') return;
+        // fallback to download
+      }
+    }
+
+    downloadTextFile(suggestedName, text);
+  }
+
+  async function saveGriddle() {
+    if (!dataset) return;
+    const gf = buildGriddleFile({ dataset, pivotConfig: config });
+    const text = serializeGriddleFile(gf);
+
+    if (fileHandle && hasFileSystemAccessApi()) {
+      try {
+        await saveToHandle(fileHandle, text);
+        return;
+      } catch {
+        // if handle becomes invalid, fall through to save as
+      }
+    }
+
+    await saveAsGriddle();
+  }
+
+  function exportExcelTable() {
+    if (!dataset) return;
+    // Excel-friendly: CSV of the underlying records (flat table).
+    const csv = exportDatasetRecordsCsv(dataset);
+    const filename = `${dataset.name || 'dataset'}.csv`;
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function handleOpenFile(file: File) {
@@ -310,7 +401,7 @@ export default function App() {
             e.currentTarget.value = '';
           }}
         />
-        <StartScreen onOpen={() => fileOpenRef.current?.click()} />
+        <StartScreen onOpen={() => void openFileViaPicker()} />
         {importError ? (
           <div
             style={{
@@ -462,18 +553,30 @@ export default function App() {
             return (
               <>
                 <RibbonGroup label="File">
-                  <IconButton title="Open…" onClick={() => fileOpenRef.current?.click()}>
+                  <IconButton title="Open…" onClick={() => void openFileViaPicker()}>
                     <Icon d="M4 20h16M12 3v12m0 0l4-4m-4 4l-4-4" />
                   </IconButton>
 
                   <IconButton
-                    title="Save"
+                    title={fileName ? `Save (${fileName})` : 'Save'}
                     onClick={() => {
-                      const gf = buildGriddleFile({ dataset, pivotConfig: config });
-                      downloadTextFile(`${dataset.name || 'dataset'}.griddle`, serializeGriddleFile(gf));
+                      void saveGriddle();
                     }}
                   >
                     <Icon d="M5 3h12l2 2v16H5V3zm3 0v6h8V3M7 21v-8h10v8" />
+                  </IconButton>
+
+                  <IconButton
+                    title="Save As…"
+                    onClick={() => {
+                      void saveAsGriddle();
+                    }}
+                  >
+                    <Icon d="M12 3v10m0 0l4-4m-4 4l-4-4M5 21h14" />
+                  </IconButton>
+
+                  <IconButton title="Export Excel table (CSV)" onClick={exportExcelTable}>
+                    <Icon d="M4 4h16v16H4V4zm4 4h8M8 8v8" />
                   </IconButton>
 
                   <IconButton
