@@ -1,4 +1,4 @@
-import type { DatasetFileV1, DatasetSchema, FieldDef, FieldRole, FieldType, RecordEntity } from './types';
+import type { DatasetFileV1, DatasetSchema, FieldDef, FieldRole, FieldType, FilterSet, RecordEntity, View } from './types';
 
 export class DatasetIoError extends Error {
   name = 'DatasetIoError';
@@ -125,6 +125,36 @@ function ensureRecord(input: unknown, idx: number): RecordEntity {
   return { id, createdAt, updatedAt, data: input.data };
 }
 
+function ensureFilterSet(input: unknown, field: string): FilterSet {
+  if (!isObject(input)) throw new DatasetIoError(`Expected ${field} to be an object`);
+
+  const name = typeof input.name === 'string' ? input.name : undefined;
+  const filtersRaw = Array.isArray(input.filters) ? input.filters : [];
+  const filters = filtersRaw
+    .map((f, i) => {
+      if (!isObject(f)) throw new DatasetIoError(`Expected ${field}.filters[${i}] to be an object`);
+      const dimensionKey = asString(f.dimensionKey, `${field}.filters[${i}].dimensionKey`);
+      const modeRaw = f.mode;
+      const mode: 'include' | 'exclude' = modeRaw === 'exclude' ? 'exclude' : 'include';
+      const valuesRaw = Array.isArray(f.values) ? f.values : [];
+      const values = valuesRaw.map((v, vi) => asString(v, `${field}.filters[${i}].values[${vi}]`));
+      return { dimensionKey, mode, values };
+    })
+    // keep stable ordering (by dimensionKey) so diffs are nicer
+    .sort((a, b) => a.dimensionKey.localeCompare(b.dimensionKey));
+
+  return { name, filters };
+}
+
+function ensureView(input: unknown, idx: number): View {
+  if (!isObject(input)) throw new DatasetIoError(`Expected views[${idx}] to be an object`);
+  const id = asString(input.id, `views[${idx}].id`);
+  const name = asString(input.name, `views[${idx}].name`);
+  const createdAt = asString(input.createdAt, `views[${idx}].createdAt`);
+  const filterSet = ensureFilterSet(input.filterSet, `views[${idx}].filterSet`);
+  return { id, name, createdAt, filterSet };
+}
+
 export function ensureDatasetV1(input: unknown): DatasetFileV1 {
   if (!isObject(input)) throw new DatasetIoError('Expected dataset JSON to be an object');
 
@@ -136,7 +166,10 @@ export function ensureDatasetV1(input: unknown): DatasetFileV1 {
   const recordsRaw = asArray(input.records, 'records');
   const records = recordsRaw.map((r, i) => ensureRecord(r, i));
 
-  return { version: 1, name, schema, records };
+  const viewsRaw = input.views === undefined ? undefined : asArray(input.views, 'views');
+  const views = viewsRaw ? viewsRaw.map((v, i) => ensureView(v, i)) : undefined;
+
+  return { version: 1, name, schema, records, views };
 }
 
 export function parseDatasetJson(text: string): DatasetFileV1 {

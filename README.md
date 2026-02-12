@@ -73,10 +73,16 @@ You can:
 
 Schema changes apply live to the pivot controls and grid.
 
+## Filters + Views (Milestone 8)
+
+- **Filters**: Click **Filters** in the ribbon to open an Excel-style filter popup.
+  - Filters apply per-dimension (include/exclude + multiselect).
+  - Multiple dimensions can be filtered at once.
+- **Views**: Use the **Views** dropdown to save/recall named filter sets.
+  - Views persist inside the dataset JSON (`views[]`) and therefore persist in `.griddle` files too.
+
 ## Current limitations
 
-- Sample data is hardcoded (`src/sample/sampleDataset.ts`)
-- No import/export yet
-- Slicers UI not implemented (compute supports it, but no UI)
-- No record editing/creation UI yet
-- No date bucketing yet
+- Filtering is exact-match on the stringified value (no numeric range filters yet).
+- Pivot aggregation is SUM-only (for the selected measure).
+- Date bucketing/grouping isn’t implemented yet.

@@ -55,11 +55,30 @@ export interface RecordEntity {
   data: Record<string, unknown>;
 }
 
+export interface DimensionFilter {
+  dimensionKey: string;
+  mode: 'include' | 'exclude';
+  values: string[];
+}
+
+export interface FilterSet {
+  name?: string;
+  filters: DimensionFilter[];
+}
+
+export interface View {
+  id: string;
+  name: string;
+  filterSet: FilterSet;
+  createdAt: string;
+}
+
 export interface DatasetFileV1 {
   version: 1;
   name: string;
   schema: DatasetSchema;
   records: RecordEntity[];
+  views?: View[];
 }
 
 export type Tuple = Record<string, string>;

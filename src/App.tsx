@@ -4,6 +4,8 @@ import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid
 import './App.css';
 import { PivotControls } from './components/PivotControls';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
+import { FilterPopup } from './components/FilterPopup';
+import { ViewsDropdown } from './components/ViewsDropdown';
 import { StartScreen } from './components/StartScreen';
 import { EntryPanel } from './components/EntryPanel';
 import { MenuBar } from './components/MenuBar';
@@ -13,8 +15,9 @@ import { BulkRangePanel } from './components/BulkRangePanel';
 import { SchemaEditor } from './components/SchemaEditor';
 import { Modal } from './components/Modal';
 import { computePivot } from './domain/pivot';
+import { filterSetActiveCount } from './domain/filters';
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
-import type { DatasetFileV1, DatasetSchema, PivotConfig, SelectedCell, Tuple } from './domain/types';
+import type { DatasetFileV1, DatasetSchema, FilterSet, PivotConfig, SelectedCell, Tuple, View } from './domain/types';
 import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { ensureDefaultFlagRules } from './domain/metadataStyling';
@@ -83,6 +86,8 @@ export default function App() {
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [showPivotLayout, setShowPivotLayout] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [activeFilterSet, setActiveFilterSet] = useState<FilterSet>({ filters: [] });
+  const [activeViewId, setActiveViewId] = useState<string | null>(null);
   const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'fullRecords'>('entry');
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
@@ -93,8 +98,11 @@ export default function App() {
   });
 
   const pivot = useMemo(
-    () => (dataset ? computePivot(dataset.records, dataset.schema, config) : { rowTuples: [], colTuples: [], cells: {} }),
-    [dataset, config],
+    () =>
+      dataset
+        ? computePivot(dataset.records, dataset.schema, config, activeFilterSet)
+        : { rowTuples: [], colTuples: [], cells: {} },
+    [dataset, config, activeFilterSet],
   );
 
   const bulkSel = (() => {
@@ -157,8 +165,14 @@ export default function App() {
     setShowSchemaEditor(false);
     setImportError(null);
 
-    const normalized = { ...next, schema: ensureDefaultFastEntry(ensureDefaultFlagRules(next.schema)) };
+    const normalized: DatasetFileV1 = {
+      ...next,
+      schema: ensureDefaultFastEntry(ensureDefaultFlagRules(next.schema)),
+      views: next.views ?? [],
+    };
     setDataset(normalized);
+    setActiveViewId(null);
+    setActiveFilterSet({ filters: [] });
     setConfig((prev) => reconcilePivotConfig(normalized.schema, nextPivot ?? prev));
   }
 
@@ -485,9 +499,38 @@ export default function App() {
                     <Icon d="M4 4h16v6H4V4zm0 10h7v6H4v-6zm9 0h7v6h-7v-6" />
                   </IconButton>
 
-                  <IconButton title="Filters…" onClick={() => setShowFilters(true)}>
-                    <Icon d="M4 5h16l-6 7v6l-4 2v-8L4 5z" />
-                  </IconButton>
+                  {(() => {
+                    const n = filterSetActiveCount(activeFilterSet);
+                    return (
+                      <div style={{ position: 'relative' }}>
+                        <IconButton title={n > 0 ? `Filters (${n})…` : 'Filters…'} onClick={() => setShowFilters(true)}>
+                          <Icon d="M4 5h16l-6 7v6l-4 2v-8L4 5z" />
+                        </IconButton>
+                        {n > 0 ? (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              right: -6,
+                              top: -6,
+                              minWidth: 16,
+                              height: 16,
+                              padding: '0 4px',
+                              borderRadius: 999,
+                              background: 'var(--accent)',
+                              color: 'white',
+                              fontSize: 11,
+                              fontWeight: 800,
+                              display: 'grid',
+                              placeItems: 'center',
+                              border: '1px solid var(--border)',
+                            }}
+                          >
+                            {n}
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })()}
 
                   <IconButton
                     title={entryPressed ? 'Hide Entry panel' : 'Show Entry panel'}
@@ -504,6 +547,22 @@ export default function App() {
                   >
                     <Icon d="M4 4h16v16H4V4zm0 11h16" />
                   </IconButton>
+                </RibbonGroup>
+
+                <RibbonGroup label="Views">
+                  <ViewsDropdown
+                    views={(dataset.views ?? []) as View[]}
+                    activeViewId={activeViewId}
+                    activeFilterSet={activeFilterSet}
+                    onViewsChange={(next) => {
+                      setDataset((prev) => (prev ? { ...prev, views: next } : prev));
+                    }}
+                    onLoadView={(viewId, fs) => {
+                      setSelected(null);
+                      setActiveViewId(viewId);
+                      setActiveFilterSet(fs);
+                    }}
+                  />
                 </RibbonGroup>
 
                 <RibbonGroup label="Format">
@@ -551,17 +610,16 @@ export default function App() {
 
       {showFilters ? (
         <Modal title="Filters" onClose={() => setShowFilters(false)}>
-          <PivotControls
+          <FilterPopup
             schema={dataset.schema}
             records={dataset.records}
-            config={config}
-            onChange={(cfg) => {
+            active={activeFilterSet}
+            onApply={(next) => {
               setSelected(null);
-              setConfig(cfg);
+              setActiveFilterSet(next);
+              setActiveViewId(null);
             }}
-            showRowsColsMeasure={false}
-            showSlicers
-            showRowFilters
+            onClose={() => setShowFilters(false)}
           />
         </Modal>
       ) : null}

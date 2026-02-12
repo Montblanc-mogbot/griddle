@@ -1,4 +1,5 @@
-import type { DatasetSchema, PivotConfig, PivotResult, RecordEntity, Tuple } from './types';
+import type { DatasetSchema, FilterSet, PivotConfig, PivotResult, RecordEntity, Tuple } from './types';
+import { applyFilterSet } from './filters';
 
 function asKeyPart(v: unknown): string {
   if (v === null || v === undefined) return '';
@@ -74,13 +75,17 @@ export function computePivot(
   records: RecordEntity[],
   schema: DatasetSchema,
   config: PivotConfig,
+  activeFilterSet?: FilterSet,
 ): PivotResult {
   const rowMap = new Map<string, Tuple>();
   const colMap = new Map<string, Tuple>();
 
   const flagKeys = schema.fields.filter((f) => f.roles.includes('flag')).map((f) => f.key);
 
-  const filtered = records.filter((r) => recordMatchesSlicers(r, config) && recordMatchesRowFilters(r, config));
+  const filtered = applyFilterSet(
+    records.filter((r) => recordMatchesSlicers(r, config) && recordMatchesRowFilters(r, config)),
+    activeFilterSet,
+  );
 
   for (const r of filtered) {
     const rt = buildTuple(config.rowKeys, r);
