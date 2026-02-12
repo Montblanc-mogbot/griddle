@@ -33,7 +33,7 @@ import {
   saveToHandle,
   type FileHandle,
 } from './domain/fileAccess';
-import { loadLastFile, saveLastFile } from './domain/localState';
+import { saveLastFile } from './domain/localState';
 import { parseDatasetJson, serializeDataset } from './domain/datasetIo';
 import { ResizableDrawer } from './components/ResizableDrawer';
 import { ScaffoldDialog } from './components/ScaffoldDialog';
@@ -369,14 +369,8 @@ export default function App() {
     saveLastFile(buildGriddleFile({ dataset, pivotConfig: config }));
   }, [dataset, config]);
 
-  // On boot, if we have a last session, preload it (still allows opening a real file).
-  useEffect(() => {
-    if (dataset) return;
-    const last = loadLastFile();
-    if (!last) return;
-    applyImportedDataset(last.dataset, last.pivotConfig);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // On boot: show the Start screen (New/Open). We keep last file as a draft in localStorage,
+  // but we do NOT auto-load it.
 
   function downloadTextFile(filename: string, content: string) {
     const blob = new Blob([content], { type: 'application/json' });
