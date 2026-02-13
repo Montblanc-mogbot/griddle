@@ -1,5 +1,6 @@
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
 import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
+import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import styles from './bottomPanel.module.css';
 import { useMemo } from 'react';
 
@@ -148,6 +149,7 @@ export function FullRecordsPanel(props: {
     return [];
   }, [dataset, selected, explicitRecordIds]);
   const fields = dataset.schema.fields;
+  const noteKey = findNoteFieldKey(dataset.schema);
 
   function updateRecord(next: RecordEntity) {
     onDatasetChange(upsertRecords(dataset, [next]));
@@ -224,7 +226,27 @@ export function FullRecordsPanel(props: {
             <tbody>
               {records.map((r) => (
                 <tr key={r.id}>
-                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>{r.id}</td>
+                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      {r.id}
+                      {(() => {
+                        const note = recordNoteValue(r, noteKey);
+                        return note ? (
+                          <span
+                            title={note}
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 999,
+                              background: 'rgba(79, 70, 229, 0.18)',
+                              border: '1px solid rgba(79, 70, 229, 0.35)',
+                              display: 'inline-block',
+                            }}
+                          />
+                        ) : null;
+                      })()}
+                    </span>
+                  </td>
                   {fields.map((f) => (
                     <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
                       <CellEditor record={r} field={f} onChange={updateRecord} />

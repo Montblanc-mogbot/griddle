@@ -56,6 +56,24 @@
   text-align: left;
 }
 
+.noteCell {
+  width: 26px;
+  text-align: center;
+}
+
+.noteDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.18);
+  border: 1px solid rgba(79, 70, 229, 0.35);
+  display: inline-block;
+}
+
+.noteDot:hover {
+  background: rgba(79, 70, 229, 0.26);
+}
+
 .flagsCell {
   text-align: center;
 }

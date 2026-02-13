@@ -1,4 +1,5 @@
 import type { DatasetFileV1, FieldDef, SelectedCell } from '../domain/types';
+import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import { flagFields, getRecordsForCell, measureFields } from '../domain/records';
 import { RecordTapeRow } from './RecordTapeRow';
 import type { TapeFlag } from './RecordTapeRow.types';
@@ -35,6 +36,7 @@ export function RecordTape(props: {
   const details = detailsFields(dataset.schema);
   const measures = measureFields(dataset.schema);
   const flags = flagFields(dataset.schema);
+  const noteKey = findNoteFieldKey(dataset.schema);
 
   const measureKeys = measures.map((m) => m.key);
   const flagKeys: TapeFlag[] = flags.map((f) => ({ key: f.key, label: f.label }));
@@ -58,6 +60,7 @@ export function RecordTape(props: {
         <table className={styles.table}>
           <thead>
             <tr>
+              {noteKey ? <th className={`${styles.th} ${styles.noteCell}`} title="Has note" /> : null}
               {details.map((d) => (
                 <th key={d.key} className={styles.th}>
                   {d.label}
@@ -83,6 +86,15 @@ export function RecordTape(props: {
           <tbody>
             {records.map((r) => (
               <tr key={r.id}>
+                {noteKey ? (
+                  <td className={`${styles.td} ${styles.noteCell}`}>
+                    {(() => {
+                      const note = recordNoteValue(r, noteKey);
+                      return note ? <span className={styles.noteDot} title={note} /> : null;
+                    })()}
+                  </td>
+                ) : null}
+
                 {details.map((d) => {
                   const v = r.data[d.key];
                   if (d.enum && d.enum.length > 0) {
