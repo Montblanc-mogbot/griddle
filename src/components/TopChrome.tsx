@@ -91,7 +91,7 @@ export function TopChrome(props: {
       <div className={styles.menuRow}>
         <div className={styles.left}>
           <div className={styles.mark} title="Griddle">
-            <img src="/griddle-logo.png" alt="Griddle" className={styles.logo} />
+            <img src={`${import.meta.env.BASE_URL}griddle-logo.png`} alt="Griddle" className={styles.logo} />
           </div>
 
           <div className={styles.titleWrap}>
