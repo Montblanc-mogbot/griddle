@@ -97,3 +97,19 @@
   outline: none;
   box-shadow: var(--focusRing);
 }
+
+.measureInput {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.measureInput:focus {
+  outline: none;
+  box-shadow: var(--focusRing);
+}

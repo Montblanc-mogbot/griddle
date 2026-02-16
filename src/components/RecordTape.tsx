@@ -178,7 +178,7 @@ export function RecordTape(props: {
               </tr>
             ))}
 
-            <TapeNewEntryRow schema={dataset.schema} onSubmit={onSubmit} />
+            <TapeNewEntryRow schema={dataset.schema} hasNoteColumn={Boolean(noteKey)} onSubmit={onSubmit} />
           </tbody>
         </table>
       </div>

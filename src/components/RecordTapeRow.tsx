@@ -32,7 +32,7 @@ export function RecordTapeRow(props: {
                 if (!Number.isFinite(n)) return;
                 onUpdateMeasure(k, n);
               }}
-              style={{ width: 110 }}
+              className={styles.measureInput}
             />
           </td>
         );

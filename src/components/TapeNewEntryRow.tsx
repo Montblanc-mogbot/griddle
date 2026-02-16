@@ -17,13 +17,14 @@ function detailsFields(schema: DatasetSchema): FieldDef[] {
 
 export function TapeNewEntryRow(props: {
   schema: DatasetSchema;
+  hasNoteColumn: boolean;
   onSubmit: (args: {
     measureValues: Record<string, number | ''>;
     flags: Record<string, boolean>;
     details?: Record<string, unknown>;
   }) => void;
 }) {
-  const { schema, onSubmit } = props;
+  const { schema, hasNoteColumn, onSubmit } = props;
 
   const details = useMemo(() => detailsFields(schema), [schema]);
   const measures = useMemo(() => measureFields(schema), [schema]);
@@ -79,6 +80,9 @@ export function TapeNewEntryRow(props: {
 
   return (
     <tr className={styles.newEntryRow}>
+      {hasNoteColumn ? (
+        <td className={`${styles.td} ${styles.noteCell}`} />
+      ) : null}
       {details.map((d, idx) => (
         <td key={d.key} className={styles.td}>
           <input
