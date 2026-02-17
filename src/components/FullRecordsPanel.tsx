@@ -1,8 +1,8 @@
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
-import { getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
+import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
 import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import styles from './bottomPanel.module.css';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 function ContextPills(props: { selected: SelectedCell | null; config: PivotConfig }) {
   const { selected, config } = props;
@@ -137,6 +137,8 @@ export function FullRecordsPanel(props: {
 }) {
   const { dataset, config, selected, recordIds: explicitRecordIds, onClose, onDone, onDatasetChange } = props;
 
+  const [newDraft, setNewDraft] = useState<RecordEntity | null>(null);
+
   // Use explicit record IDs if provided (bulk mode), otherwise derive from selected cell.
   // In bulk mode, we also include records from the currently-focused cell so that
   // actions like "Add record" (which target the focused cell) show up immediately.
@@ -161,13 +163,53 @@ export function FullRecordsPanel(props: {
     onDatasetChange(upsertRecords(dataset, [next]));
   }
 
+  function submitNewDraft() {
+    if (!newDraft) return;
+
+    const measureKeys = dataset.schema.fields.filter((f) => f.roles.includes('measure')).map((f) => f.key);
+    const hasAnyMeasure = measureKeys.some((k) => {
+      const v = newDraft.data[k];
+      if (v === null || v === undefined || v === '') return false;
+      if (typeof v === 'number') return Number.isFinite(v);
+      if (typeof v === 'string') {
+        const n = Number(v);
+        return Number.isFinite(n);
+      }
+      return false;
+    });
+
+    if (!hasAnyMeasure) {
+      window.alert('Cannot create a record without at least one measure value.');
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const finalRec: RecordEntity = {
+      ...newDraft,
+      id: `r_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    onDatasetChange(upsertRecords(dataset, [finalRec]));
+    setNewDraft(null);
+  }
+
   function addNewRecord() {
     if (!selected) return; // Can't add record in bulk mode without a specific cell context
 
-    // Policy: records must have at least one measure value.
-    // Creating a blank record here (no measures) leads to confusing "phantom rows" in the pivot.
-    window.alert('Add record from Full Records is disabled. Use the Entry panel so you can enter a measure value.');
-    onDone();
+    // Create a local draft row; we only persist it once the user submits (and passes validation).
+    const draft = createRecordFromSelection({
+      schema: dataset.schema,
+      config,
+      selected,
+      measureValues: {},
+      flags: {},
+    });
+
+    setNewDraft({ ...draft, id: '__new__' });
+
+    // Scroll-to/top focus is handled by the table rendering; user can start typing immediately.
   }
 
   function deleteRecord(id: string) {
@@ -227,6 +269,33 @@ export function FullRecordsPanel(props: {
               </tr>
             </thead>
             <tbody>
+              {newDraft ? (
+                <tr key="__new__" style={{ background: 'rgba(79, 70, 229, 0.06)' }}>
+                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
+                    <b>NEW</b>
+                  </td>
+                  {fields.map((f) => (
+                    <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
+                      <CellEditor record={newDraft} field={f} onChange={setNewDraft} />
+                    </td>
+                  ))}
+                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={submitNewDraft}
+                      style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.5)', color: 'var(--text)' }}
+                    >
+                      Add
+                    </button>
+                    <button
+                      onClick={() => setNewDraft(null)}
+                      style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)' }}
+                    >
+                      Cancel
+                    </button>
+                  </td>
+                </tr>
+              ) : null}
+
               {records.map((r) => (
                 <tr key={r.id}>
                   <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
