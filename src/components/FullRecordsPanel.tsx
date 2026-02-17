@@ -2,7 +2,7 @@ import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell }
 import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
 import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import styles from './bottomPanel.module.css';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 function ContextPills(props: { selected: SelectedCell | null; config: PivotConfig }) {
   const { selected, config } = props;
@@ -138,6 +138,8 @@ export function FullRecordsPanel(props: {
   const { dataset, config, selected, recordIds: explicitRecordIds, onClose, onDone, onDatasetChange } = props;
 
   const [newDraft, setNewDraft] = useState<RecordEntity | null>(null);
+  const [workingIds, setWorkingIds] = useState<string[]>([]);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
 
   // Use explicit record IDs if provided (bulk mode), otherwise derive from selected cell.
   // In bulk mode, we also include records from the currently-focused cell so that
@@ -158,6 +160,28 @@ export function FullRecordsPanel(props: {
   }, [dataset, selected, explicitRecordIds]);
   const fields = dataset.schema.fields;
   const noteKey = findNoteFieldKey(dataset.schema);
+
+  const workingSet = useMemo(() => new Set(workingIds), [workingIds]);
+
+  const activeMeasureKey = config.measureKey;
+  const activeMeasureLabel =
+    dataset.schema.fields.find((f) => f.key === activeMeasureKey)?.label ?? activeMeasureKey;
+
+  const workingTotals = useMemo(() => {
+    let sum = 0;
+    let count = 0;
+    for (const r of records) {
+      if (!workingSet.has(r.id)) continue;
+      count++;
+      const v = r.data[activeMeasureKey];
+      if (typeof v === 'number' && Number.isFinite(v)) sum += v;
+      else if (typeof v === 'string') {
+        const n = Number(v);
+        if (Number.isFinite(n)) sum += n;
+      }
+    }
+    return { count, sum };
+  }, [records, workingSet, activeMeasureKey]);
 
   function updateRecord(next: RecordEntity) {
     onDatasetChange(upsertRecords(dataset, [next]));
@@ -250,15 +274,43 @@ export function FullRecordsPanel(props: {
         </div>
       </div>
 
-      <div className={styles.body}>
-        <div style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>
-          {records.length} records in this cell.
+      <div
+        className={styles.body}
+        ref={wrapRef}
+        onMouseDown={(e) => {
+          // Clear "Working" when clicking whitespace (not a record), unless user is holding Ctrl/Meta.
+          if (e.ctrlKey || e.metaKey) return;
+          const t = e.target;
+          if (!(t instanceof HTMLElement)) return;
+
+          // Anything inside a record row (or an editor inside it) should not clear.
+          const inRecordRow = Boolean(t.closest('tr[data-record-row="1"]'));
+          if (inRecordRow) return;
+
+          // Ignore clicks on header buttons etc (those are above), but body whitespace should clear.
+          setWorkingIds([]);
+        }}
+      >
+        <div style={{ fontSize: 12, color: '#666', marginBottom: 10, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+          <span>{records.length} records in this cell.</span>
+          {workingTotals.count > 0 ? (
+            <span>
+              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {workingTotals.sum}
+            </span>
+          ) : (
+            <span style={{ color: '#888' }}>
+              <b>Working:</b> 0
+            </span>
+          )}
         </div>
 
         <div style={{ overflowX: 'auto' }}>
           <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13 }}>
             <thead>
               <tr>
+                <th style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px', width: 70 }}>
+                  Working
+                </th>
                 <th style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px' }}>id</th>
                 {fields.map((f) => (
                   <th key={f.key} style={{ textAlign: 'left', borderBottom: '1px solid #eee', padding: '6px 8px' }}>
@@ -270,9 +322,12 @@ export function FullRecordsPanel(props: {
             </thead>
             <tbody>
               {newDraft ? (
-                <tr key="__new__" style={{ background: 'rgba(79, 70, 229, 0.06)' }}>
+                <tr key="__new__" data-record-row="1" style={{ background: 'rgba(79, 70, 229, 0.06)' }}>
                   <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
                     <b>NEW</b>
+                  </td>
+                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
+                    <span style={{ color: '#777' }}>(draft)</span>
                   </td>
                   {fields.map((f) => (
                     <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
@@ -296,44 +351,71 @@ export function FullRecordsPanel(props: {
                 </tr>
               ) : null}
 
-              {records.map((r) => (
-                <tr key={r.id}>
-                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                      {r.id}
-                      {(() => {
-                        const note = recordNoteValue(r, noteKey);
-                        return note ? (
-                          <span
-                            title={note}
-                            style={{
-                              width: 10,
-                              height: 10,
-                              borderRadius: 999,
-                              background: 'rgba(79, 70, 229, 0.18)',
-                              border: '1px solid rgba(79, 70, 229, 0.35)',
-                              display: 'inline-block',
-                            }}
-                          />
-                        ) : null;
-                      })()}
-                    </span>
-                  </td>
-                  {fields.map((f) => (
-                    <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
-                      <CellEditor record={r} field={f} onChange={updateRecord} />
+              {records.map((r) => {
+                const isWorking = workingSet.has(r.id);
+                return (
+                  <tr
+                    key={r.id}
+                    data-record-row="1"
+                    style={isWorking ? { background: 'rgba(34,197,94,0.06)' } : undefined}
+                  >
+                    <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
+                      <input
+                        type="checkbox"
+                        checked={isWorking}
+                        onChange={() => {
+                          setWorkingIds((prev) => {
+                            const set = new Set(prev);
+                            if (set.has(r.id)) set.delete(r.id);
+                            else set.add(r.id);
+                            return Array.from(set.values());
+                          });
+                        }}
+                        title="Working"
+                      />
                     </td>
-                  ))}
-                  <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
-                    <button
-                      onClick={() => deleteRecord(r.id)}
-                      style={{ background: 'rgba(255, 77, 79, 0.12)', border: '1px solid rgba(255, 77, 79, 0.5)', color: 'var(--text)' }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+
+                    <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                        {r.id}
+                        {(() => {
+                          const note = recordNoteValue(r, noteKey);
+                          return note ? (
+                            <span
+                              title={note}
+                              style={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: 999,
+                                background: 'rgba(79, 70, 229, 0.18)',
+                                border: '1px solid rgba(79, 70, 229, 0.35)',
+                                display: 'inline-block',
+                              }}
+                            />
+                          ) : null;
+                        })()}
+                      </span>
+                    </td>
+                    {fields.map((f) => (
+                      <td key={f.key} style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
+                        <CellEditor record={r} field={f} onChange={updateRecord} />
+                      </td>
+                    ))}
+                    <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px' }}>
+                      <button
+                        onClick={() => deleteRecord(r.id)}
+                        style={{
+                          background: 'rgba(255, 77, 79, 0.12)',
+                          border: '1px solid rgba(255, 77, 79, 0.5)',
+                          color: 'var(--text)',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

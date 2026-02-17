@@ -113,6 +113,12 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
+  const [pivotScrollX, setPivotScrollX] = useState<number>(() => {
+    const raw = localStorage.getItem('griddle:pivotScrollX:v1');
+    const n = raw ? Number(raw) : 0;
+    return Number.isFinite(n) ? n : 0;
+  });
+
   const pivot = useMemo(
     () =>
       dataset
@@ -651,6 +657,11 @@ export default function App() {
                   valueColWidth={valueColWidth}
                   rowMarkersWidth={rowMarkersWidth}
                   selection={gridSelection}
+                  scrollOffsetX={pivotScrollX}
+                  onScrollXChange={(x) => {
+                    setPivotScrollX(x);
+                    localStorage.setItem('griddle:pivotScrollX:v1', String(x));
+                  }}
                   onSelectionChange={(sel) => {
                     setGridSelection(sel);
                   }}

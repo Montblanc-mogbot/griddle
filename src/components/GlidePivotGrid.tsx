@@ -20,6 +20,8 @@ export function GlidePivotGrid(props: {
   valueColWidth: number;
   rowMarkersWidth: number;
   selection: GridSelection;
+  scrollOffsetX?: number;
+  onScrollXChange?: (x: number) => void;
   onSelectionChange: (sel: GridSelection) => void;
   onSingleValueCellSelected: (sel: SelectedCell) => void;
 }) {
@@ -32,6 +34,8 @@ export function GlidePivotGrid(props: {
     valueColWidth,
     rowMarkersWidth,
     selection,
+    scrollOffsetX,
+    onScrollXChange,
     onSelectionChange,
     onSingleValueCellSelected,
   } = props;
@@ -156,6 +160,11 @@ export function GlidePivotGrid(props: {
       rangeSelect="multi-rect"
       freezeColumns={freezeColCount}
       smoothScrollX
+      scrollOffsetX={scrollOffsetX}
+      onVisibleRegionChanged={(_range, tx) => {
+        // tx is the horizontal scroll offset (px)
+        if (onScrollXChange) onScrollXChange(tx);
+      }}
       gridSelection={selection}
       getGroupDetails={(g) => ({
         name: g,
