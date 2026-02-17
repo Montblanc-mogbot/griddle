@@ -673,7 +673,8 @@ export default function App() {
               recordIds={bulkSel.recordIds}
               cellCount={bulkSel.cellCount}
               onClose={() => {
-                // keep selection, just close bulk panel
+                // Clear selection so user can click the same cell again.
+                setSelected(null);
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
               }}
               onGoToFullRecords={() => setPanelMode('fullRecords')}
@@ -688,6 +689,8 @@ export default function App() {
               selected={selected}
               onClose={() => {
                 setSelected(null);
+                // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
+                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
                 setPanelMode('none');
               }}
               onGoToFullRecords={() => setPanelMode('fullRecords')}
@@ -748,6 +751,8 @@ export default function App() {
               onClose={() => {
                 setSelected(null);
                 setFullRecordsRecordIds(null);
+                // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
+                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
                 setPanelMode('none');
               }}
               onDone={() => {
