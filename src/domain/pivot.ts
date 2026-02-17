@@ -112,13 +112,6 @@ export function computePivot(
       return Array.from(observed.values());
     }
 
-    // We only support "include empty" for date domains right now.
-    // For enum/list domains, keeping empty axis items after the last record is deleted feels like
-    // "stuck blank lines" in the pivot, which is usually not what users expect.
-    if (field.pivot.axisDomain.kind !== 'dateRange') {
-      return Array.from(observed.values());
-    }
-
     const domainValues = axisDomainValues(field.pivot.axisDomain, field.enum);
     const domainTuples = domainValues.map((v) => ({ [k]: asKeyPart(v) } as Tuple));
 
