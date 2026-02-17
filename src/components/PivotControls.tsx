@@ -124,7 +124,9 @@ export function PivotControls(props: {
   const activeSelected = useMemo(() => {
     if (!activeSlicerKey) return [];
     const desired = config.slicers[activeSlicerKey];
-    return Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
+    // Slicers are intentionally single-select; tolerate legacy arrays by taking the first.
+    if (Array.isArray(desired)) return desired.length > 0 ? [String(desired[0])] : [];
+    return desired ? [String(desired)] : [];
   }, [config.slicers, activeSlicerKey]);
 
   useEffect(() => {
@@ -419,13 +421,9 @@ export function PivotControls(props: {
               if (!field) return null;
 
               const desired = config.slicers[k];
-              const values = Array.isArray(desired) ? desired.map(String) : desired ? [String(desired)] : [];
-              const label =
-                values.length === 0
-                  ? 'All'
-                  : values.length <= 2
-                    ? values.join(', ')
-                    : `${values.length} selected`;
+              // Slicers are single-select; treat any array as legacy and display the first.
+              const value = Array.isArray(desired) ? (desired[0] ? String(desired[0]) : '') : desired ? String(desired) : '';
+              const label = value === '' ? 'All' : value;
 
               return (
                 <button
@@ -532,8 +530,7 @@ export function PivotControls(props: {
               <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
                 <button
                   onClick={() => {
-                    const all = (activeSlicerField.enum ?? uniqValues(records, activeSlicerField.key)).map(String);
-                    onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: all } });
+                    window.alert('Slicer filters are limited to one value. Please pick a single value or Clear.');
                   }}
                   style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
                 >
@@ -558,14 +555,27 @@ export function PivotControls(props: {
                         type="checkbox"
                         checked={checked}
                         onChange={() => {
-                          const next = checked
-                            ? activeSelected.filter((v) => v !== o.value)
-                            : [...activeSelected, o.value];
+                          if (checked) {
+                            onChange({
+                              ...config,
+                              slicers: {
+                                ...config.slicers,
+                                [activeSlicerField.key]: [],
+                              },
+                            });
+                            return;
+                          }
+
+                          if (activeSelected.length >= 1) {
+                            window.alert('Slicer filters are limited to one value. Clear the slicer first to pick a different value.');
+                            return;
+                          }
+
                           onChange({
                             ...config,
                             slicers: {
                               ...config.slicers,
-                              [activeSlicerField.key]: next,
+                              [activeSlicerField.key]: o.value,
                             },
                           });
                         }}
