@@ -342,7 +342,39 @@ export default function App() {
     }
 
     function onKeyDown(e: KeyboardEvent) {
-      if (isEditableTarget(e.target)) return;
+      const editable = isEditableTarget(e.target);
+
+      // Allow navigating the pivot with arrow keys even when side panels are open,
+      // as long as the user isn't actively typing in an input.
+      if (!editable && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        const cur = gridSelection.current;
+        if (cur && cur.range.width === 1 && cur.range.height === 1 && cur.rangeStack.length === 0) {
+          const maxCol = config.rowKeys.length + pivot.colTuples.length - 1;
+          const maxRow = pivot.rowTuples.length - 1;
+          if (maxCol >= 0 && maxRow >= 0) {
+            let [col, row] = cur.cell;
+            if (e.key === 'ArrowLeft') col = Math.max(0, col - 1);
+            if (e.key === 'ArrowRight') col = Math.min(maxCol, col + 1);
+            if (e.key === 'ArrowUp') row = Math.max(0, row - 1);
+            if (e.key === 'ArrowDown') row = Math.min(maxRow, row + 1);
+
+            if (col !== cur.cell[0] || row !== cur.cell[1]) {
+              e.preventDefault();
+              setGridSelection({
+                columns: CompactSelection.empty(),
+                rows: CompactSelection.empty(),
+                current: {
+                  cell: [col, row],
+                  range: { x: col, y: row, width: 1, height: 1 },
+                  rangeStack: [],
+                },
+              });
+            }
+          }
+        }
+      }
+
+      if (editable) return;
 
       const mod = e.metaKey || e.ctrlKey;
       if (!mod) return;
