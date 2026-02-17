@@ -177,16 +177,17 @@ export function FullRecordsPanel(props: {
   }
 
   function deleteAllRecords() {
-    if (dataset.records.length === 0) return;
+    const targetIds = Array.from(new Set(records.map((r) => r.id)));
+    if (targetIds.length === 0) return;
 
     // Strong confirm to avoid accidents.
     const phrase = 'DELETE ALL';
     const typed = window.prompt(
-      `This will permanently delete ALL ${dataset.records.length} records in the dataset.\n\nType "${phrase}" to confirm.`,
+      `This will permanently delete ALL ${targetIds.length} record(s) currently shown in Full Records.\n\nType "${phrase}" to confirm.`,
     );
     if (typed !== phrase) return;
 
-    onDatasetChange(removeRecords(dataset, dataset.records.map((r) => r.id)));
+    onDatasetChange(removeRecords(dataset, targetIds));
   }
 
   return (
