@@ -18,13 +18,15 @@ function detailsFields(schema: DatasetSchema): FieldDef[] {
 export function TapeNewEntryRow(props: {
   schema: DatasetSchema;
   hasNoteColumn: boolean;
+  /** changes when the user selects a new grid cell / opens entry panel; used to re-trigger autofocus */
+  focusSeed?: string | number;
   onSubmit: (args: {
     measureValues: Record<string, number | ''>;
     flags: Record<string, boolean>;
     details?: Record<string, unknown>;
   }) => void;
 }) {
-  const { schema, hasNoteColumn, onSubmit } = props;
+  const { schema, hasNoteColumn, focusSeed, onSubmit } = props;
 
   const details = useMemo(() => detailsFields(schema), [schema]);
   const measures = useMemo(() => measureFields(schema), [schema]);
@@ -46,8 +48,12 @@ export function TapeNewEntryRow(props: {
 
   useEffect(() => {
     const first = details[0]?.key ?? measures[0]?.key;
-    if (first) inputRefs.current[first]?.focus();
-  }, [details, measures]);
+    if (!first) return;
+
+    // Focus can race with drawer/modal animations; defer one tick.
+    const id = window.requestAnimationFrame(() => inputRefs.current[first]?.focus());
+    return () => window.cancelAnimationFrame(id);
+  }, [details, measures, focusSeed]);
 
   function submit() {
     const detailsValues: Record<string, unknown> = {};

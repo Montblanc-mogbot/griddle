@@ -178,7 +178,12 @@ export function RecordTape(props: {
               </tr>
             ))}
 
-            <TapeNewEntryRow schema={dataset.schema} hasNoteColumn={Boolean(noteKey)} onSubmit={onSubmit} />
+            <TapeNewEntryRow
+              schema={dataset.schema}
+              hasNoteColumn={Boolean(noteKey)}
+              focusSeed={`${selected.rowIndex}:${selected.colIndex}`}
+              onSubmit={onSubmit}
+            />
           </tbody>
         </table>
       </div>

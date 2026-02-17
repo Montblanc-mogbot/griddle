@@ -55,11 +55,28 @@ export function createRecordFromSelection(args: {
   const now = new Date().toISOString();
   const data: Record<string, unknown> = {};
 
-  // Implied dimensions (row+col tuples)
+  // Implied dimensions (row+col tuples + slicer keys)
   const dimKeys = dimensionKeysFromConfig(config);
   for (const k of dimKeys) {
     const v = selected.row[k] ?? selected.col[k];
     if (v !== undefined && v !== '') data[k] = v;
+  }
+
+  // If a slicer is active, new records should default to matching it.
+  // Otherwise, the record is created successfully but immediately disappears from the current view,
+  // which feels like “entry did nothing”.
+  for (const k of config.slicerKeys) {
+    if (data[k] !== undefined && data[k] !== '') continue;
+
+    const desired = config.slicers[k];
+    if (desired === undefined || desired === null || desired === '') continue;
+
+    if (Array.isArray(desired)) {
+      const first = desired.find((x) => x !== null && x !== undefined && String(x) !== '');
+      if (first !== undefined) data[k] = first;
+    } else {
+      data[k] = desired;
+    }
   }
 
   // Measures
