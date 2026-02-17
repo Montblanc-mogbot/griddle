@@ -137,15 +137,21 @@ export function FullRecordsPanel(props: {
 }) {
   const { dataset, config, selected, recordIds: explicitRecordIds, onClose, onDone, onDatasetChange } = props;
 
-  // Use explicit record IDs if provided (bulk mode), otherwise derive from selected cell
+  // Use explicit record IDs if provided (bulk mode), otherwise derive from selected cell.
+  // In bulk mode, we also include records from the currently-focused cell so that
+  // actions like "Add record" (which target the focused cell) show up immediately.
   const records = useMemo(() => {
+    const focusedCellIds = selected ? new Set(selected.cell.recordIds) : null;
+
     if (explicitRecordIds && explicitRecordIds.length > 0) {
       const idSet = new Set(explicitRecordIds);
-      return dataset.records.filter((r) => idSet.has(r.id));
+      return dataset.records.filter((r) => idSet.has(r.id) || Boolean(focusedCellIds?.has(r.id)));
     }
+
     if (selected) {
       return getRecordsForCell(dataset, selected);
     }
+
     return [];
   }, [dataset, selected, explicitRecordIds]);
   const fields = dataset.schema.fields;
