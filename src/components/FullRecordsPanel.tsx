@@ -1,5 +1,5 @@
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
-import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
+import { getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
 import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import styles from './bottomPanel.module.css';
 import { useMemo } from 'react';
@@ -163,15 +163,11 @@ export function FullRecordsPanel(props: {
 
   function addNewRecord() {
     if (!selected) return; // Can't add record in bulk mode without a specific cell context
-    // Add a record prepopulated from selection dims; user can then fill any other fields.
-    const rec = createRecordFromSelection({
-      schema: dataset.schema,
-      config,
-      selected,
-      measureValues: {},
-      flags: {},
-    });
-    onDatasetChange(upsertRecords(dataset, [rec]));
+
+    // Policy: records must have at least one measure value.
+    // Creating a blank record here (no measures) leads to confusing "phantom rows" in the pivot.
+    window.alert('Add record from Full Records is disabled. Use the Entry panel so you can enter a measure value.');
+    onDone();
   }
 
   function deleteRecord(id: string) {

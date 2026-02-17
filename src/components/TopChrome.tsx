@@ -114,6 +114,7 @@ export function TopChrome(props: {
   onFilters: () => void;
   onStyles: () => void;
   onFields: () => void;
+  onOrphans: () => void;
 
   // Views
   onViewsChange: (next: View[]) => void;
@@ -143,6 +144,7 @@ export function TopChrome(props: {
     onFields,
     onViewsChange,
     onLoadView,
+    onOrphans,
   } = props;
 
   const [editingTitle, setEditingTitle] = useState(false);
@@ -230,6 +232,8 @@ export function TopChrome(props: {
               <MenuItem label="Filters" shortcut="Ctrl+Shift+F" onClick={onFilters} />
               <MenuItem label="Styles" onClick={onStyles} />
               <MenuItem label="Fields" onClick={onFields} />
+              <MenuDivider />
+              <MenuItem label="Orphaned records…" onClick={onOrphans} />
             </Menu>
           </div>
         </div>

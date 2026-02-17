@@ -34,6 +34,7 @@ import {
 } from './domain/fileAccess';
 import { saveLastFile } from './domain/localState';
 import { parseDatasetJson } from './domain/datasetIo';
+import { findOrphanedRecords } from './domain/orphans';
 import { ResizableDrawer } from './components/ResizableDrawer';
 import { ScaffoldDialog } from './components/ScaffoldDialog';
 import { setRecordField } from './domain/updateRecord';
@@ -103,6 +104,7 @@ export default function App() {
   const [activeFilterSet, setActiveFilterSet] = useState<FilterSet>({ filters: [] });
   const [activeViewId, setActiveViewId] = useState<string | null>(null);
   const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'fullRecords'>('entry');
+  const [fullRecordsRecordIds, setFullRecordsRecordIds] = useState<string[] | null>(null);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
 
@@ -526,7 +528,30 @@ export default function App() {
         }}
         onClearSelection={() => {
           setSelected(null);
+          setFullRecordsRecordIds(null);
           setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+        }}
+        onOrphans={() => {
+          if (!dataset) return;
+          const { recordIds, issues } = findOrphanedRecords({ dataset, config });
+          if (recordIds.length === 0) {
+            window.alert('No orphaned records found.');
+            return;
+          }
+
+          // Summarize quickly; details are visible in Full Records.
+          const missingMeasureCount = issues.filter((i) => i.kind === 'missingMeasure').length;
+          const missingDimCount = issues.filter((i) => i.kind === 'missingDimension').length;
+          window.alert(
+            `Found ${recordIds.length} orphaned record(s).\n\n` +
+              `Missing measure: ${missingMeasureCount}\n` +
+              `Missing dimension: ${missingDimCount}\n\n` +
+              `Opening Full Records…`,
+          );
+
+          setSelected(null);
+          setFullRecordsRecordIds(recordIds);
+          setPanelMode('fullRecords');
         }}
         onLayout={() => setShowPivotLayout(true)}
         onFilters={() => setShowFilters(true)}
@@ -667,6 +692,13 @@ export default function App() {
               }}
               onGoToFullRecords={() => setPanelMode('fullRecords')}
               onSubmit={({ measureValues, flags, details }) => {
+                // Validation: never allow records with no measure value.
+                const hasAnyMeasure = Object.values(measureValues).some((v) => typeof v === 'number' && Number.isFinite(v));
+                if (!hasAnyMeasure) {
+                  window.alert('Cannot create a record without at least one measure value.');
+                  return;
+                }
+
                 const record = createRecordFromSelection({
                   schema: dataset.schema,
                   config,
@@ -706,18 +738,22 @@ export default function App() {
           </ResizableDrawer>
         ) : null}
 
-        {selected && panelMode === 'fullRecords' ? (
+        {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0))) ? (
           <ResizableDrawer storageKey="griddle:drawerWidth:fullRecords:v1">
             <FullRecordsPanel
               dataset={dataset}
               config={config}
               selected={selected}
-              recordIds={bulkSel.hasMulti ? bulkSel.recordIds : undefined}
+              recordIds={fullRecordsRecordIds ?? (bulkSel.hasMulti ? bulkSel.recordIds : undefined)}
               onClose={() => {
                 setSelected(null);
+                setFullRecordsRecordIds(null);
                 setPanelMode('none');
               }}
-              onDone={() => setPanelMode('entry')}
+              onDone={() => {
+                setFullRecordsRecordIds(null);
+                setPanelMode('entry');
+              }}
               onDatasetChange={(next) => setDataset(next)}
             />
           </ResizableDrawer>
