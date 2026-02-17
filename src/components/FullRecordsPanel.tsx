@@ -139,6 +139,7 @@ export function FullRecordsPanel(props: {
 
   const [newDraft, setNewDraft] = useState<RecordEntity | null>(null);
   const [workingIds, setWorkingIds] = useState<string[]>([]);
+  const [workingAnchorId, setWorkingAnchorId] = useState<string | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
   // Use explicit record IDs if provided (bulk mode), otherwise derive from selected cell.
@@ -262,6 +263,12 @@ export function FullRecordsPanel(props: {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
           <div className={styles.title}>Full records</div>
           <ContextPills selected={selected} config={config} />
+          <div style={{ fontSize: 12, color: '#666', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <span>{records.length} records in this cell.</span>
+            <span>
+              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {workingTotals.sum.toFixed(3)}
+            </span>
+          </div>
         </div>
 
         <div className={styles.actions}>
@@ -291,18 +298,6 @@ export function FullRecordsPanel(props: {
           setWorkingIds([]);
         }}
       >
-        <div style={{ fontSize: 12, color: '#666', marginBottom: 10, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <span>{records.length} records in this cell.</span>
-          {workingTotals.count > 0 ? (
-            <span>
-              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {workingTotals.sum.toFixed(3)}
-            </span>
-          ) : (
-            <span style={{ color: '#888' }}>
-              <b>Working:</b> 0
-            </span>
-          )}
-        </div>
 
         <div style={{ overflowX: 'auto' }}>
           <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13 }}>
@@ -360,12 +355,39 @@ export function FullRecordsPanel(props: {
                     style={isWorking ? { background: 'rgba(34,197,94,0.06)' } : undefined}
                     onMouseDown={(e) => {
                       // Clicking anywhere in the row toggles "Working".
+                      // Shift-click adds a range (Excel-ish).
                       // But don't toggle while the user is interacting with controls.
                       const t = e.target;
                       if (!(t instanceof HTMLElement)) return;
                       const tag = t.tagName.toLowerCase();
-                      if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || t.isContentEditable) return;
+                      if (
+                        tag === 'input' ||
+                        tag === 'select' ||
+                        tag === 'textarea' ||
+                        tag === 'button' ||
+                        t.isContentEditable
+                      )
+                        return;
 
+                      const idsInOrder = records.map((x) => x.id);
+
+                      if (e.shiftKey && workingAnchorId) {
+                        const a = idsInOrder.indexOf(workingAnchorId);
+                        const b = idsInOrder.indexOf(r.id);
+                        if (a >= 0 && b >= 0) {
+                          const lo = Math.min(a, b);
+                          const hi = Math.max(a, b);
+                          const rangeIds = idsInOrder.slice(lo, hi + 1);
+                          setWorkingIds((prev) => {
+                            const set = new Set(prev);
+                            for (const id of rangeIds) set.add(id);
+                            return Array.from(set.values());
+                          });
+                          return;
+                        }
+                      }
+
+                      setWorkingAnchorId(r.id);
                       setWorkingIds((prev) => {
                         const set = new Set(prev);
                         if (set.has(r.id)) set.delete(r.id);
