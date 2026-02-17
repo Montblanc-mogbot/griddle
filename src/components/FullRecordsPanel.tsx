@@ -295,7 +295,7 @@ export function FullRecordsPanel(props: {
           <span>{records.length} records in this cell.</span>
           {workingTotals.count > 0 ? (
             <span>
-              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {workingTotals.sum}
+              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {workingTotals.sum.toFixed(3)}
             </span>
           ) : (
             <span style={{ color: '#888' }}>
@@ -358,21 +358,37 @@ export function FullRecordsPanel(props: {
                     key={r.id}
                     data-record-row="1"
                     style={isWorking ? { background: 'rgba(34,197,94,0.06)' } : undefined}
+                    onMouseDown={(e) => {
+                      // Clicking anywhere in the row toggles "Working".
+                      // But don't toggle while the user is interacting with controls.
+                      const t = e.target;
+                      if (!(t instanceof HTMLElement)) return;
+                      const tag = t.tagName.toLowerCase();
+                      if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || t.isContentEditable) return;
+
+                      setWorkingIds((prev) => {
+                        const set = new Set(prev);
+                        if (set.has(r.id)) set.delete(r.id);
+                        else set.add(r.id);
+                        return Array.from(set.values());
+                      });
+                    }}
+                    title="Click row to toggle Working"
                   >
                     <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
-                      <input
-                        type="checkbox"
-                        checked={isWorking}
-                        onChange={() => {
-                          setWorkingIds((prev) => {
-                            const set = new Set(prev);
-                            if (set.has(r.id)) set.delete(r.id);
-                            else set.add(r.id);
-                            return Array.from(set.values());
-                          });
-                        }}
-                        title="Working"
-                      />
+                      {isWorking ? (
+                        <span
+                          title="Working"
+                          style={{
+                            width: 14,
+                            height: 14,
+                            borderRadius: 999,
+                            background: 'rgba(34,197,94,0.35)',
+                            border: '1px solid rgba(34,197,94,0.75)',
+                            display: 'inline-block',
+                          }}
+                        />
+                      ) : null}
                     </td>
 
                     <td style={{ borderBottom: '1px solid #f1f1f1', padding: '6px 8px', whiteSpace: 'nowrap' }}>
