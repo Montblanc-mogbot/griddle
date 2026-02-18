@@ -655,6 +655,7 @@ export default function App() {
             schema={dataset.schema}
             records={dataset.records}
             allowedDimensionKeys={[...new Set([...config.rowKeys, ...config.colKeys, ...config.slicerKeys])]}
+            singleSelectDimensionKeys={config.slicerKeys}
             active={activeFilterSet}
             onApply={(next) => {
               setSelected(null);
@@ -769,6 +770,7 @@ export default function App() {
                   schema: dataset.schema,
                   config,
                   selected,
+                  activeFilterSet,
                   measureValues,
                   flags,
                   details,

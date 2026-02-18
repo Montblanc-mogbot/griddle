@@ -228,6 +228,7 @@ export function FullRecordsPanel(props: {
       schema: dataset.schema,
       config,
       selected,
+      // Full Records panel doesn’t currently thread the global Filter Set; if needed, we can plumb it.
       measureValues: {},
       flags: {},
     });

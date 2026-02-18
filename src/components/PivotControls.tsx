@@ -747,15 +747,6 @@ export function PivotControls(props: {
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <button
                 onClick={() => {
-                  const all = (activeSlicerField.enum ?? uniqValues(records, activeSlicerField.key)).map(String);
-                  onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: all } });
-                }}
-                style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
-              >
-                Select all
-              </button>
-              <button
-                onClick={() => {
                   onChange({ ...config, slicers: { ...config.slicers, [activeSlicerField.key]: [] } });
                 }}
                 style={{ padding: '6px 10px', borderRadius: 8, fontSize: 12 }}
@@ -773,14 +764,28 @@ export function PivotControls(props: {
                       type="checkbox"
                       checked={checked}
                       onChange={() => {
-                        const next = checked
-                          ? activeSelected.filter((v) => v !== o.value)
-                          : [...activeSelected, o.value];
+                        // Slicers must be single-select so new record creation can reliably pre-fill the slicer value.
+                        if (checked) {
+                          onChange({
+                            ...config,
+                            slicers: {
+                              ...config.slicers,
+                              [activeSlicerField.key]: [],
+                            },
+                          });
+                          return;
+                        }
+
+                        if (activeSelected.length >= 1) {
+                          window.alert('Slicer filters are limited to one value. Clear the slicer first to pick a different value.');
+                          return;
+                        }
+
                         onChange({
                           ...config,
                           slicers: {
                             ...config.slicers,
-                            [activeSlicerField.key]: next,
+                            [activeSlicerField.key]: o.value,
                           },
                         });
                       }}

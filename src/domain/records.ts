@@ -2,6 +2,7 @@ import type {
   DatasetFileV1,
   DatasetSchema,
   FieldDef,
+  FilterSet,
   PivotCell,
   PivotConfig,
   RecordEntity,
@@ -46,11 +47,17 @@ export function createRecordFromSelection(args: {
   schema: DatasetSchema;
   config: PivotConfig;
   selected: SelectedCell;
+  /**
+   * The active Filters popup state (include/exclude on arbitrary dimensions).
+   * If a dimension has a single include value, we pre-fill new records with it
+   * to avoid “orphaned” records that immediately disappear from the current view.
+   */
+  activeFilterSet?: FilterSet;
   measureValues: Record<string, number | '' | null | undefined>;
   flags: Record<string, boolean | undefined>;
   details?: Record<string, unknown>;
 }): RecordEntity {
-  const { schema, config, selected, measureValues, flags, details } = args;
+  const { schema, config, selected, activeFilterSet, measureValues, flags, details } = args;
 
   const now = new Date().toISOString();
   const data: Record<string, unknown> = {};
@@ -72,10 +79,28 @@ export function createRecordFromSelection(args: {
     if (desired === undefined || desired === null || desired === '') continue;
 
     if (Array.isArray(desired)) {
+      // tolerate legacy arrays; take the first usable value
       const first = desired.find((x) => x !== null && x !== undefined && String(x) !== '');
       if (first !== undefined) data[k] = first;
     } else {
       data[k] = desired;
+    }
+  }
+
+  // If a *Filter Set* is active, and it includes a single value for a dimension that isn't already
+  // implied by the selected row/col tuple, pre-fill the record so it doesn't “disappear” immediately.
+  //
+  // We only auto-fill:
+  // - include mode
+  // - exactly one selected value
+  if (activeFilterSet) {
+    for (const f of activeFilterSet.filters) {
+      if (f.mode === 'exclude') continue;
+      if (!f.values || f.values.length !== 1) continue;
+      const k = f.dimensionKey;
+      if (!dimKeys.includes(k)) continue;
+      if (data[k] !== undefined && data[k] !== '') continue;
+      data[k] = f.values[0];
     }
   }
 

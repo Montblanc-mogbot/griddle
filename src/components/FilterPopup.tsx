@@ -14,11 +14,16 @@ export function FilterPopup(props: {
   schema: DatasetSchema;
   records: RecordEntity[];
   allowedDimensionKeys?: string[];
+  /**
+   * Dimension keys that must remain single-select (e.g. slicers).
+   * We enforce this in the UI so record creation can reliably pre-fill values.
+   */
+  singleSelectDimensionKeys?: string[];
   active: FilterSet;
   onApply: (next: FilterSet) => void;
   onClose: () => void;
 }) {
-  const { schema, records, allowedDimensionKeys, active, onApply, onClose } = props;
+  const { schema, records, allowedDimensionKeys, singleSelectDimensionKeys, active, onApply, onClose } = props;
 
   const dimensionKeys = useMemo(() => {
     const allowed = allowedDimensionKeys ? new Set(allowedDimensionKeys) : undefined;
@@ -43,6 +48,13 @@ export function FilterPopup(props: {
 
   function setValues(nextValues: string[]) {
     if (!activeFilter) return;
+
+    const single = singleSelectDimensionKeys?.includes(activeFilter.dimensionKey) ?? false;
+    if (single && nextValues.length > 1) {
+      window.alert('This field is configured as a slicer and must be limited to one value.');
+      return;
+    }
+
     const next = { ...activeFilter, values: nextValues };
     // If a filter has no values, remove it entirely (keeps the state clean).
     setDraft((prev) => (next.values.length ? upsertFilter(prev, next) : removeFilter(prev, next.dimensionKey)));
