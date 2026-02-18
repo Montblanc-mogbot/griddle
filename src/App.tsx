@@ -113,7 +113,31 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
-  // (pointer-release drawer opening removed; it prevented single-cell selection from opening the drawer reliably)
+  // Track pointer state so we can avoid opening panels mid drag-select.
+  const [pointerDown, setPointerDown] = useState(false);
+  useEffect(() => {
+    const down = () => setPointerDown(true);
+    const up = () => setPointerDown(false);
+
+    // Pointer events (preferred)
+    window.addEventListener('pointerdown', down, { capture: true });
+    window.addEventListener('pointerup', up, { capture: true });
+    window.addEventListener('pointercancel', up, { capture: true });
+
+    // Mouse fallback (in case pointer events are not emitted for some reason)
+    window.addEventListener('mousedown', down, { capture: true });
+    window.addEventListener('mouseup', up, { capture: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', down, { capture: true } as any);
+      window.removeEventListener('pointerup', up, { capture: true } as any);
+      window.removeEventListener('pointercancel', up, { capture: true } as any);
+      window.removeEventListener('mousedown', down, { capture: true } as any);
+      window.removeEventListener('mouseup', up, { capture: true } as any);
+    };
+  }, []);
+
+  const [pendingOpenEntry, setPendingOpenEntry] = useState(false);
 
   // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
   // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
@@ -150,8 +174,6 @@ export default function App() {
     setEnablePivotScrollRestore(false);
   }, []);
 
-  // Entry drawer now opens immediately on single-cell selection again.
-
   const pivot = useMemo(
     () =>
       dataset
@@ -165,8 +187,22 @@ export default function App() {
     const ranges = gridSelection.current ? [gridSelection.current.range, ...gridSelection.current.rangeStack] : [];
     const hasMulti = ranges.some((r) => r.width * r.height > 1) || (gridSelection.current?.rangeStack.length ?? 0) > 0;
     return { recordIds, cellCount, hasMulti };
+
   })();
 
+  // If a single-cell selection happened during a drag gesture, only open the entry drawer
+  // after the gesture completes *and* the selection is still single-cell.
+  useEffect(() => {
+    if (!pendingOpenEntry) return;
+    if (pointerDown) return;
+    if (bulkSel.hasMulti) {
+      setPendingOpenEntry(false);
+      return;
+    }
+    if (!selected) return;
+    setPanelMode('entry');
+    setPendingOpenEntry(false);
+  }, [pendingOpenEntry, pointerDown, bulkSel.hasMulti, selected]);
   // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
   useEffect(() => {
     if (!selected || !dataset) return;
@@ -756,6 +792,15 @@ export default function App() {
                   }}
                   onSingleValueCellSelected={(sel) => {
                     setSelected(sel);
+
+                    // If the user is drag-selecting, don’t pop the entry drawer mid-gesture.
+                    // We'll open on pointer release iff the selection remains a single cell.
+                    if (pointerDown) {
+                      setPanelMode('none');
+                      setPendingOpenEntry(true);
+                      return;
+                    }
+
                     setPanelMode('entry');
                   }}
                 />
@@ -764,7 +809,7 @@ export default function App() {
           })()}
         </div>
 
-        {bulkSel.hasMulti ? (
+        {bulkSel.hasMulti && !pointerDown ? (
           <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
               dataset={dataset}
