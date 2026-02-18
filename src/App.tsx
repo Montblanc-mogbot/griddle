@@ -113,11 +113,23 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
-  const [pivotScrollX, setPivotScrollX] = useState<number>(() => {
+  // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
+  // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
+  // (visible as “snapping back”). So we only use scrollOffsetX for initial restoration, then let the
+  // grid manage its own scroll state.
+  const [pivotScrollXRestore] = useState<number>(() => {
     const raw = localStorage.getItem('griddle:pivotScrollX:v1');
     const n = raw ? Number(raw) : 0;
     return Number.isFinite(n) ? n : 0;
   });
+  const [enablePivotScrollRestore, setEnablePivotScrollRestore] = useState(true);
+  const pivotScrollSaveRafRef = useRef<number | null>(null);
+  const pivotScrollSaveLastRef = useRef<number>(pivotScrollXRestore);
+
+  useEffect(() => {
+    // disable external control after first paint/mount
+    setEnablePivotScrollRestore(false);
+  }, []);
 
   const pivot = useMemo(
     () =>
@@ -689,10 +701,18 @@ export default function App() {
                   valueColWidth={valueColWidth}
                   rowMarkersWidth={rowMarkersWidth}
                   selection={gridSelection}
-                  scrollOffsetX={pivotScrollX}
+                  scrollOffsetX={enablePivotScrollRestore ? pivotScrollXRestore : undefined}
                   onScrollXChange={(x) => {
-                    setPivotScrollX(x);
-                    localStorage.setItem('griddle:pivotScrollX:v1', String(x));
+                    // Save (throttled) but do NOT control the grid’s horizontal scroll continuously.
+                    const xi = Math.max(0, Math.round(x));
+                    if (Math.abs(xi - pivotScrollSaveLastRef.current) < 2) return;
+                    pivotScrollSaveLastRef.current = xi;
+
+                    if (pivotScrollSaveRafRef.current != null) return;
+                    pivotScrollSaveRafRef.current = window.requestAnimationFrame(() => {
+                      pivotScrollSaveRafRef.current = null;
+                      localStorage.setItem('griddle:pivotScrollX:v1', String(pivotScrollSaveLastRef.current));
+                    });
                   }}
                   onSelectionChange={(sel) => {
                     setGridSelection(sel);
