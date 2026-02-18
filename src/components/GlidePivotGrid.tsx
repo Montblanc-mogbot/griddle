@@ -17,6 +17,8 @@ export function GlidePivotGrid(props: {
   config: PivotConfig;
   theme: 'light' | 'dark';
   rowDimWidth: number;
+  rowDimWidthByKey?: Record<string, number | undefined>;
+  onRowDimWidthChange?: (key: string, width: number) => void;
   valueColWidth: number;
   rowMarkersWidth: number;
   selection: GridSelection;
@@ -31,6 +33,8 @@ export function GlidePivotGrid(props: {
     config,
     theme,
     rowDimWidth,
+    rowDimWidthByKey,
+    onRowDimWidthChange,
     valueColWidth,
     rowMarkersWidth,
     selection,
@@ -45,7 +49,7 @@ export function GlidePivotGrid(props: {
     const rowDimCols = config.rowKeys.map((rk) => ({
       title: rk,
       id: rk,
-      width: rowDimWidth,
+      width: rowDimWidthByKey?.[rk] ?? rowDimWidth,
       // Row dims don't have a group - they appear first
     }));
 
@@ -65,7 +69,7 @@ export function GlidePivotGrid(props: {
     });
 
     return [...rowDimCols, ...valueCols];
-  }, [config.rowKeys, config.colKeys, pivot.colTuples, rowDimWidth, valueColWidth]);
+  }, [config.rowKeys, config.colKeys, pivot.colTuples, rowDimWidth, rowDimWidthByKey, valueColWidth]);
 
   const rowCount = pivot.rowTuples.length;
 
@@ -164,6 +168,14 @@ export function GlidePivotGrid(props: {
       onVisibleRegionChanged={(_range, tx) => {
         // tx is the horizontal scroll offset (px)
         if (onScrollXChange) onScrollXChange(tx);
+      }}
+      onColumnResize={(_column, newSize, colIndex) => {
+        // Only row-dimension columns are resizable for now.
+        if (!onRowDimWidthChange) return;
+        if (colIndex < 0 || colIndex >= config.rowKeys.length) return;
+        const key = config.rowKeys[colIndex];
+        if (!key) return;
+        onRowDimWidthChange(key, Math.max(60, Math.round(newSize)));
       }}
       gridSelection={selection}
       getGroupDetails={(g) => ({

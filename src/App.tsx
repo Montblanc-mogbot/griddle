@@ -113,10 +113,40 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
+  // Track pointer state so we can avoid opening panels mid drag-select.
+  const isPointerDownRef = useRef(false);
+  useEffect(() => {
+    function onDown() {
+      isPointerDownRef.current = true;
+    }
+    function onUp() {
+      isPointerDownRef.current = false;
+    }
+    window.addEventListener('pointerdown', onDown, { capture: true });
+    window.addEventListener('pointerup', onUp, { capture: true });
+    window.addEventListener('pointercancel', onUp, { capture: true });
+    return () => {
+      window.removeEventListener('pointerdown', onDown, { capture: true } as any);
+      window.removeEventListener('pointerup', onUp, { capture: true } as any);
+      window.removeEventListener('pointercancel', onUp, { capture: true } as any);
+    };
+  }, []);
+
   // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
   // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
   // (visible as “snapping back”). So we only use scrollOffsetX for initial restoration, then let the
   // grid manage its own scroll state.
+  const [rowDimWidthByKey, setRowDimWidthByKey] = useState<Record<string, number>>(() => {
+    try {
+      const raw = localStorage.getItem('griddle:rowDimWidths:v1');
+      const parsed = raw ? (JSON.parse(raw) as unknown) : {};
+      if (parsed && typeof parsed === 'object') return parsed as Record<string, number>;
+      return {};
+    } catch {
+      return {};
+    }
+  });
+
   const [pivotScrollXRestore] = useState<number>(() => {
     const raw = localStorage.getItem('griddle:pivotScrollX:v1');
     const n = raw ? Number(raw) : 0;
@@ -126,10 +156,26 @@ export default function App() {
   const pivotScrollSaveRafRef = useRef<number | null>(null);
   const pivotScrollSaveLastRef = useRef<number>(pivotScrollXRestore);
 
+  const rowDimWidthSaveRafRef = useRef<number | null>(null);
+  const rowDimWidthByKeyRef = useRef(rowDimWidthByKey);
+  useEffect(() => {
+    rowDimWidthByKeyRef.current = rowDimWidthByKey;
+  }, [rowDimWidthByKey]);
+
   useEffect(() => {
     // disable external control after first paint/mount
     setEnablePivotScrollRestore(false);
   }, []);
+
+  const [pendingOpenEntry, setPendingOpenEntry] = useState(false);
+  useEffect(() => {
+    if (!pendingOpenEntry) return;
+    if (isPointerDownRef.current) return;
+    // Only open if we still have a single-cell selection target.
+    if (!selected) return;
+    setPanelMode('entry');
+    setPendingOpenEntry(false);
+  }, [pendingOpenEntry, selected]);
 
   const pivot = useMemo(
     () =>
@@ -699,6 +745,21 @@ export default function App() {
                   config={config}
                   theme={theme}
                   rowDimWidth={rowDimWidth}
+                  rowDimWidthByKey={rowDimWidthByKey}
+                  onRowDimWidthChange={(key, width) => {
+                    setRowDimWidthByKey((prev) => {
+                      const next = { ...prev, [key]: width };
+                      rowDimWidthByKeyRef.current = next;
+                      return next;
+                    });
+
+                    // Persist (throttled)
+                    if (rowDimWidthSaveRafRef.current != null) return;
+                    rowDimWidthSaveRafRef.current = window.requestAnimationFrame(() => {
+                      rowDimWidthSaveRafRef.current = null;
+                      localStorage.setItem('griddle:rowDimWidths:v1', JSON.stringify(rowDimWidthByKeyRef.current));
+                    });
+                  }}
                   valueColWidth={valueColWidth}
                   rowMarkersWidth={rowMarkersWidth}
                   selection={gridSelection}
@@ -720,7 +781,9 @@ export default function App() {
                   }}
                   onSingleValueCellSelected={(sel) => {
                     setSelected(sel);
-                    setPanelMode('entry');
+                    // Open on pointer release, not on press, so drag-selecting multi-cell ranges
+                    // doesn't get covered by the drawer mid-gesture.
+                    setPendingOpenEntry(true);
                   }}
                 />
               </div>
