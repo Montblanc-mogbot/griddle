@@ -113,24 +113,7 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
-  // Track pointer state so we can avoid opening panels mid drag-select.
-  const isPointerDownRef = useRef(false);
-  useEffect(() => {
-    function onDown() {
-      isPointerDownRef.current = true;
-    }
-    function onUp() {
-      isPointerDownRef.current = false;
-    }
-    window.addEventListener('pointerdown', onDown, { capture: true });
-    window.addEventListener('pointerup', onUp, { capture: true });
-    window.addEventListener('pointercancel', onUp, { capture: true });
-    return () => {
-      window.removeEventListener('pointerdown', onDown, { capture: true } as any);
-      window.removeEventListener('pointerup', onUp, { capture: true } as any);
-      window.removeEventListener('pointercancel', onUp, { capture: true } as any);
-    };
-  }, []);
+  // (pointer-release drawer opening removed; it prevented single-cell selection from opening the drawer reliably)
 
   // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
   // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
@@ -167,15 +150,7 @@ export default function App() {
     setEnablePivotScrollRestore(false);
   }, []);
 
-  const [pendingOpenEntry, setPendingOpenEntry] = useState(false);
-  useEffect(() => {
-    if (!pendingOpenEntry) return;
-    if (isPointerDownRef.current) return;
-    // Only open if we still have a single-cell selection target.
-    if (!selected) return;
-    setPanelMode('entry');
-    setPendingOpenEntry(false);
-  }, [pendingOpenEntry, selected]);
+  // Entry drawer now opens immediately on single-cell selection again.
 
   const pivot = useMemo(
     () =>
@@ -781,9 +756,7 @@ export default function App() {
                   }}
                   onSingleValueCellSelected={(sel) => {
                     setSelected(sel);
-                    // Open on pointer release, not on press, so drag-selecting multi-cell ranges
-                    // doesn't get covered by the drawer mid-gesture.
-                    setPendingOpenEntry(true);
+                    setPanelMode('entry');
                   }}
                 />
               </div>
