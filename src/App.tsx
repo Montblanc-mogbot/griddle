@@ -825,7 +825,7 @@ export default function App() {
           });
           return null;
         })()}
-        {panelMode !== 'fullRecords' && (bulkSel.hasMulti ? (
+        {bulkSel.hasMulti ? (
           <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
               dataset={dataset}
@@ -904,7 +904,7 @@ export default function App() {
               }}
             />
           </ResizableDrawer>
-        ) : null)}
+        ) : null}
 
         {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0))) ? (
           (() => {
