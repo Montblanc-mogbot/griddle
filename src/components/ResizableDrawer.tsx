@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, type ReactNode } from 'react';
+import React, { useEffect, useState, useRef, useCallback, type ReactNode } from 'react';
 import styles from './resizableDrawer.module.css';
 
 interface ResizableDrawerProps {
@@ -16,6 +16,14 @@ export function ResizableDrawer({
   minWidth = 280,
   maxWidth = 800,
 }: ResizableDrawerProps) {
+  // Log mount/unmount for debugging
+  useEffect(() => {
+    console.log('[ResizableDrawer] MOUNT:', storageKey);
+    return () => {
+      console.log('[ResizableDrawer] UNMOUNT:', storageKey);
+    };
+  }, [storageKey]);
+
   const [width, setWidth] = useState(() => {
     if (!storageKey) return defaultWidth;
     try {
