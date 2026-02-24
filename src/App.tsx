@@ -857,10 +857,7 @@ export default function App() {
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
                 setPanelMode('none');
               }}
-              onGoToFullRecords={() => {
-                setFullRecordsRecordIds(bulkSel.recordIds);
-                setPanelMode('fullRecords');
-              }}
+              onGoToFullRecords={() => setPanelMode('fullRecords')}
               onSubmit={({ measureValues, flags, details }) => {
                 // Validation: never allow records with no measure value.
                 const hasAnyMeasure = Object.values(measureValues).some((v) => typeof v === 'number' && Number.isFinite(v));
@@ -928,9 +925,7 @@ export default function App() {
               }}
               onDone={() => {
                 setFullRecordsRecordIds(null);
-                // If we came from bulk selection, return to none (bulk panel will show).
-                // If we came from entry, return to entry.
-                setPanelMode(bulkSel.hasMulti ? 'none' : 'entry');
+                setPanelMode('entry');
               }}
               onDatasetChange={(next) => setDataset(next)}
             />
