@@ -259,7 +259,7 @@ export function FullRecordsPanel(props: {
   }
 
   return (
-    <div className={styles.panel}>
+    <div className={styles.panel} onPointerDown={(e) => e.stopPropagation()}>
       <div className={styles.header}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
           <div className={styles.title}>Full records</div>

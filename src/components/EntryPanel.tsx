@@ -28,7 +28,7 @@ export function EntryPanel(props: {
   } = props;
 
   return (
-    <div className={styles.panel}>
+    <div className={styles.panel} onPointerDown={(e) => e.stopPropagation()}>
       <div className={styles.titleRow}>
         <div className={styles.title}>Entry</div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
