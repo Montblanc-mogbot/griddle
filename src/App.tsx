@@ -851,6 +851,7 @@ export default function App() {
               }}
               onGoToFullRecords={() => {
                 console.log('[PanelRender] EntryPanel.onGoToFullRecords');
+                setFullRecordsRecordIds(selected.cell.recordIds);
                 setPanelMode('fullRecords');
               }}
               onSubmit={({ measureValues, flags, details }) => {
