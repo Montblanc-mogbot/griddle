@@ -210,7 +210,7 @@ export function BulkRangePanel(props: {
   }, [records, config.measureKey]);
 
   return (
-    <div style={{ padding: 12, display: 'grid', gap: 12 }} onPointerDown={(e) => e.stopPropagation()}>
+    <div style={{ padding: 12, display: 'grid', gap: 12 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
         <div style={{ display: 'grid', gap: 6 }}>
           <div style={{ fontWeight: 900 }}>Bulk edit</div>

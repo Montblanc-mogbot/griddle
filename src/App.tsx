@@ -809,6 +809,22 @@ export default function App() {
           })()}
         </div>
 
+        {(() => {
+          const showBulk = bulkSel.hasMulti && !pointerDown;
+          const showEntry = selected && panelMode === 'entry';
+          const showFull = panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0));
+          console.log('[PanelDebug]', {
+            bulkSel_hasMulti: bulkSel.hasMulti,
+            pointerDown,
+            showBulk,
+            selected: selected?.rowIndex ?? null,
+            panelMode,
+            showEntry,
+            fullRecordsRecordIds,
+            showFull,
+          });
+          return null;
+        })()}
         {bulkSel.hasMulti && !pointerDown ? (
           <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
@@ -822,7 +838,10 @@ export default function App() {
                 setSelected(null);
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
               }}
-              onGoToFullRecords={() => setPanelMode('fullRecords')}
+              onGoToFullRecords={() => {
+                console.log('[PanelDebug] BulkRangePanel.onGoToFullRecords called');
+                setPanelMode('fullRecords');
+              }}
               onDatasetChange={(next) => setDataset(next)}
             />
           </ResizableDrawer>
@@ -888,6 +907,9 @@ export default function App() {
         ) : null}
 
         {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0))) ? (
+          (() => {
+            console.log('[PanelDebug] FullRecordsPanel rendering');
+            return (
           <ResizableDrawer storageKey="griddle:drawerWidth:fullRecords:v1">
             <FullRecordsPanel
               dataset={dataset}
@@ -908,6 +930,8 @@ export default function App() {
               onDatasetChange={(next) => setDataset(next)}
             />
           </ResizableDrawer>
+            );
+          })()
         ) : null}
       </div>
 
