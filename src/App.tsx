@@ -905,7 +905,6 @@ export default function App() {
           (() => {
             console.log('[PanelRender] FullRecordsPanel RENDERING');
             return (
-          <ResizableDrawer storageKey="griddle:drawerWidth:fullRecords:v1">
             <FullRecordsPanel
               dataset={dataset}
               config={config}
@@ -924,7 +923,6 @@ export default function App() {
               }}
               onDatasetChange={(next) => setDataset(next)}
             />
-          </ResizableDrawer>
             );
           })()
         ) : null}
