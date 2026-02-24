@@ -810,19 +810,11 @@ export default function App() {
         </div>
 
         {(() => {
-          const showBulk = bulkSel.hasMulti && !pointerDown;
-          const showEntry = selected && panelMode === 'entry';
-          const showFull = panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0));
-          console.log('[PanelDebug]', {
-            bulkSel_hasMulti: bulkSel.hasMulti,
-            pointerDown,
-            showBulk,
-            selected: selected?.rowIndex ?? null,
-            panelMode,
-            showEntry,
-            fullRecordsRecordIds,
-            showFull,
-          });
+          // Debug: log what panels are attempting to render
+          const shouldShowBulk = bulkSel.hasMulti;
+          const shouldShowEntry = !!selected && panelMode === 'entry';
+          const shouldShowFull = panelMode === 'fullRecords' && (!!selected || (fullRecordsRecordIds?.length ?? 0) > 0);
+          console.log('[PanelRender]', { panelMode, shouldShowBulk, shouldShowEntry, shouldShowFull });
           return null;
         })()}
         {bulkSel.hasMulti ? (
@@ -839,7 +831,7 @@ export default function App() {
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
               }}
               onGoToFullRecords={() => {
-                console.log('[PanelDebug] BulkRangePanel.onGoToFullRecords called');
+                console.log('[PanelRender] BulkRangePanel.onGoToFullRecords');
                 setPanelMode('fullRecords');
               }}
               onDatasetChange={(next) => setDataset(next)}
@@ -857,7 +849,10 @@ export default function App() {
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
                 setPanelMode('none');
               }}
-              onGoToFullRecords={() => setPanelMode('fullRecords')}
+              onGoToFullRecords={() => {
+                console.log('[PanelRender] EntryPanel.onGoToFullRecords');
+                setPanelMode('fullRecords');
+              }}
               onSubmit={({ measureValues, flags, details }) => {
                 // Validation: never allow records with no measure value.
                 const hasAnyMeasure = Object.values(measureValues).some((v) => typeof v === 'number' && Number.isFinite(v));
@@ -908,7 +903,7 @@ export default function App() {
 
         {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0))) ? (
           (() => {
-            console.log('[PanelDebug] FullRecordsPanel rendering');
+            console.log('[PanelRender] FullRecordsPanel RENDERING');
             return (
           <ResizableDrawer storageKey="griddle:drawerWidth:fullRecords:v1">
             <FullRecordsPanel
