@@ -825,7 +825,7 @@ export default function App() {
           });
           return null;
         })()}
-        {bulkSel.hasMulti && panelMode !== 'fullRecords' ? (
+        {bulkSel.hasMulti ? (
           <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
               dataset={dataset}
