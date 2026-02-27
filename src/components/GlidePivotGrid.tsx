@@ -16,8 +16,6 @@ export function GlidePivotGrid(props: {
   schema: DatasetSchema;
   config: PivotConfig;
   theme: 'light' | 'dark';
-  /** Bump this to force the underlying DataEditor to remount (useful for scroll restoration). */
-  mountKey?: number;
   rowDimWidth: number;
   rowDimWidthByKey?: Record<string, number | undefined>;
   onRowDimWidthChange?: (key: string, width: number) => void;
@@ -34,7 +32,6 @@ export function GlidePivotGrid(props: {
     schema,
     config,
     theme,
-    mountKey,
     rowDimWidth,
     rowDimWidthByKey,
     onRowDimWidthChange,
@@ -157,7 +154,7 @@ export function GlidePivotGrid(props: {
 
   return (
     <DataEditor
-      key={`${theme}:${mountKey ?? 0}`}
+      key={theme}
       theme={glideTheme}
       columns={columns}
       rows={rowCount}

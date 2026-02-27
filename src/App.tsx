@@ -99,7 +99,6 @@ export default function App() {
 
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
-  const [gridMountKey, setGridMountKey] = useState(0);
   const [showPivotLayout, setShowPivotLayout] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilterSet, setActiveFilterSet] = useState<FilterSet>({ filters: [] });
@@ -297,10 +296,6 @@ export default function App() {
     setActiveViewId(null);
     setActiveFilterSet({ filters: [] });
     setConfig((prev) => reconcilePivotConfig(normalized.schema, nextPivot ?? prev));
-
-    // Force the DataEditor to remount after loading a dataset so scrollOffsetX restoration
-    // is applied reliably (glide can ignore initial scrollOffsetX depending on mount timing).
-    setGridMountKey((k) => k + 1);
 
     // allow subsequent edits to mark dirty
     window.setTimeout(() => {
@@ -790,7 +785,6 @@ export default function App() {
                   schema={dataset.schema}
                   config={config}
                   theme={theme}
-                  mountKey={gridMountKey}
                   rowDimWidth={rowDimWidth}
                   rowDimWidthByKey={rowDimWidthByKey}
                   onRowDimWidthChange={(key, width) => {
