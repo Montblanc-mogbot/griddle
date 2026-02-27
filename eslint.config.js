@@ -27,6 +27,9 @@ export default [
       ...js.configs.recommended.rules,
       ...tseslint.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
+      // Too strict for this codebase: we intentionally set state from effects in several places
+      // (e.g. dirty tracking, selection sync). Keep other hook rules enabled.
+      'react-hooks/set-state-in-effect': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },

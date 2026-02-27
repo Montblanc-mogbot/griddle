@@ -103,7 +103,7 @@ export default function App() {
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilterSet, setActiveFilterSet] = useState<FilterSet>({ filters: [] });
   const [activeViewId, setActiveViewId] = useState<string | null>(null);
-  const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'fullRecords'>('entry');
+  const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'bulk' | 'fullRecords'>('entry');
   const [fullRecordsRecordIds, setFullRecordsRecordIds] = useState<string[] | null>(null);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
@@ -117,6 +117,8 @@ export default function App() {
   const [pointerDown, setPointerDown] = useState(false);
   const pointerDownRef = useRef(false);
   useEffect(() => {
+    const opts = { capture: true } as const;
+
     const down = () => {
       pointerDownRef.current = true;
       setPointerDown(true);
@@ -127,24 +129,26 @@ export default function App() {
     };
 
     // Pointer events (preferred)
-    window.addEventListener('pointerdown', down, { capture: true });
-    window.addEventListener('pointerup', up, { capture: true });
-    window.addEventListener('pointercancel', up, { capture: true });
+    window.addEventListener('pointerdown', down, opts);
+    window.addEventListener('pointerup', up, opts);
+    window.addEventListener('pointercancel', up, opts);
 
     // Mouse fallback (in case pointer events are not emitted for some reason)
-    window.addEventListener('mousedown', down, { capture: true });
-    window.addEventListener('mouseup', up, { capture: true });
+    window.addEventListener('mousedown', down, opts);
+    window.addEventListener('mouseup', up, opts);
 
     return () => {
-      window.removeEventListener('pointerdown', down, { capture: true } as any);
-      window.removeEventListener('pointerup', up, { capture: true } as any);
-      window.removeEventListener('pointercancel', up, { capture: true } as any);
-      window.removeEventListener('mousedown', down, { capture: true } as any);
-      window.removeEventListener('mouseup', up, { capture: true } as any);
+      window.removeEventListener('pointerdown', down, opts);
+      window.removeEventListener('pointerup', up, opts);
+      window.removeEventListener('pointercancel', up, opts);
+      window.removeEventListener('mousedown', down, opts);
+      window.removeEventListener('mouseup', up, opts);
     };
   }, []);
 
-  const [pendingOpenEntry, setPendingOpenEntry] = useState(false);
+  // While pointer is down, we don't want side panels to pop during drag selection.
+  // Instead, we queue which panel should open on pointer release.
+  const [pendingPanelMode, setPendingPanelMode] = useState<'entry' | 'bulk' | null>(null);
 
   // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
   // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
@@ -166,7 +170,11 @@ export default function App() {
     const n = raw ? Number(raw) : 0;
     return Number.isFinite(n) ? n : 0;
   });
-  const [enablePivotScrollRestore, setEnablePivotScrollRestore] = useState(true);
+
+  // Seed the grid's horizontal scroll from the last persisted value. After the grid has
+  // had a chance to mount and report its visible region, we drop external control so the
+  // grid owns scroll state (prevents snap-back behavior).
+  const [pivotScrollXSeed, setPivotScrollXSeed] = useState<number | undefined>(() => pivotScrollXRestore);
   const pivotScrollSaveRafRef = useRef<number | null>(null);
   const pivotScrollSaveLastRef = useRef<number>(pivotScrollXRestore);
 
@@ -176,10 +184,7 @@ export default function App() {
     rowDimWidthByKeyRef.current = rowDimWidthByKey;
   }, [rowDimWidthByKey]);
 
-  // We disable scrollOffsetX control only after the grid has actually landed on the restored
-  // horizontal scroll position. Disabling immediately after mount can cause a snap-back to 0
-  // depending on internal timing in @glideapps/glide-data-grid.
-  const didDisablePivotScrollRestoreRef = useRef(false);
+  const didDropPivotScrollSeedRef = useRef(false);
 
   const pivot = useMemo(
     () =>
@@ -194,22 +199,40 @@ export default function App() {
     const ranges = gridSelection.current ? [gridSelection.current.range, ...gridSelection.current.rangeStack] : [];
     const hasMulti = ranges.some((r) => r.width * r.height > 1) || (gridSelection.current?.rangeStack.length ?? 0) > 0;
     return { recordIds, cellCount, hasMulti };
-
   })();
 
-  // If a single-cell selection happened during a drag gesture, only open the entry drawer
-  // after the gesture completes *and* the selection is still single-cell.
+  // While dragging, if the selection becomes multi, queue bulk panel for pointer release.
   useEffect(() => {
-    if (!pendingOpenEntry) return;
+    if (!pointerDown) return;
+    if (!bulkSel.hasMulti) return;
+    setPanelMode('none');
+    setPendingPanelMode('bulk');
+  }, [pointerDown, bulkSel.hasMulti]);
+
+  // Keep panels from popping during drag-select; open the pending panel mode on release.
+  useEffect(() => {
     if (pointerDown) return;
-    if (bulkSel.hasMulti) {
-      setPendingOpenEntry(false);
+    if (!pendingPanelMode) return;
+
+    if (pendingPanelMode === 'bulk') {
+      if (bulkSel.hasMulti) setPanelMode('bulk');
+      setPendingPanelMode(null);
       return;
     }
-    if (!selected) return;
-    setPanelMode('entry');
-    setPendingOpenEntry(false);
-  }, [pendingOpenEntry, pointerDown, bulkSel.hasMulti, selected]);
+
+    // pendingPanelMode === 'entry'
+    if (selected && !bulkSel.hasMulti) setPanelMode('entry');
+    setPendingPanelMode(null);
+  }, [pointerDown, pendingPanelMode, bulkSel.hasMulti, selected]);
+
+  // If selection becomes multi (e.g. shift-click) and we're not mid-drag, show bulk panel.
+  useEffect(() => {
+    if (pointerDown) return;
+    if (panelMode === 'fullRecords') return;
+    if (bulkSel.hasMulti) setPanelMode('bulk');
+    else if (panelMode === 'bulk' && selected) setPanelMode('entry');
+    else if (panelMode === 'bulk' && !selected) setPanelMode('none');
+  }, [bulkSel.hasMulti, pointerDown, panelMode, selected]);
   // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
   useEffect(() => {
     if (!selected || !dataset) return;
@@ -313,6 +336,16 @@ export default function App() {
     }
 
     fileOpenRef.current?.click();
+  }
+
+  function downloadTextFile(filename: string, content: string) {
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function downloadGriddle() {
@@ -517,6 +550,7 @@ export default function App() {
 
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, dataset, dirty]);
 
   // Persistence: keep a local draft of the last-opened griddle.
@@ -534,16 +568,6 @@ export default function App() {
 
   // On boot: show the Start screen (New/Open). We keep last file as a draft in localStorage,
   // but we do NOT auto-load it.
-
-  function downloadTextFile(filename: string, content: string) {
-    const blob = new Blob([content], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
 
   if (!dataset) {
     return (
@@ -781,15 +805,19 @@ export default function App() {
                   valueColWidth={valueColWidth}
                   rowMarkersWidth={rowMarkersWidth}
                   selection={gridSelection}
-                  scrollOffsetX={enablePivotScrollRestore ? pivotScrollXRestore : undefined}
+                  scrollOffsetX={pivotScrollXSeed}
                   onScrollXChange={(x) => {
-                    // One-shot: stop externally controlling scroll once the grid reports it's at the
-                    // restored position. (scrollOffsetX is treated as a controlled prop.)
-                    if (enablePivotScrollRestore && !didDisablePivotScrollRestoreRef.current) {
+                    // One-shot: drop external scroll control after the grid has mounted and started
+                    // reporting its visible region.
+                    if (!didDropPivotScrollSeedRef.current && pivotScrollXSeed !== undefined) {
                       const xi0 = Math.max(0, Math.round(x));
-                      if (Math.abs(xi0 - pivotScrollXRestore) < 2) {
-                        didDisablePivotScrollRestoreRef.current = true;
-                        setEnablePivotScrollRestore(false);
+                      const restore = Math.max(0, Math.round(pivotScrollXRestore));
+
+                      // If restore is 0, we can drop immediately.
+                      // If restore is non-zero, wait until we see a non-zero tx OR it matches restore.
+                      if (restore === 0 || xi0 === restore || xi0 !== 0) {
+                        didDropPivotScrollSeedRef.current = true;
+                        setPivotScrollXSeed(undefined);
                       }
                     }
 
@@ -810,14 +838,15 @@ export default function App() {
                   onSingleValueCellSelected={(sel) => {
                     setSelected(sel);
 
-                    // If the user is drag-selecting, don’t pop the entry drawer mid-gesture.
-                    // We'll open on pointer release iff the selection remains a single cell.
+                    // If the user is drag-selecting, don’t pop panels mid-gesture.
+                    // We'll open on pointer release iff the final selection still warrants it.
                     if (pointerDownRef.current) {
                       setPanelMode('none');
-                      setPendingOpenEntry(true);
+                      setPendingPanelMode('entry');
                       return;
                     }
 
+                    setPendingPanelMode(null);
                     setPanelMode('entry');
                   }}
                 />
@@ -826,15 +855,7 @@ export default function App() {
           })()}
         </div>
 
-        {(() => {
-          // Debug: log what panels are attempting to render
-          const shouldShowBulk = bulkSel.hasMulti;
-          const shouldShowEntry = !!selected && panelMode === 'entry';
-          const shouldShowFull = panelMode === 'fullRecords' && (!!selected || (fullRecordsRecordIds?.length ?? 0) > 0);
-          console.log('[PanelRender]', { panelMode, shouldShowBulk, shouldShowEntry, shouldShowFull });
-          return null;
-        })()}
-        {bulkSel.hasMulti ? (
+        {panelMode === 'bulk' ? (
           <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
               dataset={dataset}
@@ -846,9 +867,9 @@ export default function App() {
                 // Clear selection so user can click the same cell again.
                 setSelected(null);
                 setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+                setPanelMode('none');
               }}
               onGoToFullRecords={() => {
-                console.log('[PanelRender] BulkRangePanel.onGoToFullRecords');
                 setPanelMode('fullRecords');
               }}
               onDatasetChange={(next) => setDataset(next)}
@@ -867,7 +888,6 @@ export default function App() {
                 setPanelMode('none');
               }}
               onGoToFullRecords={() => {
-                console.log('[PanelRender] EntryPanel.onGoToFullRecords');
                 setPanelMode('fullRecords');
               }}
               onSubmit={({ measureValues, flags, details }) => {
@@ -920,7 +940,6 @@ export default function App() {
 
         {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0))) ? (
           (() => {
-            console.log('[PanelRender] FullRecordsPanel RENDERING');
             return (
             <FullRecordsPanel
               dataset={dataset}

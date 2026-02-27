@@ -151,7 +151,12 @@ export function TopChrome(props: {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [draftTitle, setDraftTitle] = useState(docTitle);
 
-  useEffect(() => setDraftTitle(docTitle), [docTitle]);
+  // Keep the input draft in sync with docTitle only when not actively editing.
+  // (Avoid setState-on-prop-change effects that can fight user edits.)
+  useEffect(() => {
+    if (editingTitle) return;
+    setDraftTitle(docTitle);
+  }, [docTitle, editingTitle]);
 
   useEffect(() => {
     if (!editingTitle) return;
@@ -196,7 +201,10 @@ export function TopChrome(props: {
             ) : (
               <button
                 className={styles.titleButton}
-                onClick={() => setEditingTitle(true)}
+                onClick={() => {
+                  setDraftTitle(docTitle);
+                  setEditingTitle(true);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') setEditingTitle(true);
                 }}

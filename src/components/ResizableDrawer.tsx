@@ -16,14 +16,6 @@ export function ResizableDrawer({
   minWidth = 280,
   maxWidth = 800,
 }: ResizableDrawerProps) {
-  // Log mount/unmount for debugging
-  useEffect(() => {
-    console.log('[ResizableDrawer] MOUNT:', storageKey);
-    return () => {
-      console.log('[ResizableDrawer] UNMOUNT:', storageKey);
-    };
-  }, [storageKey]);
-
   const [width, setWidth] = useState(() => {
     if (!storageKey) return defaultWidth;
     try {
@@ -35,46 +27,57 @@ export function ResizableDrawer({
       return defaultWidth;
     }
   });
+
   const [isResizing, setIsResizing] = useState(false);
   const startXRef = useRef(0);
   const startWidthRef = useRef(width);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    startXRef.current = e.clientX;
+  // Keep refs current so handlers don't need to close over width.
+  useEffect(() => {
     startWidthRef.current = width;
-    setIsResizing(true);
+  }, [width]);
 
-    const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
-      const delta = startXRef.current - moveEvent.clientX;
-      const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidthRef.current + delta));
-      setWidth(newWidth);
-      // keep latest width for persistence on mouseup
-      startWidthRef.current = newWidth;
-    };
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      e.preventDefault();
+      e.currentTarget.setPointerCapture(e.pointerId);
 
-    const handleMouseUp = () => {
-      setIsResizing(false);
-      if (storageKey) {
-        try {
-          localStorage.setItem(storageKey, String(startWidthRef.current));
-        } catch {
-          // ignore
+      setIsResizing(true);
+      startXRef.current = e.clientX;
+
+      const onPointerMove = (moveEvent: PointerEvent) => {
+        const delta = startXRef.current - moveEvent.clientX;
+        const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidthRef.current + delta));
+        setWidth(newWidth);
+        startWidthRef.current = newWidth;
+      };
+
+      const onPointerUp = () => {
+        setIsResizing(false);
+        if (storageKey) {
+          try {
+            localStorage.setItem(storageKey, String(startWidthRef.current));
+          } catch {
+            // ignore
+          }
         }
-      }
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+        document.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerup', onPointerUp);
+        document.removeEventListener('pointercancel', onPointerUp);
+      };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [width, minWidth, maxWidth]);
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+      document.addEventListener('pointercancel', onPointerUp);
+    },
+    [minWidth, maxWidth, storageKey],
+  );
 
   return (
     <div className={styles.drawer} style={{ width }}>
       <div
         className={`${styles.resizeHandle} ${isResizing ? styles.active : ''}`}
-        onMouseDown={handleMouseDown}
+        onPointerDown={handlePointerDown}
         title="Drag to resize"
       />
       <div className={styles.drawerContent}>{children}</div>

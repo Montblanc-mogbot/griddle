@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useReducer } from 'react';
 
 export type UndoRedoCommand<TState> = {
   label: string;
@@ -38,68 +38,80 @@ export type UndoRedoApi<TState> = {
   history: { pastCount: number; futureCount: number; lastLabel?: string };
 };
 
+type Action<TState> =
+  | { type: 'apply'; cmd: UndoRedoCommand<TState>; capacity: number }
+  | { type: 'undo' }
+  | { type: 'redo'; capacity: number }
+  | { type: 'setPresent'; next: TState };
+
+function reducer<TState>(state: UndoRedoSnapshot<TState>, action: Action<TState>): UndoRedoSnapshot<TState> {
+  switch (action.type) {
+    case 'apply': {
+      const next = action.cmd.do(state.present);
+      const past = [...state.past, action.cmd].slice(-action.capacity);
+      return { past, present: next, future: [] };
+    }
+    case 'undo': {
+      if (state.past.length === 0) return state;
+      const cmd = state.past[state.past.length - 1]!;
+      const past = state.past.slice(0, -1);
+      const present = cmd.undo(state.present);
+      const future = [cmd, ...state.future];
+      return { past, present, future };
+    }
+    case 'redo': {
+      if (state.future.length === 0) return state;
+      const cmd = state.future[0]!;
+      const future = state.future.slice(1);
+      const present = cmd.do(state.present);
+      const past = [...state.past, cmd].slice(-action.capacity);
+      return { past, present, future };
+    }
+    case 'setPresent': {
+      return { ...state, present: action.next };
+    }
+  }
+}
+
 export function useUndoRedo<TState>(initial: TState, options?: UndoRedoOptions): UndoRedoApi<TState> {
   const capacity = options?.capacity ?? 100;
 
-  const [present, setPresentState] = useState<TState>(initial);
-  const pastRef = useRef<UndoRedoCommand<TState>[]>([]);
-  const futureRef = useRef<UndoRedoCommand<TState>[]>([]);
+  const [snapshot, dispatch] = useReducer(reducer<TState>, {
+    past: [],
+    present: initial,
+    future: [],
+  });
 
   const apply = useCallback(
     (cmd: UndoRedoCommand<TState>) => {
-      setPresentState((prev) => {
-        const next = cmd.do(prev);
-        pastRef.current = [...pastRef.current, cmd].slice(-capacity);
-        futureRef.current = [];
-        return next;
-      });
+      dispatch({ type: 'apply', cmd, capacity });
     },
-    [capacity]
+    [capacity],
   );
 
   const undo = useCallback(() => {
-    const past = pastRef.current;
-    if (past.length === 0) return;
-
-    const cmd = past[past.length - 1];
-    pastRef.current = past.slice(0, -1);
-
-    setPresentState((prev) => {
-      const next = cmd.undo(prev);
-      futureRef.current = [cmd, ...futureRef.current];
-      return next;
-    });
+    dispatch({ type: 'undo' });
   }, []);
 
   const redo = useCallback(() => {
-    const future = futureRef.current;
-    if (future.length === 0) return;
-
-    const cmd = future[0];
-    futureRef.current = future.slice(1);
-
-    setPresentState((prev) => {
-      const next = cmd.do(prev);
-      pastRef.current = [...pastRef.current, cmd].slice(-capacity);
-      return next;
-    });
+    dispatch({ type: 'redo', capacity });
   }, [capacity]);
 
   const setPresent = useCallback((next: TState) => {
-    setPresentState(next);
+    dispatch({ type: 'setPresent', next });
   }, []);
 
-  const canUndo = pastRef.current.length > 0;
-  const canRedo = futureRef.current.length > 0;
+  const canUndo = snapshot.past.length > 0;
+  const canRedo = snapshot.future.length > 0;
 
-  const history = useMemo(() => {
-    const past = pastRef.current;
-    return {
-      pastCount: past.length,
-      futureCount: futureRef.current.length,
-      lastLabel: past.length > 0 ? past[past.length - 1].label : undefined,
-    };
-  }, [present]);
+  const history = useMemo(
+    () => ({
+      pastCount: snapshot.past.length,
+      futureCount: snapshot.future.length,
+      lastLabel: snapshot.past.length > 0 ? snapshot.past[snapshot.past.length - 1]?.label : undefined,
+    }),
+    [snapshot.past, snapshot.future],
+  );
 
   return {
     canUndo,
