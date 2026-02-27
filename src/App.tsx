@@ -171,9 +171,8 @@ export default function App() {
     return Number.isFinite(n) ? n : 0;
   });
 
-  // Seed the grid's horizontal scroll from the last persisted value. After the grid has
-  // had a chance to mount and report its visible region, we drop external control so the
-  // grid owns scroll state (prevents snap-back behavior).
+  // Seed the grid's horizontal scroll from the last persisted value.
+  // We keep it controlled briefly after (re)mount so the grid can apply it after layout.
   const [pivotScrollXSeed, setPivotScrollXSeed] = useState<number | undefined>(() => pivotScrollXRestore);
   const pivotScrollSaveRafRef = useRef<number | null>(null);
   const pivotScrollSaveLastRef = useRef<number>(pivotScrollXRestore);
@@ -193,6 +192,21 @@ export default function App() {
         : { rowTuples: [], colTuples: [], cells: {} },
     [dataset, config, activeFilterSet],
   );
+
+  // Re-apply the scroll seed after dataset/pivot changes (layout changes can reset scroll).
+  // Then drop control shortly after so user scrolling isn't fought.
+  useEffect(() => {
+    if (!dataset) return;
+    didDropPivotScrollSeedRef.current = false;
+    setPivotScrollXSeed(pivotScrollXRestore);
+
+    const t = window.setTimeout(() => {
+      didDropPivotScrollSeedRef.current = true;
+      setPivotScrollXSeed(undefined);
+    }, 250);
+
+    return () => window.clearTimeout(t);
+  }, [dataset, pivotScrollXRestore, config.rowKeys.length, pivot.colTuples.length]);
 
   const bulkSel = (() => {
     const { recordIds, cellCount } = getRecordIdsForGridSelection({ pivot, config, selection: gridSelection });
@@ -807,20 +821,6 @@ export default function App() {
                   selection={gridSelection}
                   scrollOffsetX={pivotScrollXSeed}
                   onScrollXChange={(x) => {
-                    // One-shot: drop external scroll control after the grid has mounted and started
-                    // reporting its visible region.
-                    if (!didDropPivotScrollSeedRef.current && pivotScrollXSeed !== undefined) {
-                      const xi0 = Math.max(0, Math.round(x));
-                      const restore = Math.max(0, Math.round(pivotScrollXRestore));
-
-                      // If restore is 0, we can drop immediately.
-                      // If restore is non-zero, wait until we see a non-zero tx OR it matches restore.
-                      if (restore === 0 || xi0 === restore || xi0 !== 0) {
-                        didDropPivotScrollSeedRef.current = true;
-                        setPivotScrollXSeed(undefined);
-                      }
-                    }
-
                     // Save (throttled) but do NOT control the grid’s horizontal scroll continuously.
                     const xi = Math.max(0, Math.round(x));
                     if (Math.abs(xi - pivotScrollSaveLastRef.current) < 2) return;
@@ -870,6 +870,9 @@ export default function App() {
                 setPanelMode('none');
               }}
               onGoToFullRecords={() => {
+                // In bulk mode we may not have a single selected cell; persist the record ids
+                // so FullRecordsPanel can render reliably.
+                setFullRecordsRecordIds(bulkSel.recordIds);
                 setPanelMode('fullRecords');
               }}
               onDatasetChange={(next) => setDataset(next)}
@@ -938,7 +941,7 @@ export default function App() {
           </ResizableDrawer>
         ) : null}
 
-        {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0))) ? (
+        {(panelMode === 'fullRecords' && (selected || (fullRecordsRecordIds && fullRecordsRecordIds.length > 0) || bulkSel.hasMulti)) ? (
           (() => {
             return (
             <FullRecordsPanel
