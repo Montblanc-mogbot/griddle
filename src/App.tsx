@@ -113,19 +113,30 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
+  const gridAreaRef = useRef<HTMLDivElement | null>(null);
+
   // Track pointer state so we can avoid opening panels mid drag-select.
+  // Principle: only treat pointer-down gestures that START on the grid as drag-selection gestures.
   const [pointerDown, setPointerDown] = useState(false);
   const pointerDownRef = useRef(false);
+  const pointerOriginRef = useRef<'grid' | 'ui' | null>(null);
+
   useEffect(() => {
     const opts = { capture: true } as const;
 
-    const down = () => {
+    const down = (e: Event) => {
       pointerDownRef.current = true;
       setPointerDown(true);
+
+      const t = e.target;
+      if (t instanceof Node && gridAreaRef.current?.contains(t)) pointerOriginRef.current = 'grid';
+      else pointerOriginRef.current = 'ui';
     };
+
     const up = () => {
       pointerDownRef.current = false;
       setPointerDown(false);
+      pointerOriginRef.current = null;
     };
 
     // Pointer events (preferred)
@@ -200,9 +211,10 @@ export default function App() {
     return { recordIds, cellCount, hasMulti };
   })();
 
-  // While dragging, if the selection becomes multi, queue bulk panel for pointer release.
+  // While dragging on the grid, if the selection becomes multi, queue bulk panel for pointer release.
   useEffect(() => {
     if (!pointerDown) return;
+    if (pointerOriginRef.current !== 'grid') return;
     if (!bulkSel.hasMulti) return;
     setPanelMode('none');
     setPendingPanelMode('bulk');
@@ -765,7 +777,7 @@ export default function App() {
       ) : null}
 
       <div className={styles.main}>
-        <div className={styles.gridArea}>
+        <div className={styles.gridArea} ref={gridAreaRef}>
           {(() => {
             const rowDimWidth = 160;
             const valueColWidth = 120;
@@ -839,7 +851,7 @@ export default function App() {
 
                     // If the user is drag-selecting, don’t pop panels mid-gesture.
                     // We'll open on pointer release iff the final selection still warrants it.
-                    if (pointerDownRef.current) {
+                    if (pointerDownRef.current && pointerOriginRef.current === 'grid') {
                       setPanelMode('none');
                       setPendingPanelMode('entry');
                       return;
