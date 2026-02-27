@@ -115,9 +115,16 @@ export default function App() {
 
   // Track pointer state so we can avoid opening panels mid drag-select.
   const [pointerDown, setPointerDown] = useState(false);
+  const pointerDownRef = useRef(false);
   useEffect(() => {
-    const down = () => setPointerDown(true);
-    const up = () => setPointerDown(false);
+    const down = () => {
+      pointerDownRef.current = true;
+      setPointerDown(true);
+    };
+    const up = () => {
+      pointerDownRef.current = false;
+      setPointerDown(false);
+    };
 
     // Pointer events (preferred)
     window.addEventListener('pointerdown', down, { capture: true });
@@ -169,10 +176,10 @@ export default function App() {
     rowDimWidthByKeyRef.current = rowDimWidthByKey;
   }, [rowDimWidthByKey]);
 
-  useEffect(() => {
-    // disable external control after first paint/mount
-    setEnablePivotScrollRestore(false);
-  }, []);
+  // We disable scrollOffsetX control only after the grid has actually landed on the restored
+  // horizontal scroll position. Disabling immediately after mount can cause a snap-back to 0
+  // depending on internal timing in @glideapps/glide-data-grid.
+  const didDisablePivotScrollRestoreRef = useRef(false);
 
   const pivot = useMemo(
     () =>
@@ -776,6 +783,16 @@ export default function App() {
                   selection={gridSelection}
                   scrollOffsetX={enablePivotScrollRestore ? pivotScrollXRestore : undefined}
                   onScrollXChange={(x) => {
+                    // One-shot: stop externally controlling scroll once the grid reports it's at the
+                    // restored position. (scrollOffsetX is treated as a controlled prop.)
+                    if (enablePivotScrollRestore && !didDisablePivotScrollRestoreRef.current) {
+                      const xi0 = Math.max(0, Math.round(x));
+                      if (Math.abs(xi0 - pivotScrollXRestore) < 2) {
+                        didDisablePivotScrollRestoreRef.current = true;
+                        setEnablePivotScrollRestore(false);
+                      }
+                    }
+
                     // Save (throttled) but do NOT control the grid’s horizontal scroll continuously.
                     const xi = Math.max(0, Math.round(x));
                     if (Math.abs(xi - pivotScrollSaveLastRef.current) < 2) return;
@@ -795,7 +812,7 @@ export default function App() {
 
                     // If the user is drag-selecting, don’t pop the entry drawer mid-gesture.
                     // We'll open on pointer release iff the selection remains a single cell.
-                    if (pointerDown) {
+                    if (pointerDownRef.current) {
                       setPanelMode('none');
                       setPendingOpenEntry(true);
                       return;
