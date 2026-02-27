@@ -193,21 +193,6 @@ export default function App() {
     [dataset, config, activeFilterSet],
   );
 
-  // Re-apply the scroll seed after dataset/pivot changes (layout changes can reset scroll).
-  // Then drop control shortly after so user scrolling isn't fought.
-  useEffect(() => {
-    if (!dataset) return;
-    didDropPivotScrollSeedRef.current = false;
-    setPivotScrollXSeed(pivotScrollXRestore);
-
-    const t = window.setTimeout(() => {
-      didDropPivotScrollSeedRef.current = true;
-      setPivotScrollXSeed(undefined);
-    }, 250);
-
-    return () => window.clearTimeout(t);
-  }, [dataset, pivotScrollXRestore, config.rowKeys.length, pivot.colTuples.length]);
-
   const bulkSel = (() => {
     const { recordIds, cellCount } = getRecordIdsForGridSelection({ pivot, config, selection: gridSelection });
     const ranges = gridSelection.current ? [gridSelection.current.range, ...gridSelection.current.rangeStack] : [];
@@ -821,6 +806,20 @@ export default function App() {
                   selection={gridSelection}
                   scrollOffsetX={pivotScrollXSeed}
                   onScrollXChange={(x) => {
+                    // One-shot: drop external scroll control after the grid has mounted and started
+                    // reporting its visible region. (scrollOffsetX is treated as a controlled prop.)
+                    if (!didDropPivotScrollSeedRef.current && pivotScrollXSeed !== undefined) {
+                      const xi0 = Math.max(0, Math.round(x));
+                      const restore = Math.max(0, Math.round(pivotScrollXRestore));
+
+                      // If restore is 0, we can drop immediately.
+                      // If restore is non-zero, wait until we see a non-zero tx OR it matches restore.
+                      if (restore === 0 || xi0 === restore || xi0 !== 0) {
+                        didDropPivotScrollSeedRef.current = true;
+                        setPivotScrollXSeed(undefined);
+                      }
+                    }
+
                     // Save (throttled) but do NOT control the grid’s horizontal scroll continuously.
                     const xi = Math.max(0, Math.round(x));
                     if (Math.abs(xi - pivotScrollSaveLastRef.current) < 2) return;
