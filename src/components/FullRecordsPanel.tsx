@@ -434,8 +434,8 @@ export function FullRecordsPanel(props: {
                                 width: 10,
                                 height: 10,
                                 borderRadius: 999,
-                                background: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.18),
-                                border: `1px solid ${rgbaFromHex(uiPrefs.noteIndicatorColor, 0.35)}`,
+                                background: rgbaFromHex(uiPrefs.noteIndicatorColor, (uiPrefs.noteIndicatorIntensity * 0.3) / 100),
+                                border: `1px solid ${rgbaFromHex(uiPrefs.noteIndicatorColor, (uiPrefs.noteIndicatorIntensity * 0.6) / 100)}`,
                                 display: 'inline-block',
                               }}
                             />

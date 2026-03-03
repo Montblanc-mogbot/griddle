@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react';
 import type { UiPrefsV1 } from '../domain/uiPrefs';
 import { DEFAULT_UI_PREFS } from '../domain/uiPrefs';
 
-function Row(props: { label: string; description?: string; children: React.ReactNode }) {
+function Row(props: { label: string; description?: string; children: ReactNode }) {
   const { label, description, children } = props;
   return (
     <div
@@ -51,7 +52,7 @@ export function PreferencesPanel(props: {
       <div style={{ marginTop: 10 }}>
         <Row
           label="Notes indicator color"
-          description="Controls the dot shown when a record has notes (tape + full records)."
+          description="Controls the dot shown when a record has notes (tape + full records + grid)."
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <input
@@ -62,6 +63,26 @@ export function PreferencesPanel(props: {
               style={{ width: 56, height: 32 }}
             />
             <code style={{ fontSize: 12, color: 'var(--muted)' }}>{prefs.noteIndicatorColor}</code>
+          </div>
+        </Row>
+
+        <Row
+          label="Note indicator intensity"
+          description="0-100%. Higher = more vibrant (more opaque background/border)."
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={prefs.noteIndicatorIntensity}
+              onChange={(e) => onChange({ ...prefs, noteIndicatorIntensity: Number(e.target.value) })}
+              style={{ width: 260 }}
+            />
+            <code style={{ fontSize: 12, color: 'var(--muted)', minWidth: 44, textAlign: 'right' }}>
+              {prefs.noteIndicatorIntensity}%
+            </code>
           </div>
         </Row>
 

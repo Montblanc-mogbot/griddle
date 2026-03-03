@@ -811,6 +811,8 @@ export default function App() {
                 <GlidePivotGrid
                   pivot={pivot}
                   schema={dataset.schema}
+                  dataset={dataset}
+                  uiPrefs={uiPrefs}
                   config={config}
                   theme={theme}
                   rowDimWidth={rowDimWidth}

@@ -42,10 +42,11 @@ export function RecordTape(props: {
   const flags = flagFields(dataset.schema);
   const noteKey = findNoteFieldKey(dataset.schema);
 
+  const intensity = uiPrefs.noteIndicatorIntensity;
   const noteDotVars = {
-    ['--gr-noteDotBg' as any]: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.18),
-    ['--gr-noteDotBorder' as any]: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.35),
-    ['--gr-noteDotBgHover' as any]: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.26),
+    '--gr-noteDotBg': rgbaFromHex(uiPrefs.noteIndicatorColor, (intensity * 0.3) / 100),
+    '--gr-noteDotBorder': rgbaFromHex(uiPrefs.noteIndicatorColor, (intensity * 0.6) / 100),
+    '--gr-noteDotBgHover': rgbaFromHex(uiPrefs.noteIndicatorColor, (intensity * 0.45) / 100),
   } as CSSProperties;
 
   const measureKeys = measures.map((m) => m.key);

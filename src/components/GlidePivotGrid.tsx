@@ -7,13 +7,18 @@ import {
 } from '@glideapps/glide-data-grid';
 import '@glideapps/glide-data-grid/dist/index.css';
 import { useMemo } from 'react';
-import type { DatasetSchema, PivotConfig, PivotResult, SelectedCell } from '../domain/types';
+import type { DatasetFileV1, DatasetSchema, PivotConfig, PivotResult, SelectedCell } from '../domain/types';
 import { decimalPlacesForMeasureInContext, formatNumber } from '../domain/format';
 import { pickCellStyle } from '../domain/metadataStyling';
+import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
+import { rgbaFromHex } from '../domain/colorUtil';
+import type { UiPrefsV1 } from '../domain/uiPrefs';
 
 export function GlidePivotGrid(props: {
   pivot: PivotResult;
   schema: DatasetSchema;
+  dataset: DatasetFileV1;
+  uiPrefs: UiPrefsV1;
   config: PivotConfig;
   theme: 'light' | 'dark';
   rowDimWidth: number;
@@ -30,6 +35,8 @@ export function GlidePivotGrid(props: {
   const {
     pivot,
     schema,
+    dataset,
+    uiPrefs,
     config,
     theme,
     rowDimWidth,
@@ -73,6 +80,9 @@ export function GlidePivotGrid(props: {
 
   const rowCount = pivot.rowTuples.length;
 
+  const noteKey = useMemo(() => findNoteFieldKey(schema), [schema]);
+  const recordById = useMemo(() => Object.fromEntries(dataset.records.map((r) => [r.id, r] as const)), [dataset.records]);
+
   const activeMeasureField = useMemo(
     () => schema.fields.find((f) => f.key === config.measureKey),
     [schema.fields, config.measureKey],
@@ -101,9 +111,23 @@ export function GlidePivotGrid(props: {
     const txt = typeof v === 'number' ? formatNumber(v, { decimals: measureDecimals }) : '';
     const st = cell ? pickCellStyle(schema, cell) : {};
 
+    const hasNotes = (() => {
+      if (!noteKey) return false;
+      const ids = cell?.recordIds;
+      if (!ids || ids.length === 0) return false;
+      for (const id of ids) {
+        const r = recordById[id];
+        if (!r) continue;
+        const note = recordNoteValue(r, noteKey);
+        if (note) return true;
+      }
+      return false;
+    })();
+
     const themeOverride = (() => {
-      if (!st.bg && !st.text) return undefined;
       const out: Record<string, unknown> = {};
+
+      // Metadata styling first.
       if (st.bg) {
         out.bgCell = st.bg;
         out.bgCellMedium = st.bg;
@@ -111,13 +135,30 @@ export function GlidePivotGrid(props: {
       if (st.text) {
         out.textDark = st.text;
       }
-      return out;
+
+      // Notes indicator: subtle background/border tint using user prefs.
+      if (hasNotes) {
+        const intensity = uiPrefs.noteIndicatorIntensity;
+        const bgAlpha = (intensity * 0.3) / 100;
+        const borderAlpha = (intensity * 0.6) / 100;
+
+        // If no explicit background style, tint the cell.
+        if (!st.bg) {
+          out.bgCell = rgbaFromHex(uiPrefs.noteIndicatorColor, bgAlpha);
+          out.bgCellMedium = rgbaFromHex(uiPrefs.noteIndicatorColor, bgAlpha);
+        }
+
+        // Try to add a border highlight as well (supported by glide theme override).
+        out.borderColor = rgbaFromHex(uiPrefs.noteIndicatorColor, borderAlpha);
+      }
+
+      return Object.keys(out).length === 0 ? undefined : out;
     })();
 
     return {
       kind: GridCellKind.Number,
       data: v ?? 0,
-      displayData: txt,
+      displayData: hasNotes ? `${txt} •` : txt,
       allowOverlay: false,
       themeOverride,
     };
