@@ -8,7 +8,7 @@ import {
 import '@glideapps/glide-data-grid/dist/index.css';
 import { useMemo } from 'react';
 import type { DatasetSchema, PivotConfig, PivotResult, SelectedCell } from '../domain/types';
-import { formatNumber } from '../domain/format';
+import { formatMeasureNumber } from '../domain/format';
 import { pickCellStyle } from '../domain/metadataStyling';
 
 export function GlidePivotGrid(props: {
@@ -73,6 +73,11 @@ export function GlidePivotGrid(props: {
 
   const rowCount = pivot.rowTuples.length;
 
+  const activeMeasureField = useMemo(
+    () => schema.fields.find((f) => f.key === config.measureKey),
+    [schema.fields, config.measureKey],
+  );
+
   function getCell([col, row]: Item): GridCell {
     if (col < config.rowKeys.length) {
       const rk = config.rowKeys[col];
@@ -88,7 +93,7 @@ export function GlidePivotGrid(props: {
     const ci = col - config.rowKeys.length;
     const cell = pivot.cells[`${row}:${ci}`];
     const v = cell?.value;
-    const txt = typeof v === 'number' ? formatNumber(v) : '';
+    const txt = typeof v === 'number' ? formatMeasureNumber(v, activeMeasureField) : '';
     const st = cell ? pickCellStyle(schema, cell) : {};
 
     const themeOverride = (() => {

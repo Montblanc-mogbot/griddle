@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { flagFields, getRecordsForCell } from '../domain/records';
-import { formatNumber } from '../domain/format';
+import { formatMeasureNumber } from '../domain/format';
 import styles from './entryPanel.module.css';
 
 interface FlagAggregation {
@@ -66,7 +66,8 @@ export function BulkMetadataEdit(props: {
 
   if (aggregations.length === 0) return null;
 
-  const measureLabel = dataset.schema.fields.find((f) => f.key === config.measureKey)?.label ?? config.measureKey;
+  const measureField = dataset.schema.fields.find((f) => f.key === config.measureKey);
+  const measureLabel = measureField?.label ?? config.measureKey;
 
   return (
     <div className={styles.section}>
@@ -102,7 +103,7 @@ export function BulkMetadataEdit(props: {
                   marginLeft: 24,
                 }}
               >
-                {measureLabel} {agg.whenTrue !== null ? formatNumber(agg.whenTrue) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse) : '—'})
+                {measureLabel} {agg.whenTrue !== null ? formatMeasureNumber(agg.whenTrue, measureField) : '—'} ({agg.whenFalse !== null ? formatMeasureNumber(agg.whenFalse, measureField) : '—'})
               </div>
             </div>
           </div>

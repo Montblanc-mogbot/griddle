@@ -45,6 +45,10 @@ Griddle reads/writes a single JSON document representing a dataset and its schem
   - `flag` (boolean metadata; used for formatting later)
 - `enum` (optional array of strings): suggested categorical options (used for pickers later).
 - `measure` (optional): formatting hints.
+  - `format` (optional): one of `"decimal" | "integer" | "currency"`.
+  - `decimalPlaces` (optional number): how many digits to show after the decimal point for display in the pivot grid and bulk summaries.
+    - If omitted, the UI uses a sensible default (e.g. `integer` → 0).
+    - This is **display-only**; calculations always use full precision.
 - `flag` (optional): styling hints.
 
 ## `records`

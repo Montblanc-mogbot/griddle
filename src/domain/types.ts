@@ -25,7 +25,17 @@ export interface FieldDef {
   };
 
   measure?: {
+    /**
+     * Display formatting hint for measure values.
+     * Note: this does not affect internal calculations.
+     */
     format?: 'decimal' | 'integer' | 'currency';
+
+    /**
+     * Number of digits after the decimal point to display in grids and bulk summaries.
+     * If omitted, the UI falls back to a sensible default based on `format`.
+     */
+    decimalPlaces?: number;
   };
 
   flag?: {

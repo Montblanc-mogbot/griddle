@@ -36,10 +36,12 @@ function buildColHeaderRows(colKeys: string[], colTuples: Tuple[]) {
 export function PivotGrid(props: {
   pivot: PivotResult;
   config: PivotConfig;
+  /** Number of decimal places to display for cell values (display-only). */
+  measureDecimals?: number;
   selected?: SelectedCell | null;
   onSelect?: (sel: SelectedCell) => void;
 }) {
-  const { pivot, config, selected, onSelect } = props;
+  const { pivot, config, measureDecimals, selected, onSelect } = props;
 
   const colHeaderRows = buildColHeaderRows(config.colKeys, pivot.colTuples);
 
@@ -108,7 +110,7 @@ export function PivotGrid(props: {
                       })
                     }
                   >
-                    {cell.value === null ? '' : formatNumber(cell.value)}
+                    {cell.value === null ? '' : formatNumber(cell.value, { decimals: measureDecimals })}
                   </td>
                 );
               })}

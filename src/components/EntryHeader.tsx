@@ -1,6 +1,6 @@
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { dimensionKeysFromConfig } from '../domain/records';
-import { formatNumber } from '../domain/format';
+import { formatMeasureNumber } from '../domain/format';
 import styles from './entryPanel.module.css';
 
 export function EntryHeader(props: {
@@ -19,6 +19,8 @@ export function EntryHeader(props: {
     }))
     .filter((x) => x.value !== '');
 
+  const activeMeasureField = dataset.schema.fields.find((f) => f.key === config.measureKey);
+
   return (
     <div className={styles.section}>
       <div className={styles.headerTop}>
@@ -28,7 +30,7 @@ export function EntryHeader(props: {
             Cell total ({config.measureKey})
           </div>
           <div style={{ fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
-            {selected.cell.value === null ? '(empty)' : formatNumber(selected.cell.value)}
+            {selected.cell.value === null ? '(empty)' : formatMeasureNumber(selected.cell.value, activeMeasureField)}
           </div>
           <div style={{ fontSize: 12 }} className={styles.muted}>
             Records: {selected.cell.recordIds.length}

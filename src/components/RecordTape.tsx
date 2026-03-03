@@ -39,6 +39,7 @@ export function RecordTape(props: {
   const noteKey = findNoteFieldKey(dataset.schema);
 
   const measureKeys = measures.map((m) => m.key);
+  const measureFieldByKey: Record<string, FieldDef> = Object.fromEntries(measures.map((m) => [m.key, m] as const));
   const flagKeys: TapeFlag[] = flags.map((f) => ({ key: f.key, label: f.label }));
 
   return (
@@ -171,6 +172,7 @@ export function RecordTape(props: {
                 <RecordTapeRow
                   record={r}
                   measures={measureKeys}
+                  measureFieldByKey={measureFieldByKey}
                   flags={flagKeys}
                   onToggleFlag={onToggleFlag}
                   onUpdateMeasure={(k, value) => onUpdateRecordField(r.id, k, value)}

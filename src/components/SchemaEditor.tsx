@@ -4,6 +4,7 @@ import { PivotAxisDomainEditor } from './PivotAxisDomainEditor';
 
 const ALL_ROLES: FieldRole[] = ['rowDim', 'colDim', 'slicer', 'measure', 'flag'];
 const ALL_TYPES: FieldType[] = ['string', 'number', 'boolean', 'date'];
+const MEASURE_FORMATS: Array<NonNullable<FieldDef['measure']>['format']> = ['decimal', 'integer', 'currency'];
 
 function slugifyKey(input: string): string {
   return input
@@ -213,6 +214,76 @@ export function SchemaEditor(props: {
                 Fast entry is the right-side Entry drawer.
               </div>
             </div>
+
+            {selected.roles.includes('measure') ? (
+              <div style={{ display: 'grid', gap: 8 }}>
+                <label style={{ fontSize: 12, color: 'var(--muted)' }}>Measure formatting</label>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, alignItems: 'end' }}>
+                  <div style={{ display: 'grid', gap: 6 }}>
+                    <label style={{ fontSize: 12, color: 'var(--muted)' }}>Format</label>
+                    <select
+                      value={selected.measure?.format ?? 'decimal'}
+                      onChange={(e) => {
+                        const fmt = e.target.value as NonNullable<FieldDef['measure']>['format'];
+                        updateField({
+                          ...selected,
+                          measure: {
+                            ...selected.measure,
+                            format: fmt,
+                            // If user switches to integer, default to 0 dp unless explicitly overridden later.
+                            decimalPlaces:
+                              fmt === 'integer'
+                                ? 0
+                                : selected.measure?.decimalPlaces,
+                          },
+                        });
+                      }}
+                    >
+                      {MEASURE_FORMATS.map((fmt) => (
+                        <option key={fmt} value={fmt}>
+                          {fmt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'grid', gap: 6 }}>
+                    <label style={{ fontSize: 12, color: 'var(--muted)' }}>Decimal places</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={20}
+                      step={1}
+                      placeholder="(default)"
+                      value={
+                        selected.measure?.decimalPlaces === undefined
+                          ? ''
+                          : String(selected.measure.decimalPlaces)
+                      }
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        const dp = raw === '' ? undefined : Math.trunc(Number(raw));
+                        updateField({
+                          ...selected,
+                          measure: {
+                            ...selected.measure,
+                            decimalPlaces:
+                              dp === undefined || !Number.isFinite(dp)
+                                ? undefined
+                                : Math.max(0, Math.min(20, dp)),
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ fontSize: 12, color: 'var(--muted)' }}>
+                  Controls display precision in the pivot grid and bulk summaries. Calculations always use full precision.
+                </div>
+              </div>
+            ) : null}
 
             {selected.type === 'string' ? (
               <EnumEditor

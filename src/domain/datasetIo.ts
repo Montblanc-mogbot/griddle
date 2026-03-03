@@ -91,6 +91,16 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
   }
 
   if (input.measure !== undefined && isObject(input.measure)) {
+    const rawDp = (input.measure as Record<string, unknown>).decimalPlaces;
+    const decimalPlaces =
+      typeof rawDp === 'number' && Number.isFinite(rawDp) ? Math.trunc(rawDp) : undefined;
+
+    // Keep it conservative: JS Number precision + `toFixed` limits.
+    const normalizedDecimalPlaces =
+      decimalPlaces === undefined
+        ? undefined
+        : Math.max(0, Math.min(20, decimalPlaces));
+
     fd.measure = {
       format:
         input.measure.format === 'decimal' ||
@@ -98,6 +108,7 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
         input.measure.format === 'currency'
           ? input.measure.format
           : undefined,
+      decimalPlaces: normalizedDecimalPlaces,
     };
   }
 

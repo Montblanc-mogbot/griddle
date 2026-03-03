@@ -2,6 +2,7 @@ import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell }
 import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
 import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import styles from './bottomPanel.module.css';
+import { formatNumberFullPrecision } from '../domain/format';
 import { useMemo, useRef, useState } from 'react';
 
 function ContextPills(props: { selected: SelectedCell | null; config: PivotConfig }) {
@@ -267,7 +268,7 @@ export function FullRecordsPanel(props: {
           <div style={{ fontSize: 12, color: '#666', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             <span>{records.length} records in this cell.</span>
             <span>
-              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {workingTotals.sum.toFixed(3)}
+              <b>Working:</b> {workingTotals.count} | <b>{activeMeasureLabel}:</b> {formatNumberFullPrecision(workingTotals.sum)}
             </span>
           </div>
         </div>
