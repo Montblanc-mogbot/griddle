@@ -29,7 +29,7 @@ export interface FieldDef {
      * Display formatting hint for measure values.
      * Note: this does not affect internal calculations.
      */
-    format?: 'decimal' | 'integer' | 'currency';
+    format?: 'decimal' | 'integer' | 'currency' | 'flexible';
 
     /**
      * Number of digits after the decimal point to display in grids and bulk summaries.

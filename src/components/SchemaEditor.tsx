@@ -4,7 +4,12 @@ import { PivotAxisDomainEditor } from './PivotAxisDomainEditor';
 
 const ALL_ROLES: FieldRole[] = ['rowDim', 'colDim', 'slicer', 'measure', 'flag'];
 const ALL_TYPES: FieldType[] = ['string', 'number', 'boolean', 'date'];
-const MEASURE_FORMATS: Array<NonNullable<FieldDef['measure']>['format']> = ['decimal', 'integer', 'currency'];
+const MEASURE_FORMATS: Array<NonNullable<FieldDef['measure']>['format']> = [
+  'decimal',
+  'integer',
+  'currency',
+  'flexible',
+];
 
 function slugifyKey(input: string): string {
   return input
@@ -232,10 +237,13 @@ export function SchemaEditor(props: {
                             ...selected.measure,
                             format: fmt,
                             // If user switches to integer, default to 0 dp unless explicitly overridden later.
+                            // If user switches to flexible, clear explicit dp so the UI can infer it from the data.
                             decimalPlaces:
                               fmt === 'integer'
                                 ? 0
-                                : selected.measure?.decimalPlaces,
+                                : fmt === 'flexible'
+                                  ? undefined
+                                  : selected.measure?.decimalPlaces,
                           },
                         });
                       }}

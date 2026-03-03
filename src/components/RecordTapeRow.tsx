@@ -20,7 +20,7 @@ export function RecordTapeRow(props: {
         const sv = v === null || v === undefined ? '' : String(v);
         const display =
           typeof v === 'number' && Number.isFinite(v)
-            ? formatMeasureNumber(v, measureFieldByKey?.[k])
+            ? formatMeasureNumber(v, measureFieldByKey?.[k], [v])
             : sv;
 
         return (

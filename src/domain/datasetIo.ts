@@ -105,7 +105,8 @@ function ensureFieldDef(input: unknown, idx: number): FieldDef {
       format:
         input.measure.format === 'decimal' ||
         input.measure.format === 'integer' ||
-        input.measure.format === 'currency'
+        input.measure.format === 'currency' ||
+        input.measure.format === 'flexible'
           ? input.measure.format
           : undefined,
       decimalPlaces: normalizedDecimalPlaces,

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
-import { formatMeasureNumber } from '../domain/format';
+import { decimalPlacesForMeasureInContext, formatNumber } from '../domain/format';
 import { bulkSetMetadata, getRecordsForCell, upsertRecords } from '../domain/records';
 import { flagFields, measureFields } from '../domain/records';
 
@@ -195,6 +195,15 @@ export function BulkRangePanel(props: {
   const dimKeys = new Set([...(selected ? Object.keys(selected.row) : []), ...(selected ? Object.keys(selected.col) : [])]);
 
   const currentMeasure = dataset.schema.fields.find((f) => f.key === config.measureKey);
+
+  const measureDecimals = useMemo(() => {
+    const vals = records.map((r) => {
+      const v = r.data[config.measureKey];
+      return typeof v === 'number' && Number.isFinite(v) ? v : null;
+    });
+    return decimalPlacesForMeasureInContext(currentMeasure, vals);
+  }, [records, config.measureKey, currentMeasure]);
+
   const currentTotal = useMemo(() => {
     if (!config.measureKey) return null;
     let sum = 0;
@@ -224,7 +233,7 @@ export function BulkRangePanel(props: {
                 color: 'var(--text)',
               }}
             >
-              Total ({currentMeasure.label}): {formatMeasureNumber(currentTotal, currentMeasure)}
+              Total ({currentMeasure.label}): {formatNumber(currentTotal, { decimals: measureDecimals })}
             </div>
           ) : null}
 
@@ -300,7 +309,7 @@ export function BulkRangePanel(props: {
                     borderTop: '1px solid var(--border2)',
                   }}
                 >
-                  {currentMeasure?.label ?? 'Value'} {agg.whenTrue !== null ? formatMeasureNumber(agg.whenTrue, currentMeasure) : '—'} ({agg.whenFalse !== null ? formatMeasureNumber(agg.whenFalse, currentMeasure) : '—'})
+                  {currentMeasure?.label ?? 'Value'} {agg.whenTrue !== null ? formatNumber(agg.whenTrue, { decimals: measureDecimals }) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse, { decimals: measureDecimals }) : '—'})
                 </div>
               </div>
             ))}

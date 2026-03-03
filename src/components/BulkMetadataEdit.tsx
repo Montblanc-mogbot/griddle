@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { DatasetFileV1, PivotConfig, SelectedCell } from '../domain/types';
 import { flagFields, getRecordsForCell } from '../domain/records';
-import { formatMeasureNumber } from '../domain/format';
+import { decimalPlacesForMeasureInContext, formatNumber } from '../domain/format';
 import styles from './entryPanel.module.css';
 
 interface FlagAggregation {
@@ -59,6 +59,9 @@ export function BulkMetadataEdit(props: {
   onToggle: (flagKey: string, value: boolean) => void;
 }) {
   const { dataset, config, selected, onToggle } = props;
+
+  const recordsInCell = useMemo(() => getRecordsForCell(dataset, selected), [dataset, selected]);
+
   const aggregations = useMemo(
     () => computeFlagAggregations(dataset, config, selected),
     [dataset, config, selected],
@@ -68,6 +71,14 @@ export function BulkMetadataEdit(props: {
 
   const measureField = dataset.schema.fields.find((f) => f.key === config.measureKey);
   const measureLabel = measureField?.label ?? config.measureKey;
+
+  const measureDecimals = useMemo(() => {
+    const vals = recordsInCell.map((r) => {
+      const v = r.data[config.measureKey];
+      return typeof v === 'number' && Number.isFinite(v) ? v : null;
+    });
+    return decimalPlacesForMeasureInContext(measureField, vals);
+  }, [recordsInCell, measureField, config.measureKey]);
 
   return (
     <div className={styles.section}>
@@ -103,7 +114,7 @@ export function BulkMetadataEdit(props: {
                   marginLeft: 24,
                 }}
               >
-                {measureLabel} {agg.whenTrue !== null ? formatMeasureNumber(agg.whenTrue, measureField) : '—'} ({agg.whenFalse !== null ? formatMeasureNumber(agg.whenFalse, measureField) : '—'})
+                {measureLabel} {agg.whenTrue !== null ? formatNumber(agg.whenTrue, { decimals: measureDecimals }) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse, { decimals: measureDecimals }) : '—'})
               </div>
             </div>
           </div>
