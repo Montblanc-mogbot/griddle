@@ -37,7 +37,9 @@ import { parseDatasetJson } from './domain/datasetIo';
 import { findOrphanedRecords } from './domain/orphans';
 import { ResizableDrawer } from './components/ResizableDrawer';
 import { ScaffoldDialog } from './components/ScaffoldDialog';
+import { PreferencesPanel } from './components/PreferencesPanel';
 import { setRecordField } from './domain/updateRecord';
+import { loadUiPrefs, saveUiPrefs, type UiPrefsV1 } from './domain/uiPrefs';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -107,6 +109,13 @@ export default function App() {
   const [fullRecordsRecordIds, setFullRecordsRecordIds] = useState<string[] | null>(null);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
+
+  const [uiPrefs, setUiPrefs] = useState<UiPrefsV1>(() => loadUiPrefs());
+  const [showPreferences, setShowPreferences] = useState(false);
+
+  useEffect(() => {
+    saveUiPrefs(uiPrefs);
+  }, [uiPrefs]);
 
   const [gridSelection, setGridSelection] = useState<GridSelection>({
     columns: CompactSelection.empty(),
@@ -706,6 +715,7 @@ export default function App() {
         onFilters={() => setShowFilters(true)}
         onStyles={() => setShowStyleEditor(true)}
         onFields={() => setShowSchemaEditor(true)}
+        onPreferences={() => setShowPreferences(true)}
         onViewsChange={(next) => setDataset((prev) => (prev ? { ...prev, views: next } : prev))}
         onLoadView={(viewId, fs) => {
           setSelected(null);
@@ -732,6 +742,12 @@ export default function App() {
       {showSchemaEditor ? (
         <Modal title="Fields" onClose={() => setShowSchemaEditor(false)}>
           <SchemaEditor schema={dataset.schema} onChange={applySchema} />
+        </Modal>
+      ) : null}
+
+      {showPreferences ? (
+        <Modal title="Preferences" width={720} onClose={() => setShowPreferences(false)}>
+          <PreferencesPanel prefs={uiPrefs} onChange={setUiPrefs} />
         </Modal>
       ) : null}
 
@@ -895,6 +911,7 @@ export default function App() {
               dataset={dataset}
               config={config}
               selected={selected}
+              uiPrefs={uiPrefs}
               onClose={() => {
                 setSelected(null);
                 // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
@@ -960,6 +977,7 @@ export default function App() {
               config={config}
               selected={selected}
               recordIds={fullRecordsRecordIds ?? (bulkSel.hasMulti ? bulkSel.recordIds : undefined)}
+              uiPrefs={uiPrefs}
               onClose={() => {
                 setSelected(null);
                 setFullRecordsRecordIds(null);

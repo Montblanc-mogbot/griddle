@@ -4,10 +4,13 @@ import { EntryHeader } from './EntryHeader';
 import { RecordTape } from './RecordTape';
 import styles from './entryPanel.module.css';
 
+import type { UiPrefsV1 } from '../domain/uiPrefs';
+
 export function EntryPanel(props: {
   dataset: DatasetFileV1;
   config: PivotConfig;
   selected: SelectedCell;
+  uiPrefs: UiPrefsV1;
   onClose: () => void;
   onGoToFullRecords: () => void;
   onSubmit: (args: { measureValues: Record<string, number | ''>; flags: Record<string, boolean>; details?: Record<string, unknown> }) => void;
@@ -19,6 +22,7 @@ export function EntryPanel(props: {
     dataset,
     config,
     selected,
+    uiPrefs,
     onClose,
     onGoToFullRecords,
     onSubmit,
@@ -50,6 +54,7 @@ export function EntryPanel(props: {
       <RecordTape
         dataset={dataset}
         selected={selected}
+        uiPrefs={uiPrefs}
         onUpdateRecordField={onUpdateRecordField}
         onToggleFlag={onToggleFlag}
         onSubmit={onSubmit}

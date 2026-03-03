@@ -1,6 +1,9 @@
+import type { CSSProperties } from 'react';
 import type { DatasetFileV1, FieldDef, SelectedCell } from '../domain/types';
 import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
 import { flagFields, getRecordsForCell, measureFields } from '../domain/records';
+import { rgbaFromHex } from '../domain/colorUtil';
+import type { UiPrefsV1 } from '../domain/uiPrefs';
 import { RecordTapeRow } from './RecordTapeRow';
 import type { TapeFlag } from './RecordTapeRow.types';
 import styles from './tapeLedger.module.css';
@@ -22,6 +25,7 @@ function detailsFields(schema: DatasetFileV1['schema']): FieldDef[] {
 export function RecordTape(props: {
   dataset: DatasetFileV1;
   selected: SelectedCell;
+  uiPrefs: UiPrefsV1;
   onUpdateRecordField: (recordId: string, key: string, value: unknown) => void;
   onToggleFlag: (recordId: string, flagKey: string, value: boolean) => void;
   onSubmit: (args: {
@@ -30,13 +34,19 @@ export function RecordTape(props: {
     details?: Record<string, unknown>;
   }) => void;
 }) {
-  const { dataset, selected, onUpdateRecordField, onToggleFlag, onSubmit } = props;
+  const { dataset, selected, uiPrefs, onUpdateRecordField, onToggleFlag, onSubmit } = props;
 
   const records = getRecordsForCell(dataset, selected);
   const details = detailsFields(dataset.schema);
   const measures = measureFields(dataset.schema);
   const flags = flagFields(dataset.schema);
   const noteKey = findNoteFieldKey(dataset.schema);
+
+  const noteDotVars = {
+    ['--gr-noteDotBg' as any]: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.18),
+    ['--gr-noteDotBorder' as any]: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.35),
+    ['--gr-noteDotBgHover' as any]: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.26),
+  } as CSSProperties;
 
   const measureKeys = measures.map((m) => m.key);
   const measureFieldByKey: Record<string, FieldDef> = Object.fromEntries(measures.map((m) => [m.key, m] as const));
@@ -57,7 +67,7 @@ export function RecordTape(props: {
         </div>
       ) : null}
 
-      <div className={styles.tableWrap}>
+      <div className={styles.tableWrap} style={noteDotVars}>
         <table className={styles.table}>
           <thead>
             <tr>

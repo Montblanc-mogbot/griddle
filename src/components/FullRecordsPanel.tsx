@@ -1,6 +1,8 @@
 import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell } from '../domain/types';
 import { createRecordFromSelection, getRecordsForCell, removeRecords, upsertRecords } from '../domain/records';
 import { findNoteFieldKey, recordNoteValue } from '../domain/noteField';
+import type { UiPrefsV1 } from '../domain/uiPrefs';
+import { rgbaFromHex } from '../domain/colorUtil';
 import styles from './bottomPanel.module.css';
 import { formatNumberFullPrecision } from '../domain/format';
 import { useMemo, useRef, useState } from 'react';
@@ -132,11 +134,12 @@ export function FullRecordsPanel(props: {
   config: PivotConfig;
   selected: SelectedCell | null;
   recordIds?: string[];
+  uiPrefs: UiPrefsV1;
   onClose: () => void;
   onDone: () => void;
   onDatasetChange: (next: DatasetFileV1) => void;
 }) {
-  const { dataset, config, selected, recordIds: explicitRecordIds, onClose, onDone, onDatasetChange } = props;
+  const { dataset, config, selected, recordIds: explicitRecordIds, uiPrefs, onClose, onDone, onDatasetChange } = props;
 
   const [newDraft, setNewDraft] = useState<RecordEntity | null>(null);
   const [workingIds, setWorkingIds] = useState<string[]>([]);
@@ -354,7 +357,11 @@ export function FullRecordsPanel(props: {
                   <tr
                     key={r.id}
                     data-record-row="1"
-                    style={isWorking ? { background: 'rgba(34,197,94,0.06)' } : undefined}
+                    style={
+                      isWorking
+                        ? { background: rgbaFromHex(uiPrefs.workingGroupHighlightColor, 0.06) }
+                        : undefined
+                    }
                     onMouseDown={(e) => {
                       // Clicking anywhere in the row toggles "Working".
                       // Shift-click adds a range (Excel-ish).
@@ -407,8 +414,8 @@ export function FullRecordsPanel(props: {
                             width: 14,
                             height: 14,
                             borderRadius: 999,
-                            background: 'rgba(34,197,94,0.35)',
-                            border: '1px solid rgba(34,197,94,0.75)',
+                            background: rgbaFromHex(uiPrefs.workingGroupHighlightColor, 0.35),
+                            border: `1px solid ${rgbaFromHex(uiPrefs.workingGroupHighlightColor, 0.75)}`,
                             display: 'inline-block',
                           }}
                         />
@@ -427,8 +434,8 @@ export function FullRecordsPanel(props: {
                                 width: 10,
                                 height: 10,
                                 borderRadius: 999,
-                                background: 'rgba(79, 70, 229, 0.18)',
-                                border: '1px solid rgba(79, 70, 229, 0.35)',
+                                background: rgbaFromHex(uiPrefs.noteIndicatorColor, 0.18),
+                                border: `1px solid ${rgbaFromHex(uiPrefs.noteIndicatorColor, 0.35)}`,
                                 display: 'inline-block',
                               }}
                             />

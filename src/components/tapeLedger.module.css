@@ -65,13 +65,13 @@
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: rgba(79, 70, 229, 0.18);
-  border: 1px solid rgba(79, 70, 229, 0.35);
+  background: var(--gr-noteDotBg, rgba(79, 70, 229, 0.18));
+  border: 1px solid var(--gr-noteDotBorder, rgba(79, 70, 229, 0.35));
   display: inline-block;
 }
 
 .noteDot:hover {
-  background: rgba(79, 70, 229, 0.26);
+  background: var(--gr-noteDotBgHover, rgba(79, 70, 229, 0.26));
 }
 
 .flagsCell {
