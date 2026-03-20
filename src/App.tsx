@@ -123,6 +123,14 @@ export default function App() {
   });
 
   const gridAreaRef = useRef<HTMLDivElement | null>(null);
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+
+  function clearSelectionAndClosePanels() {
+    setSelected(null);
+    setFullRecordsRecordIds(null);
+    setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+    setPanelMode('none');
+  }
 
   // Track pointer state so we can avoid opening panels mid drag-select.
   // Principle: only treat pointer-down gestures that START on the grid as drag-selection gestures.
@@ -639,7 +647,19 @@ export default function App() {
   }
 
   return (
-    <div className={styles.app}>
+    <div
+      className={styles.app}
+      onPointerDownCapture={(e) => {
+        // If a side panel is open because something is selected in the grid,
+        // clicking anywhere outside the grid + panel should clear selection and close the panel.
+        if (panelMode === 'none' && !selected) return;
+        const t = e.target;
+        if (!(t instanceof Node)) return;
+        if (gridAreaRef.current?.contains(t)) return;
+        if (drawerRef.current?.contains(t)) return;
+        clearSelectionAndClosePanels();
+      }}
+    >
       <input
         ref={fileOpenRef}
         type="file"
@@ -885,7 +905,7 @@ export default function App() {
         </div>
 
         {panelMode === 'bulk' ? (
-          <ResizableDrawer storageKey="griddle:drawerWidth:bulk:v1">
+          <ResizableDrawer ref={drawerRef} storageKey="griddle:drawerWidth:bulk:v1">
             <BulkRangePanel
               dataset={dataset}
               config={config}
@@ -908,7 +928,7 @@ export default function App() {
             />
           </ResizableDrawer>
         ) : selected && panelMode === 'entry' ? (
-          <ResizableDrawer storageKey="griddle:drawerWidth:entry:v1">
+          <ResizableDrawer ref={drawerRef} storageKey="griddle:drawerWidth:entry:v1">
             <EntryPanel
               dataset={dataset}
               config={config}

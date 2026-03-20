@@ -1,19 +1,32 @@
 .panel {
+  height: 100%;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
   color: var(--text);
-  padding: 12px;
-  display: grid;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
   min-width: 420px;
   max-width: 560px;
+  overflow: hidden;
 }
 
-.titleRow {
+.header {
+  flex: 0 0 auto;
+  padding: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--border2);
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
 }
 
 .title {

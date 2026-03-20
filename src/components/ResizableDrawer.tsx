@@ -9,13 +9,16 @@ interface ResizableDrawerProps {
   maxWidth?: number;
 }
 
-export function ResizableDrawer({
-  children,
-  storageKey,
-  defaultWidth = 440,
-  minWidth = 280,
-  maxWidth = 800,
-}: ResizableDrawerProps) {
+export const ResizableDrawer = React.forwardRef<HTMLDivElement, ResizableDrawerProps>(function ResizableDrawer(
+  {
+    children,
+    storageKey,
+    defaultWidth = 440,
+    minWidth = 280,
+    maxWidth = 800,
+  }: ResizableDrawerProps,
+  ref,
+) {
   const [width, setWidth] = useState(() => {
     if (!storageKey) return defaultWidth;
     try {
@@ -74,7 +77,7 @@ export function ResizableDrawer({
   );
 
   return (
-    <div className={styles.drawer} style={{ width }}>
+    <div ref={ref} className={styles.drawer} style={{ width }}>
       <div
         className={`${styles.resizeHandle} ${isResizing ? styles.active : ''}`}
         onPointerDown={handlePointerDown}
@@ -83,4 +86,5 @@ export function ResizableDrawer({
       <div className={styles.drawerContent}>{children}</div>
     </div>
   );
-}
+});
+

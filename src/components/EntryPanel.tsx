@@ -33,7 +33,7 @@ export function EntryPanel(props: {
 
   return (
     <div className={styles.panel}>
-      <div className={styles.titleRow}>
+      <div className={styles.header}>
         <div className={styles.title}>Entry</div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <button onClick={onGoToFullRecords} style={{ cursor: 'pointer' }}>
@@ -45,20 +45,22 @@ export function EntryPanel(props: {
         </div>
       </div>
 
-      <EntryHeader dataset={dataset} config={config} selected={selected} />
+      <div className={styles.body}>
+        <EntryHeader dataset={dataset} config={config} selected={selected} />
 
-      {/* Bulk metadata should live above the tape (approved layout) */}
-      <BulkMetadataEdit dataset={dataset} config={config} selected={selected} onToggle={onBulkToggleFlag} />
+        {/* Bulk metadata should live above the tape (approved layout) */}
+        <BulkMetadataEdit dataset={dataset} config={config} selected={selected} onToggle={onBulkToggleFlag} />
 
-      {/* Tape ledger includes the shaded bottom “new entry” row */}
-      <RecordTape
-        dataset={dataset}
-        selected={selected}
-        uiPrefs={uiPrefs}
-        onUpdateRecordField={onUpdateRecordField}
-        onToggleFlag={onToggleFlag}
-        onSubmit={onSubmit}
-      />
+        {/* Tape ledger includes the shaded bottom “new entry” row */}
+        <RecordTape
+          dataset={dataset}
+          selected={selected}
+          uiPrefs={uiPrefs}
+          onUpdateRecordField={onUpdateRecordField}
+          onToggleFlag={onToggleFlag}
+          onSubmit={onSubmit}
+        />
+      </div>
     </div>
   );
 }
