@@ -3,7 +3,6 @@ import type { DatasetFileV1, FieldDef, PivotConfig, RecordEntity, SelectedCell }
 import { decimalPlacesForMeasureInContext, formatNumber } from '../domain/format';
 import { bulkSetMetadata, getRecordsForCell, upsertRecords } from '../domain/records';
 import { flagFields, measureFields } from '../domain/records';
-import styles from './bulkRangePanel.module.css';
 
 type Coverage = 'none' | 'some' | 'all';
 
@@ -220,8 +219,8 @@ export function BulkRangePanel(props: {
   }, [records, config.measureKey]);
 
   return (
-    <div className={styles.panel}>
-      <div className={styles.header}>
+    <div style={{ padding: 12, display: 'grid', gap: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
         <div style={{ display: 'grid', gap: 6 }}>
           <div style={{ fontWeight: 900 }}>Bulk edit</div>
 
@@ -245,125 +244,123 @@ export function BulkRangePanel(props: {
         <button onClick={onClose}>Close</button>
       </div>
 
-      <div className={styles.body}>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>Range selection = bulk edit. Single cell = Entry.</div>
+      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Range selection = bulk edit. Single cell = Entry.</div>
 
-        <div style={{ display: 'flex', gap: 8, marginTop: -8 }}>
-          <button onClick={onGoToFullRecords}>Full records…</button>
-        </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: -8 }}>
+        <button onClick={onGoToFullRecords}>Full records…</button>
+      </div>
 
-        <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
-          <div style={{ fontWeight: 900, marginBottom: 8 }}>Metadata (flags)</div>
+      <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
+        <div style={{ fontWeight: 900, marginBottom: 8 }}>Metadata (flags)</div>
 
-          {flagAggregations.length === 0 ? (
-            <div style={{ color: '#666' }}>(no flag fields)</div>
-          ) : (
-            <div style={{ display: 'grid', gap: 10 }}>
-              {flagAggregations.map((agg) => (
-                <div
-                  key={agg.flagKey}
-                  style={{
-                    border: '1px solid #eee',
-                    borderRadius: 10,
-                    padding: 10,
-                    display: 'grid',
-                    gap: 8,
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
-                    <div>
-                      <div style={{ fontWeight: 800 }}>{agg.label}</div>
-                      <div style={{ fontSize: 12, color: '#666' }}>Coverage: {coverageLabel(agg.coverage)}</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button
-                        onClick={() => {
-                          const updated = bulkSetMetadata(records, agg.flagKey, true);
-                          onDatasetChange(upsertRecords(dataset, updated));
-                        }}
-                      >
-                        Set ON
-                      </button>
-                      <button
-                        onClick={() => {
-                          const updated = bulkSetMetadata(records, agg.flagKey, false);
-                          onDatasetChange(upsertRecords(dataset, updated));
-                        }}
-                      >
-                        Set OFF
-                      </button>
-                      <button
-                        onClick={() => {
-                          const updated = bulkToggleBoolean(records, agg.flagKey);
-                          onDatasetChange(upsertRecords(dataset, updated));
-                        }}
-                      >
-                        Toggle
-                      </button>
-                    </div>
+        {flagAggregations.length === 0 ? (
+          <div style={{ color: '#666' }}>(no flag fields)</div>
+        ) : (
+          <div style={{ display: 'grid', gap: 10 }}>
+            {flagAggregations.map((agg) => (
+              <div
+                key={agg.flagKey}
+                style={{
+                  border: '1px solid #eee',
+                  borderRadius: 10,
+                  padding: 10,
+                  display: 'grid',
+                  gap: 8,
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+                  <div>
+                    <div style={{ fontWeight: 800 }}>{agg.label}</div>
+                    <div style={{ fontSize: 12, color: '#666' }}>Coverage: {coverageLabel(agg.coverage)}</div>
                   </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: 'var(--muted)',
-                      fontVariantNumeric: 'tabular-nums',
-                      paddingTop: 4,
-                      borderTop: '1px solid var(--border2)',
-                    }}
-                  >
-                    {currentMeasure?.label ?? 'Value'} {agg.whenTrue !== null ? formatNumber(agg.whenTrue, { decimals: measureDecimals }) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse, { decimals: measureDecimals }) : '—'})
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={() => {
+                        const updated = bulkSetMetadata(records, agg.flagKey, true);
+                        onDatasetChange(upsertRecords(dataset, updated));
+                      }}
+                    >
+                      Set ON
+                    </button>
+                    <button
+                      onClick={() => {
+                        const updated = bulkSetMetadata(records, agg.flagKey, false);
+                        onDatasetChange(upsertRecords(dataset, updated));
+                      }}
+                    >
+                      Set OFF
+                    </button>
+                    <button
+                      onClick={() => {
+                        const updated = bulkToggleBoolean(records, agg.flagKey);
+                        onDatasetChange(upsertRecords(dataset, updated));
+                      }}
+                    >
+                      Toggle
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
-          <div style={{ fontWeight: 900, marginBottom: 8 }}>Other fields</div>
-          <div style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>
-            These apply to all affected records. Dimension fields are marked because they move records to different cells.
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: 'var(--muted)',
+                    fontVariantNumeric: 'tabular-nums',
+                    paddingTop: 4,
+                    borderTop: '1px solid var(--border2)',
+                  }}
+                >
+                  {currentMeasure?.label ?? 'Value'} {agg.whenTrue !== null ? formatNumber(agg.whenTrue, { decimals: measureDecimals }) : '—'} ({agg.whenFalse !== null ? formatNumber(agg.whenFalse, { decimals: measureDecimals }) : '—'})
+                </div>
+              </div>
+            ))}
           </div>
-
-          {otherFields.length === 0 ? (
-            <div style={{ color: '#666' }}>(no editable non-measure fields)</div>
-          ) : (
-            <div style={{ display: 'grid', gap: 12 }}>
-              {otherFields.map((f) => {
-                const isDim = dimKeys.has(f.key);
-                return (
-                  <div key={f.key} style={{ border: '1px solid #eee', borderRadius: 10, padding: 10 }}>
-                    <BulkFieldEditor
-                      field={f}
-                      records={records}
-                      isDimensionField={isDim}
-                      onApply={(value) => {
-                        if (value === '__TOGGLE__') {
-                          const updated = bulkToggleBoolean(records, f.key);
-                          onDatasetChange(upsertRecords(dataset, updated));
-                          return;
-                        }
-                        const updated = bulkSetField(records, f, value);
-                        onDatasetChange(upsertRecords(dataset, updated));
-                      }}
-                      onClear={() => {
-                        const updated = bulkSetField(records, f, '');
-                        onDatasetChange(upsertRecords(dataset, updated));
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {selected ? (
-          <div style={{ fontSize: 12, color: '#666' }}>
-            Single-cell records in view: {getRecordsForCell(dataset, selected).length}
-          </div>
-        ) : null}
+        )}
       </div>
+
+      <div style={{ borderTop: '1px solid #eee', paddingTop: 10 }}>
+        <div style={{ fontWeight: 900, marginBottom: 8 }}>Other fields</div>
+        <div style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>
+          These apply to all affected records. Dimension fields are marked because they move records to different cells.
+        </div>
+
+        {otherFields.length === 0 ? (
+          <div style={{ color: '#666' }}>(no editable non-measure fields)</div>
+        ) : (
+          <div style={{ display: 'grid', gap: 12 }}>
+            {otherFields.map((f) => {
+              const isDim = dimKeys.has(f.key);
+              return (
+                <div key={f.key} style={{ border: '1px solid #eee', borderRadius: 10, padding: 10 }}>
+                  <BulkFieldEditor
+                    field={f}
+                    records={records}
+                    isDimensionField={isDim}
+                    onApply={(value) => {
+                      if (value === '__TOGGLE__') {
+                        const updated = bulkToggleBoolean(records, f.key);
+                        onDatasetChange(upsertRecords(dataset, updated));
+                        return;
+                      }
+                      const updated = bulkSetField(records, f, value);
+                      onDatasetChange(upsertRecords(dataset, updated));
+                    }}
+                    onClear={() => {
+                      const updated = bulkSetField(records, f, '');
+                      onDatasetChange(upsertRecords(dataset, updated));
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {selected ? (
+        <div style={{ fontSize: 12, color: '#666' }}>
+          Single-cell records in view: {getRecordsForCell(dataset, selected).length}
+        </div>
+      ) : null}
     </div>
   );
 }
