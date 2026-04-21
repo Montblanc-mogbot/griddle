@@ -67,8 +67,6 @@ export function BulkMetadataEdit(props: {
     [dataset, config, selected],
   );
 
-  if (aggregations.length === 0) return null;
-
   const measureField = dataset.schema.fields.find((f) => f.key === config.measureKey);
   const measureLabel = measureField?.label ?? config.measureKey;
 
@@ -79,6 +77,8 @@ export function BulkMetadataEdit(props: {
     });
     return decimalPlacesForMeasureInContext(measureField, vals);
   }, [recordsInCell, measureField, config.measureKey]);
+
+  if (aggregations.length === 0) return null;
 
   return (
     <div className={styles.section}>
