@@ -87,7 +87,23 @@ Use this condensed checklist before/after interaction-layer changes so the hotsp
 - [ ] **Toolbar/modal interactions while panel open:** opening layout, filters, fields, preferences, or other top-chrome/modal UI does not leave the app in an invalid mixed panel state.
 - [ ] **Future click-off behavior:** any later click-off deselect logic must ignore top chrome, modals, and full-records interactions unless explicitly intended.
 
-### 5) Edit + save round trip
+### 5) Entry panel polish addendum (fixed-header slice)
+Use this short addendum only for the currently implemented side-panel polish slice: the Entry panel fixed-header + scrollable-body layout. Do not treat it as coverage for Bulk or Full Records.
+
+1. Open the Entry panel from a single selected value cell.
+2. Confirm the header area (title + top actions) remains visible.
+3. Scroll the panel body through enough content to exercise the inner scroll region.
+4. While the Entry panel is open, open and close at least one top-chrome modal (for example Filters or Pivot layout).
+5. Return to the workspace and continue using the same selected cell.
+
+**Pass criteria**
+- The Entry panel header stays visible while the panel body scrolls.
+- Scrolling is contained to the panel body rather than causing awkward whole-drawer movement.
+- Opening top-chrome modal UI still works while the Entry panel is open.
+- Returning from modal UI does not unintentionally deselect the cell or close the panel.
+- No new click-off-style deselect behavior appears as a side effect of the layout polish.
+
+### 6) Edit + save round trip
 1. Pick a visible record/cell and make a small edit (e.g., adjust a `tons` value).
 2. Export/save the dataset.
 3. Re-import the exported file.
@@ -96,7 +112,7 @@ Use this condensed checklist before/after interaction-layer changes so the hotsp
 - Edit persists after reload.
 - No schema/record loss (record count is stable, unless expected).
 
-### 6) Validation UX quick check (when available)
+### 7) Validation UX quick check (when available)
 This step is for validation regressions.
 
 1. Create a known-invalid state in the editor (example: blank out a field that is marked required once required rules exist).
