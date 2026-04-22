@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
@@ -122,22 +122,39 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
-  function clearGridSelection() {
+  const clearGridSelection = useCallback(() => {
     setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
-  }
+  }, []);
 
-  function clearWorkspaceSelection() {
+  const clearWorkspaceSelection = useCallback(() => {
     setSelected(null);
     setFullRecordsRecordIds(null);
     clearGridSelection();
-  }
+  }, [clearGridSelection]);
 
-  function openEntryFromSelection(selection: SelectedCell) {
+  const transitionToNoPanel = useCallback((options?: { clearWorkspace?: boolean; clearFullRecordsRecordIds?: boolean }) => {
+    if (options?.clearWorkspace) {
+      clearWorkspaceSelection();
+      return;
+    }
+
+    if (options?.clearFullRecordsRecordIds) {
+      setFullRecordsRecordIds(null);
+    }
+
+    setPanelMode('none');
+  }, [clearWorkspaceSelection]);
+
+  const transitionToEntry = useCallback((selection: SelectedCell, options?: { deferWhileDragging?: boolean; preserveFullRecordsRecordIds?: boolean }) => {
     setSelected(selection);
+
+    if (!options?.preserveFullRecordsRecordIds) {
+      setFullRecordsRecordIds(null);
+    }
 
     // If the user is drag-selecting, don’t pop panels mid-gesture.
     // We'll open on pointer release iff the final selection still warrants it.
-    if (pointerDownRef.current && pointerOriginRef.current === 'grid') {
+    if (options?.deferWhileDragging && pointerDownRef.current && pointerOriginRef.current === 'grid') {
       setPanelMode('none');
       setPendingPanelMode('entry');
       return;
@@ -145,14 +162,41 @@ export default function App() {
 
     setPendingPanelMode(null);
     setPanelMode('entry');
-  }
+  }, []);
 
-  function openFullRecordsFromBulk(recordIds: string[]) {
-    // In bulk mode we may not have a single selected cell; persist the record ids
-    // so FullRecordsPanel can render reliably.
-    setFullRecordsRecordIds(recordIds);
+  const transitionToBulk = useCallback((options?: { deferUntilPointerUp?: boolean }) => {
+    setFullRecordsRecordIds(null);
+
+    if (options?.deferUntilPointerUp) {
+      setPanelMode('none');
+      setPendingPanelMode('bulk');
+      return;
+    }
+
+    setPendingPanelMode(null);
+    setPanelMode('bulk');
+  }, []);
+
+  const transitionToFullRecords = useCallback((options?: { recordIds?: string[] | null; preserveBulkSelection?: boolean }) => {
+    if (options?.recordIds) {
+      // In bulk mode we may not have a single selected cell; persist the record ids
+      // so FullRecordsPanel can render reliably.
+      setFullRecordsRecordIds(options.recordIds);
+    } else if (!options?.preserveBulkSelection) {
+      setFullRecordsRecordIds(null);
+    }
+
+    setPendingPanelMode(null);
     setPanelMode('fullRecords');
-  }
+  }, []);
+
+  const openEntryFromSelection = useCallback((selection: SelectedCell) => {
+    transitionToEntry(selection, { deferWhileDragging: true });
+  }, [transitionToEntry]);
+
+  const openFullRecordsFromBulk = useCallback((recordIds: string[]) => {
+    transitionToFullRecords({ recordIds, preserveBulkSelection: true });
+  }, [transitionToFullRecords]);
 
   const gridAreaRef = useRef<HTMLDivElement | null>(null);
 
@@ -257,9 +301,8 @@ export default function App() {
     if (!pointerDown) return;
     if (pointerOriginRef.current !== 'grid') return;
     if (!bulkSel.hasMulti) return;
-    setPanelMode('none');
-    setPendingPanelMode('bulk');
-  }, [pointerDown, bulkSel.hasMulti]);
+    transitionToBulk({ deferUntilPointerUp: true });
+  }, [pointerDown, bulkSel.hasMulti, transitionToBulk]);
 
   // Keep panels from popping during drag-select; open the pending panel mode on release.
   useEffect(() => {
@@ -267,24 +310,24 @@ export default function App() {
     if (!pendingPanelMode) return;
 
     if (pendingPanelMode === 'bulk') {
-      if (bulkSel.hasMulti) setPanelMode('bulk');
-      setPendingPanelMode(null);
+      if (bulkSel.hasMulti) transitionToBulk();
+      else setPendingPanelMode(null);
       return;
     }
 
     // pendingPanelMode === 'entry'
-    if (selected && !bulkSel.hasMulti) setPanelMode('entry');
-    setPendingPanelMode(null);
-  }, [pointerDown, pendingPanelMode, bulkSel.hasMulti, selected]);
+    if (selected && !bulkSel.hasMulti) transitionToEntry(selected, { preserveFullRecordsRecordIds: true });
+    else setPendingPanelMode(null);
+  }, [pointerDown, pendingPanelMode, bulkSel.hasMulti, selected, transitionToBulk, transitionToEntry]);
 
   // If selection becomes multi (e.g. shift-click) and we're not mid-drag, show bulk panel.
   useEffect(() => {
     if (pointerDown) return;
     if (panelMode === 'fullRecords') return;
-    if (bulkSel.hasMulti) setPanelMode('bulk');
-    else if (panelMode === 'bulk' && selected) setPanelMode('entry');
-    else if (panelMode === 'bulk' && !selected) setPanelMode('none');
-  }, [bulkSel.hasMulti, pointerDown, panelMode, selected]);
+    if (bulkSel.hasMulti) transitionToBulk();
+    else if (panelMode === 'bulk' && selected) transitionToEntry(selected);
+    else if (panelMode === 'bulk' && !selected) transitionToNoPanel();
+  }, [bulkSel.hasMulti, pointerDown, panelMode, selected, transitionToBulk, transitionToEntry, transitionToNoPanel]);
   // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
   useEffect(() => {
     if (!selected || !dataset) return;
@@ -737,7 +780,7 @@ export default function App() {
               `Opening Full Records…`,
           );
 
-          setSelected(null);
+          clearWorkspaceSelection();
           openFullRecordsFromBulk(recordIds);
         }}
         onLayout={() => setShowPivotLayout(true)}
@@ -786,7 +829,7 @@ export default function App() {
             schema={dataset.schema}
             config={config}
             onChange={(cfg) => {
-              setSelected(null);
+              clearWorkspaceSelection();
               setConfig(cfg);
             }}
           />
@@ -802,7 +845,7 @@ export default function App() {
             singleSelectDimensionKeys={config.slicerKeys}
             active={activeFilterSet}
             onApply={(next) => {
-              setSelected(null);
+              clearWorkspaceSelection();
               setActiveFilterSet(next);
               setActiveViewId(null);
             }}
@@ -912,8 +955,7 @@ export default function App() {
               cellCount={bulkSel.cellCount}
               onClose={() => {
                 // Clear selection so user can click the same cell again.
-                clearWorkspaceSelection();
-                setPanelMode('none');
+                transitionToNoPanel({ clearWorkspace: true });
               }}
               onGoToFullRecords={() => {
                 openFullRecordsFromBulk(bulkSel.recordIds);
@@ -930,11 +972,10 @@ export default function App() {
               uiPrefs={uiPrefs}
               onClose={() => {
                 // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
-                clearWorkspaceSelection();
-                setPanelMode('none');
+                transitionToNoPanel({ clearWorkspace: true });
               }}
               onGoToFullRecords={() => {
-                setPanelMode('fullRecords');
+                transitionToFullRecords();
               }}
               onSubmit={({ measureValues, flags, details }) => {
                 // Validation: never allow records with no measure value.
@@ -995,12 +1036,11 @@ export default function App() {
               uiPrefs={uiPrefs}
               onClose={() => {
                 // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
-                clearWorkspaceSelection();
-                setPanelMode('none');
+                transitionToNoPanel({ clearWorkspace: true });
               }}
               onDone={() => {
-                setFullRecordsRecordIds(null);
-                setPanelMode('entry');
+                if (selected) transitionToEntry(selected);
+                else transitionToNoPanel({ clearFullRecordsRecordIds: true });
               }}
               onDatasetChange={(next) => setDataset(next)}
             />

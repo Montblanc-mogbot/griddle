@@ -158,6 +158,63 @@ export function bulkSetMetadata(
   return records.map((r) => updateRecordMetadata(r, flagKey, value));
 }
 
+export function patchRecordField(record: RecordEntity, field: FieldDef, value: unknown): RecordEntity {
+  const nextData = { ...record.data };
+
+  if (value === '' || value === null || value === undefined) {
+    delete nextData[field.key];
+  } else {
+    nextData[field.key] = value;
+  }
+
+  return {
+    ...record,
+    updatedAt: new Date().toISOString(),
+    data: nextData,
+  };
+}
+
+export function readRecordField(record: RecordEntity, field: FieldDef): unknown {
+  return record.data[field.key];
+}
+
+export function createDraftRecordFromSelection(args: {
+  schema: DatasetSchema;
+  config: PivotConfig;
+  selected: SelectedCell;
+  activeFilterSet?: FilterSet;
+}): RecordEntity {
+  return createRecordFromSelection({
+    ...args,
+    measureValues: {},
+    flags: {},
+  });
+}
+
+export function assignPersistentRecordIdentity(record: RecordEntity): RecordEntity {
+  const now = new Date().toISOString();
+  return {
+    ...record,
+    id: `r_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export function hasAnyFiniteMeasureValue(schema: DatasetSchema, record: RecordEntity): boolean {
+  const measureKeys = measureFields(schema).map((f) => f.key);
+  return measureKeys.some((k) => {
+    const v = record.data[k];
+    if (v === null || v === undefined || v === '') return false;
+    if (typeof v === 'number') return Number.isFinite(v);
+    if (typeof v === 'string') {
+      const n = Number(v);
+      return Number.isFinite(n);
+    }
+    return false;
+  });
+}
+
 export function removeRecords(dataset: DatasetFileV1, ids: string[]): DatasetFileV1 {
   const idSet = new Set(ids);
   return { ...dataset, records: dataset.records.filter((r) => !idSet.has(r.id)) };
