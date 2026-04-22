@@ -122,6 +122,38 @@ export default function App() {
     rows: CompactSelection.empty(),
   });
 
+  function clearGridSelection() {
+    setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+  }
+
+  function clearWorkspaceSelection() {
+    setSelected(null);
+    setFullRecordsRecordIds(null);
+    clearGridSelection();
+  }
+
+  function openEntryFromSelection(selection: SelectedCell) {
+    setSelected(selection);
+
+    // If the user is drag-selecting, don’t pop panels mid-gesture.
+    // We'll open on pointer release iff the final selection still warrants it.
+    if (pointerDownRef.current && pointerOriginRef.current === 'grid') {
+      setPanelMode('none');
+      setPendingPanelMode('entry');
+      return;
+    }
+
+    setPendingPanelMode(null);
+    setPanelMode('entry');
+  }
+
+  function openFullRecordsFromBulk(recordIds: string[]) {
+    // In bulk mode we may not have a single selected cell; persist the record ids
+    // so FullRecordsPanel can render reliably.
+    setFullRecordsRecordIds(recordIds);
+    setPanelMode('fullRecords');
+  }
+
   const gridAreaRef = useRef<HTMLDivElement | null>(null);
 
   // Track pointer state so we can avoid opening panels mid drag-select.
@@ -685,9 +717,7 @@ export default function App() {
           // TODO: add undo stack
         }}
         onClearSelection={() => {
-          setSelected(null);
-          setFullRecordsRecordIds(null);
-          setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+          clearWorkspaceSelection();
         }}
         onOrphans={() => {
           if (!dataset) return;
@@ -708,8 +738,7 @@ export default function App() {
           );
 
           setSelected(null);
-          setFullRecordsRecordIds(recordIds);
-          setPanelMode('fullRecords');
+          openFullRecordsFromBulk(recordIds);
         }}
         onLayout={() => setShowPivotLayout(true)}
         onFilters={() => setShowFilters(true)}
@@ -865,18 +894,7 @@ export default function App() {
                     setGridSelection(sel);
                   }}
                   onSingleValueCellSelected={(sel) => {
-                    setSelected(sel);
-
-                    // If the user is drag-selecting, don’t pop panels mid-gesture.
-                    // We'll open on pointer release iff the final selection still warrants it.
-                    if (pointerDownRef.current && pointerOriginRef.current === 'grid') {
-                      setPanelMode('none');
-                      setPendingPanelMode('entry');
-                      return;
-                    }
-
-                    setPendingPanelMode(null);
-                    setPanelMode('entry');
+                    openEntryFromSelection(sel);
                   }}
                 />
               </div>
@@ -894,15 +912,11 @@ export default function App() {
               cellCount={bulkSel.cellCount}
               onClose={() => {
                 // Clear selection so user can click the same cell again.
-                setSelected(null);
-                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+                clearWorkspaceSelection();
                 setPanelMode('none');
               }}
               onGoToFullRecords={() => {
-                // In bulk mode we may not have a single selected cell; persist the record ids
-                // so FullRecordsPanel can render reliably.
-                setFullRecordsRecordIds(bulkSel.recordIds);
-                setPanelMode('fullRecords');
+                openFullRecordsFromBulk(bulkSel.recordIds);
               }}
               onDatasetChange={(next) => setDataset(next)}
             />
@@ -915,9 +929,8 @@ export default function App() {
               selected={selected}
               uiPrefs={uiPrefs}
               onClose={() => {
-                setSelected(null);
                 // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
-                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+                clearWorkspaceSelection();
                 setPanelMode('none');
               }}
               onGoToFullRecords={() => {
@@ -981,10 +994,8 @@ export default function App() {
               recordIds={fullRecordsRecordIds ?? (bulkSel.hasMulti ? bulkSel.recordIds : undefined)}
               uiPrefs={uiPrefs}
               onClose={() => {
-                setSelected(null);
-                setFullRecordsRecordIds(null);
                 // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
-                setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
+                clearWorkspaceSelection();
                 setPanelMode('none');
               }}
               onDone={() => {
