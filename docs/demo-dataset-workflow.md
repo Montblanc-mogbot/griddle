@@ -77,6 +77,16 @@ Use this section to guard the first `App.tsx` helper extraction pass. The goal i
 - The selected cell context is still usable for continued editing.
 - No orphaned full-records working set remains after returning.
 
+### Shared regression checklist
+Use this condensed checklist before/after interaction-layer changes so the hotspot flows stay in one place instead of being split across ad hoc notes.
+
+- [ ] **Single-cell → entry:** clicking one value cell opens the entry panel for that exact cell with no duplicate or stale panel state.
+- [ ] **Range select → bulk:** drag/shift-selecting a multi-cell range opens the bulk panel only after the gesture resolves and does not pop mid-drag.
+- [ ] **Full-records open/close:** opening Full Records from either entry or bulk preserves the intended working set, and close/done returns to the expected panel state.
+- [ ] **Same-cell reselection:** after closing or clearing selection, clicking the same cell again reopens the entry flow instead of becoming a dead click.
+- [ ] **Toolbar/modal interactions while panel open:** opening layout, filters, fields, preferences, or other top-chrome/modal UI does not leave the app in an invalid mixed panel state.
+- [ ] **Future click-off behavior:** any later click-off deselect logic must ignore top chrome, modals, and full-records interactions unless explicitly intended.
+
 ### 5) Edit + save round trip
 1. Pick a visible record/cell and make a small edit (e.g., adjust a `tons` value).
 2. Export/save the dataset.
