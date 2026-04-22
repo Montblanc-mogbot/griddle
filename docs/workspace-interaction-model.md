@@ -144,6 +144,64 @@ These are the assumptions the current app tries to maintain:
 - During an on-grid pointer gesture, panel transitions are deferred through `pendingPanelMode`.
 - Closing a panel should reset enough selection state that immediate reselection behaves predictably.
 
+## Click-off containment boundaries for future side-panel UX polish
+
+This section is intentionally **doc-only**. It defines the guardrails for any future click-off deselect behavior without claiming that the current app already supports it.
+
+### What counts as the workspace
+For click-off purposes, the **workspace** should mean the main editing region controlled by `App.tsx`, specifically:
+- the pivot grid area (`gridAreaRef`)
+- the currently active side panel (`entry`, `bulk`, or `fullRecords`)
+- panel-adjacent controls that are part of the same editing flow
+
+Why:
+- these surfaces participate in the current selection / panel state machine
+- clicks inside them should normally be interpreted as continuing the current editing context, not dismissing it
+
+### What counts as top chrome
+**Top chrome** should mean the app-level controls above the workspace, such as:
+- document title / file actions
+- layout / filter / fields / preferences buttons
+- theme toggles and similar global controls
+- view-loading / view-management controls
+
+Why top chrome must be excluded from click-off deselect:
+- those controls often open supporting UI for the current workspace state
+- clicking them should not silently clear selection or collapse a side panel before the requested action runs
+- otherwise the app can end up with misleading "outside click" behavior that feels like a race against the toolbar
+
+### Which modal surfaces must be ignored
+Any modal or overlay surface that temporarily sits above the workspace should be treated as **outside the click-off system entirely**.
+This includes at minimum:
+- Filters modal
+- Pivot layout modal
+- Fields / schema editor modal
+- Preferences modal
+- New griddle wizard
+- any future dialog launched from top chrome or panel actions
+
+Why modals must be ignored:
+- modal interaction is not a signal that the user wants to abandon the underlying workspace selection
+- modal clicks should be handled by the modal/dialog system, not by workspace deselect logic
+- allowing modals to trigger click-off deselect would risk premature panel closure and invalid mixed UI states
+
+### Why full-records interactions are explicitly out of scope
+Future click-off deselect behavior should **not** apply inside the Full Records experience unless a separate, explicitly designed rule is added.
+
+Reasons:
+- Full Records can be entered from either a single-cell anchor or a bulk working set
+- it owns a denser interaction surface with editing, draft/new-record handling, working-set behavior, and close/done transitions
+- naïve outside-click handling could sever the selection context needed to return to entry mode cleanly
+- this path already has known fragility around continuity and should not inherit generic side-panel deselect rules by accident
+
+### Practical rule for any future implementation
+If click-off deselect is added later, the default should be conservative:
+- only clicks proven to be outside the workspace editing surface should qualify
+- top chrome and modal surfaces should be ignored
+- full-records interactions should remain excluded unless separately specified and tested
+
+This keeps future UX polish reversible and scoped, rather than letting an "outside click" shortcut redefine the interaction model by accident.
+
 ## Known fragile spots / future refactor targets
 
 The current behavior works, but the state transitions are spread across several effects and event handlers in `App.tsx`.
