@@ -216,3 +216,73 @@ The most obvious consolidation candidates are:
 - post-dataset-refresh handling for `selected`
 
 That is why the next stabilization step should centralize these transitions behind named helpers or a reducer-backed controller before further UX changes are attempted.
+
+## Side-panel UX prep: fixed-header / scrollable-body audit (2026-04-22)
+
+This is an inspection-only planning slice for the next side-panel polish pass. It does **not** change runtime behavior.
+
+### Current panel/container ownership
+
+#### Entry panel (`src/components/EntryPanel.tsx` + `src/components/entryPanel.module.css`)
+- Root container: `styles.panel`
+- Current structure:
+  1. `titleRow` (title + actions)
+  2. `EntryHeader`
+  3. `BulkMetadataEdit`
+  4. `RecordTape`
+- Current CSS uses a plain grid with padding/gap but **does not** define a dedicated scroll body region.
+- Safe implication: fixed-header work should start by introducing explicit header/body wrappers inside `EntryPanel`, not by trying to retrofit scrolling from the outer drawer.
+
+#### Bulk panel (`src/components/BulkRangePanel.tsx`)
+- Rendered inside the same right-side `ResizableDrawer` host as Entry.
+- Current structure is a single top-level `<div>` with inline `padding: 12`, `display: grid`, `gap: 12`.
+- Header-ish content already exists (title, totals, close button, mode hint, full-records action), but it is not grouped behind named containers or shared classes.
+- Safe implication: the smallest extraction point is to split Bulk into:
+  - a panel header/actions block
+  - a scrollable body block containing metadata + other fields sections
+
+#### Full Records panel (`src/components/FullRecordsPanel.tsx` + `src/components/bottomPanel.module.css`)
+- This is **not** the same side drawer surface; it is a fixed bottom sheet.
+- It already has the correct high-level split:
+  - `styles.header`
+  - `styles.body`
+- Existing body scroll ownership is clear (`overflow: auto` on `styles.body`).
+- Safe implication: do **not** use Full Records as the place to trial drawer click-off behavior. It is a separate containment model and should remain excluded from side-panel click-off work.
+
+### Smallest safe implementation plan
+
+#### Named components/containers to touch first
+1. `src/components/EntryPanel.tsx`
+   - introduce explicit wrapper containers such as:
+     - `panelHeader`
+     - `panelBody`
+   - keep `titleRow` + `EntryHeader` in the header region
+   - move `BulkMetadataEdit` + `RecordTape` into the body region unless tape-specific scroll behavior proves better
+2. `src/components/entryPanel.module.css`
+   - convert `.panel` into a two-row layout (`auto minmax(0, 1fr)`) only when the drawer host provides bounded height
+   - add body overflow rules only on the new body container
+3. `src/components/BulkRangePanel.tsx`
+   - extract named header/body wrappers in markup first
+   - keep current content order unchanged
+4. `src/components/bottomPanel.module.css`
+   - leave unchanged for this slice; it is a reference shape, not the first target
+5. `src/components/ResizableDrawer.tsx` / drawer host styles
+   - inspect before implementing any drawer-body overflow change, because height/overflow may belong to the drawer shell rather than the panel child
+
+### Rollout order
+1. Entry panel structure only
+2. Entry panel fixed-header + body scroll behavior
+3. Bulk panel structure parity
+4. Bulk panel fixed-header + body scroll behavior
+5. Only after that, consider click-off deselect scoping at the workspace level
+
+### Rollback path
+- Keep the first runtime change as markup/CSS-only inside `EntryPanel`.
+- Avoid shared abstractions on the first pass; if the layout regresses, reverting a single panel-specific commit should restore prior behavior cleanly.
+- Do not couple the layout refactor with click-off deselect, modal handling, or Full Records changes in the same commit.
+
+### Risks to re-check before implementation
+- whether `ResizableDrawer` already constrains height in a way that makes inner `overflow: auto` sufficient
+- whether `RecordTape` owns any internal sticky/footer behavior that would conflict with moving it under a shared scroll body
+- whether top chrome / modal layering assumptions accidentally leak into drawer click-off logic
+- whether any future workspace-level outside-click detection incorrectly treats the fixed bottom Full Records panel as drawer-adjacent UI

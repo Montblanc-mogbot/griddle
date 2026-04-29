@@ -112,18 +112,53 @@ Use this short addendum only for the currently implemented side-panel polish sli
 - Edit persists after reload.
 - No schema/record loss (record count is stable, unless expected).
 
-### 7) Validation UX quick check (when available)
-This step is for validation regressions.
+### 7) Validation navigation smoke checks (prep slices 1–3)
+Use this section only to regression-check the finalized **state-model + targeting rules** from the validation prep work. It is intentionally manual and should not imply that Griddle already has a complete validation panel, inline highlights, or automatic jump-to-error UI.
 
-1. Create a known-invalid state in the editor (example: blank out a field that is marked required once required rules exist).
-2. Confirm:
-   - The invalid field is highlighted.
-   - The validation panel lists the issue.
-   - Clicking the issue jumps focus to the field.
+#### 7a) Dataset/config issue stays out of record-edit surfaces
+1. Use or simulate a validation issue that targets dataset/config state only (example: active measure key missing from config, broken view reference, or another `scope: 'dataset'` issue from the documented model).
+2. Attempt the equivalent of “navigate to issue” using whatever temporary/dev affordance exists at the time.
 
 **Pass criteria**
-- Issues are discoverable (panel + inline cues).
-- Jump-to-error focuses the correct field.
+- The issue is treated as `dataset-only`, not as an Entry or Bulk target.
+- The app does not fabricate a random selected cell just to give the issue somewhere to go.
+- If no dedicated destination exists yet, the unresolved state is explicit rather than silently failing.
+
+#### 7b) Record field issue with a unique visible cell is Entry-eligible
+1. Use or simulate a record-scoped field issue whose record/field maps to exactly one visible pivot cell under the current filters/layout.
+2. Navigate to the issue.
+
+**Pass criteria**
+- The issue is treated as `entry-eligible`.
+- Navigation opens or preserves the Entry panel for the real owning cell.
+- No unnecessary detour through Full Records occurs when the single-cell target is already unambiguous.
+
+#### 7c) Known record without a safe single-cell target falls back to Full Records
+1. Use or simulate a record-scoped issue where the record is known but the cell target is ambiguous, hidden by the current view/filter state, or otherwise not safely provable as one unique visible cell.
+2. Navigate to the issue.
+
+**Pass criteria**
+- The issue is treated as `full-records-eligible`, not force-opened in Entry.
+- Navigation does not silently mutate filters or pivot layout just to manufacture a cell target.
+- Full Records opens/preserves a record-level editing context that still lets the issue be inspected honestly.
+
+#### 7d) Bulk targeting is explicit, not an accidental fallback
+1. Use or simulate an issue that is explicitly about the current working set as a set.
+2. Separately, compare against a normal record-specific issue that happens to affect multiple records overall.
+
+**Pass criteria**
+- Only the explicitly working-set-scoped issue is treated as `bulk-eligible`.
+- Ordinary record-specific issues still prefer Entry or Full Records based on the targeting rules.
+- Bulk is not used as a generic catch-all for every multi-record validation problem.
+
+#### 7e) Preserve current context when already on the right surface
+1. Put the app in a state where the target issue is already represented by the active surface (for example, Entry is already open for the exact owning cell, or Full Records already contains the target record).
+2. Navigate to the same issue again.
+
+**Pass criteria**
+- The app preserves the existing correct surface instead of tearing it down and reopening it.
+- No extra panel churn or stale-selection side effect appears.
+- Re-navigation feels idempotent for already-satisfied context.
 
 ## Notes
 - This is intentionally lightweight: it’s not a full test plan.
