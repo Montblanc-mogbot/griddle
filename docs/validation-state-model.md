@@ -624,6 +624,27 @@ Guardrails:
 
 A first-pass label such as `<severity>: <pathPrefix>` is acceptable because it is deterministic and easy to replace later.
 
+## Grouped-summary navigation helper guidance
+
+If grouped validation summaries become clickable before a full validation panel exists, their navigation should still stay domain-only and conservative.
+A small pure helper may classify a grouped summary as:
+- `entry-eligible`
+- `full-records-eligible`
+- `dataset-only`
+- `unresolved`
+
+Recommended rules:
+- `dataset-only` if any issue in the group is truly dataset/config/schema scoped
+- `entry-eligible` only when the group still honestly narrows to one record-backed field area and the caller can already prove the current interaction model has a unique visible field target
+- `full-records-eligible` when the group has one or more trustworthy record ids but no honest single-cell Entry destination
+- `unresolved` when the group has no safe dataset destination and no trustworthy record anchor
+
+Guardrails:
+- do not mutate filters, views, or panel state inside the helper
+- do not pretend a section header can identify an exact cell unless the caller can already prove that fact
+- prefer Full Records over brittle Entry jumps when ambiguity exists
+- keep the output machine-oriented so future UI can decide whether to prompt, open, or stay put
+
 ## Proposed next note
 
 The next validation-prep slice should extend the manual workflow docs with a tiny checkpoint describing how grouped summaries map back to Entry vs Full Records navigation without mutating filters or views.

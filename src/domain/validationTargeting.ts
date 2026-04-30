@@ -48,6 +48,17 @@ export interface ValidationIssueSectionSummary {
   count: number;
 }
 
+export type ValidationSummaryNavigationTarget =
+  | 'entry-eligible'
+  | 'full-records-eligible'
+  | 'dataset-only'
+  | 'unresolved';
+
+export interface ValidationSummaryNavigationContext {
+  canOpenInFullRecords?: boolean;
+  hasUniqueVisibleFieldTarget?: boolean;
+}
+
 function getTopLevelPathPrefix(path: string): string {
   const trimmed = path.trim();
   if (!trimmed || trimmed === '/') return '/';
@@ -123,6 +134,46 @@ export function summarizeValidationIssueGroups(
     label: makeValidationSectionLabel(group.severity, group.pathPrefix),
     count: group.issues.length,
   }));
+}
+
+/**
+ * Conservative first-pass classification for grouped-summary navigation.
+ *
+ * Summary navigation must reuse the same honest fallbacks as individual issue targeting,
+ * but without pretending that a section header can identify one exact visible cell.
+ */
+export function classifyValidationSummaryNavigationTarget(
+  group: ValidationIssueGroup,
+  context: ValidationSummaryNavigationContext = {},
+): ValidationSummaryNavigationTarget {
+  if (group.issues.length === 0) {
+    return 'unresolved';
+  }
+
+  if (group.issues.some((issue) => issue.scope === 'dataset')) {
+    return 'dataset-only';
+  }
+
+  const recordIds = new Set(
+    group.issues.map((issue) => issue.target.recordId).filter((recordId): recordId is string => Boolean(recordId)),
+  );
+  const everyIssueTargetsAField = group.issues.every(
+    (issue) => issue.target.kind === 'field' && Boolean(issue.target.recordId) && Boolean(issue.target.fieldKey),
+  );
+
+  if (
+    recordIds.size === 1 &&
+    everyIssueTargetsAField &&
+    context.hasUniqueVisibleFieldTarget
+  ) {
+    return 'entry-eligible';
+  }
+
+  if (recordIds.size >= 1 && (context.canOpenInFullRecords ?? true)) {
+    return 'full-records-eligible';
+  }
+
+  return 'unresolved';
 }
 
 /**

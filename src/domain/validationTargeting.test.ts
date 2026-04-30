@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   classifyValidationIssueTarget,
+  classifyValidationSummaryNavigationTarget,
   groupValidationIssues,
   summarizeValidationIssueGroups,
   type ValidationIssue,
@@ -80,6 +81,102 @@ describe('classifyValidationIssueTarget', () => {
     expect(classifyValidationIssueTarget(issue, { canOpenInFullRecords: false })).toBe(
       'unresolved',
     );
+  });
+});
+
+describe('classifyValidationSummaryNavigationTarget', () => {
+  it('treats dataset-containing groups as dataset-only', () => {
+    const group = groupValidationIssues([
+      makeIssue({
+        scope: 'dataset',
+        target: {
+          path: '/config/measureKey',
+          kind: 'dataset',
+        },
+      }),
+    ])[0]!;
+
+    expect(classifyValidationSummaryNavigationTarget(group)).toBe('dataset-only');
+  });
+
+  it('allows entry only when a grouped summary still honestly points at one record field area', () => {
+    const group = groupValidationIssues([
+      makeIssue({
+        id: 'issue-a',
+        target: {
+          path: '/records/by-id/r1/fields/alpha',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'alpha',
+        },
+      }),
+      makeIssue({
+        id: 'issue-b',
+        target: {
+          path: '/records/by-id/r1/fields/zeta',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'zeta',
+        },
+      }),
+    ])[0]!;
+
+    expect(
+      classifyValidationSummaryNavigationTarget(group, {
+        hasUniqueVisibleFieldTarget: true,
+      }),
+    ).toBe('entry-eligible');
+  });
+
+  it('falls back to full records when a grouped summary spans multiple records', () => {
+    const group = groupValidationIssues([
+      makeIssue({
+        id: 'issue-a',
+        target: {
+          path: '/records/by-id/r1/fields/alpha',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'alpha',
+        },
+      }),
+      makeIssue({
+        id: 'issue-b',
+        target: {
+          path: '/records/by-id/r2/fields/zeta',
+          kind: 'field',
+          recordId: 'r2',
+          fieldKey: 'zeta',
+        },
+      }),
+    ])[0]!;
+
+    expect(classifyValidationSummaryNavigationTarget(group)).toBe('full-records-eligible');
+  });
+
+  it('returns unresolved for empty groups or when no honest destination exists', () => {
+    expect(
+      classifyValidationSummaryNavigationTarget({
+        key: 'error:/records/by-id',
+        severity: 'error',
+        pathPrefix: '/records/by-id',
+        issues: [],
+      }),
+    ).toBe('unresolved');
+
+    const group = groupValidationIssues([
+      makeIssue({
+        target: {
+          path: '/schema/fields/tons',
+          kind: 'schema',
+        },
+      }),
+    ])[0]!;
+
+    expect(
+      classifyValidationSummaryNavigationTarget(group, {
+        canOpenInFullRecords: false,
+      }),
+    ).toBe('unresolved');
   });
 });
 
