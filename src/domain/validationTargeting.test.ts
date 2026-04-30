@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   classifyValidationIssueTarget,
+  groupValidationIssues,
   type ValidationIssue,
 } from './validationTargeting';
 
@@ -78,5 +79,64 @@ describe('classifyValidationIssueTarget', () => {
     expect(classifyValidationIssueTarget(issue, { canOpenInFullRecords: false })).toBe(
       'unresolved',
     );
+  });
+});
+
+describe('groupValidationIssues', () => {
+  it('groups issues by severity and conservative top-level path prefix', () => {
+    const issues: ValidationIssue[] = [
+      makeIssue({
+        id: 'warn-record',
+        severity: 'warning',
+        target: {
+          path: '/records/by-id/r2/fields/vendor',
+          kind: 'field',
+          recordId: 'r2',
+          fieldKey: 'vendor',
+        },
+      }),
+      makeIssue({
+        id: 'error-record-b',
+        target: {
+          path: '/records/by-id/r1/fields/zeta',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'zeta',
+        },
+      }),
+      makeIssue({
+        id: 'error-record-a',
+        target: {
+          path: '/records/by-id/r1/fields/alpha',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'alpha',
+        },
+      }),
+      makeIssue({
+        id: 'dataset-error',
+        scope: 'dataset',
+        target: {
+          path: '/config/measureKey',
+          kind: 'dataset',
+        },
+      }),
+    ];
+
+    const groups = groupValidationIssues(issues);
+
+    expect(groups.map((group) => group.key)).toEqual([
+      'error:/config/measureKey',
+      'error:/records/by-id',
+      'warning:/records/by-id',
+    ]);
+    expect(groups[1]?.issues.map((issue) => issue.id)).toEqual([
+      'error-record-a',
+      'error-record-b',
+    ]);
+  });
+
+  it('returns an empty array for no issues', () => {
+    expect(groupValidationIssues([])).toEqual([]);
   });
 });

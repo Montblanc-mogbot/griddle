@@ -33,6 +33,71 @@ export interface ValidationTargetingContext {
   canOpenInFullRecords?: boolean;
 }
 
+export interface ValidationIssueGroup {
+  key: string;
+  severity: ValidationSeverity;
+  pathPrefix: string;
+  issues: ValidationIssue[];
+}
+
+function getTopLevelPathPrefix(path: string): string {
+  const trimmed = path.trim();
+  if (!trimmed || trimmed === '/') return '/';
+
+  const parts = trimmed.split('/').filter(Boolean);
+  if (parts.length === 0) return '/';
+  if (parts.length === 1) return `/${parts[0]}`;
+  return `/${parts[0]}/${parts[1]}`;
+}
+
+/**
+ * Groups issues for future panel presentation without depending on render state.
+ *
+ * Current rule: group by severity first, then by a conservative top-level path prefix
+ * so dataset/config issues and record-local issues cluster predictably.
+ */
+export function groupValidationIssues(
+  issues: ValidationIssue[],
+): ValidationIssueGroup[] {
+  const groups = new Map<string, ValidationIssueGroup>();
+
+  for (const issue of issues) {
+    const pathPrefix = getTopLevelPathPrefix(issue.target.path);
+    const key = `${issue.severity}:${pathPrefix}`;
+    const existing = groups.get(key);
+    if (existing) {
+      existing.issues.push(issue);
+      continue;
+    }
+
+    groups.set(key, {
+      key,
+      severity: issue.severity,
+      pathPrefix,
+      issues: [issue],
+    });
+  }
+
+  const severityOrder: Record<ValidationSeverity, number> = {
+    error: 0,
+    warning: 1,
+    info: 2,
+  };
+
+  return [...groups.values()]
+    .map((group) => ({
+      ...group,
+      issues: [...group.issues].sort((a, b) =>
+        a.target.path.localeCompare(b.target.path) || a.rule.localeCompare(b.rule) || a.id.localeCompare(b.id),
+      ),
+    }))
+    .sort((a, b) => {
+      const severityCmp = severityOrder[a.severity] - severityOrder[b.severity];
+      if (severityCmp !== 0) return severityCmp;
+      return a.pathPrefix.localeCompare(b.pathPrefix);
+    });
+}
+
 /**
  * Conservative first-pass classification for validation navigation.
  *

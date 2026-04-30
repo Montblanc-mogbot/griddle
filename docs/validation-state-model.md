@@ -586,6 +586,24 @@ These targeting rules are intentionally aligned with the current interaction mod
 
 That means the targeting layer should prefer **honest fallbacks** over clever but brittle jumps.
 
+## Issue grouping helper guidance
+
+For future validation-panel presentation, grouping should stay domain-only and conservative at first.
+A small pure helper may group issues by:
+- `severity` first (`error`, `warning`, `info`)
+- then a conservative top-level `target.path` prefix (for example `/records/by-id`, `/config/measureKey`, `/schema/fields`)
+
+Why this first-pass grouping is useful:
+- keeps panel summaries deterministic without requiring UI state
+- clusters record-local vs config/schema issues predictably
+- stays reversible if later UI wants richer grouping modes
+
+Guardrails:
+- do not bake in visual section names yet
+- do not assume grouping by current pivot row/column context
+- do not overfit to one future sidebar layout
+- prefer stable path-derived grouping keys over rendered labels
+
 ## Proposed next note
 
 The next validation-prep slice should turn these rules into a tiny pure helper (or typed stub) that classifies issue targets without rendering UI.
