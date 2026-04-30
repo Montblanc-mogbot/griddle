@@ -604,7 +604,27 @@ Guardrails:
 - do not overfit to one future sidebar layout
 - prefer stable path-derived grouping keys over rendered labels
 
+## Issue section-summary helper guidance
+
+After grouping, a future panel may need a second pure helper that turns grouped issues into compact section summaries.
+That summary layer should stay domain-only and conservative.
+
+Recommended section-summary fields:
+- stable `key` copied from the group
+- `severity`
+- `pathPrefix`
+- a stable machine-derived `label`
+- `count`
+
+Guardrails:
+- labels should be derived from structural fields already present in the group, not from speculative UI copy
+- counts should reflect grouped issue length only; no hidden weighting or display heuristics
+- do not encode expand/collapse state, icons, CTA text, or navigation behavior here
+- do not pretend the summary label is final user-facing wording for the eventual panel
+
+A first-pass label such as `<severity>: <pathPrefix>` is acceptable because it is deterministic and easy to replace later.
+
 ## Proposed next note
 
-The next validation-prep slice should turn these rules into a tiny pure helper (or typed stub) that classifies issue targets without rendering UI.
-That helper should consume the existing `ValidationIssue` contract and these routing rules, and stay additive/reversible.
+The next validation-prep slice should extend the manual workflow docs with a tiny checkpoint describing how grouped summaries map back to Entry vs Full Records navigation without mutating filters or views.
+That note should stay doc-only and additive.

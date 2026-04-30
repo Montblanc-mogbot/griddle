@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   classifyValidationIssueTarget,
   groupValidationIssues,
+  summarizeValidationIssueGroups,
   type ValidationIssue,
 } from './validationTargeting';
 
@@ -138,5 +139,62 @@ describe('groupValidationIssues', () => {
 
   it('returns an empty array for no issues', () => {
     expect(groupValidationIssues([])).toEqual([]);
+  });
+});
+
+describe('summarizeValidationIssueGroups', () => {
+  it('turns grouped issues into stable section summaries with counts and labels', () => {
+    const issues: ValidationIssue[] = [
+      makeIssue({
+        id: 'error-record-a',
+        target: {
+          path: '/records/by-id/r1/fields/alpha',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'alpha',
+        },
+      }),
+      makeIssue({
+        id: 'error-record-b',
+        target: {
+          path: '/records/by-id/r1/fields/zeta',
+          kind: 'field',
+          recordId: 'r1',
+          fieldKey: 'zeta',
+        },
+      }),
+      makeIssue({
+        id: 'info-schema',
+        severity: 'info',
+        scope: 'dataset',
+        target: {
+          path: '/schema/fields/vendor',
+          kind: 'schema',
+        },
+      }),
+    ];
+
+    const summaries = summarizeValidationIssueGroups(groupValidationIssues(issues));
+
+    expect(summaries).toEqual([
+      {
+        key: 'error:/records/by-id',
+        severity: 'error',
+        pathPrefix: '/records/by-id',
+        label: 'error: /records/by-id',
+        count: 2,
+      },
+      {
+        key: 'info:/schema/fields',
+        severity: 'info',
+        pathPrefix: '/schema/fields',
+        label: 'info: /schema/fields',
+        count: 1,
+      },
+    ]);
+  });
+
+  it('preserves empty output for empty grouped input', () => {
+    expect(summarizeValidationIssueGroups([])).toEqual([]);
   });
 });

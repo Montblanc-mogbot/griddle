@@ -40,6 +40,14 @@ export interface ValidationIssueGroup {
   issues: ValidationIssue[];
 }
 
+export interface ValidationIssueSectionSummary {
+  key: string;
+  severity: ValidationSeverity;
+  pathPrefix: string;
+  label: string;
+  count: number;
+}
+
 function getTopLevelPathPrefix(path: string): string {
   const trimmed = path.trim();
   if (!trimmed || trimmed === '/') return '/';
@@ -96,6 +104,25 @@ export function groupValidationIssues(
       if (severityCmp !== 0) return severityCmp;
       return a.pathPrefix.localeCompare(b.pathPrefix);
     });
+}
+
+function makeValidationSectionLabel(
+  severity: ValidationSeverity,
+  pathPrefix: string,
+): string {
+  return `${severity}: ${pathPrefix}`;
+}
+
+export function summarizeValidationIssueGroups(
+  groups: ValidationIssueGroup[],
+): ValidationIssueSectionSummary[] {
+  return groups.map((group) => ({
+    key: group.key,
+    severity: group.severity,
+    pathPrefix: group.pathPrefix,
+    label: makeValidationSectionLabel(group.severity, group.pathPrefix),
+    count: group.issues.length,
+  }));
 }
 
 /**
