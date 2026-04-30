@@ -160,6 +160,20 @@ Use this section only to regression-check the finalized **state-model + targetin
 - No extra panel churn or stale-selection side effect appears.
 - Re-navigation feels idempotent for already-satisfied context.
 
+#### 7f) Grouped summary navigation stays honest about Entry vs Full Records
+Use this checkpoint only when a temporary/dev affordance exists to navigate from a grouped validation summary or section header. The goal is not to test final panel UI polish; it is to confirm that grouped summaries reuse the same targeting rules as individual issues.
+
+1. Use or simulate a grouped summary whose issues all belong to one clearly provable visible cell target.
+2. Navigate from that summary.
+3. Then use or simulate a grouped summary for the same top-level path/severity bucket where at least one issue lacks a safe unique visible cell target but still belongs to a known record.
+4. Navigate from that summary.
+
+**Pass criteria**
+- A grouped summary only opens/preserves Entry when every navigable issue in the summary still honestly resolves to the same Entry-safe cell context.
+- If the grouped summary spans ambiguous or hidden record targets, navigation falls back to Full Records rather than pretending Entry is safe.
+- Navigation from grouped summaries does not mutate filters, pivot layout, or saved views just to make the summary fit Entry.
+- When no single honest destination exists yet, the limitation is explicit instead of silently jumping somewhere arbitrary.
+
 ## Notes
 - This is intentionally lightweight: it’s not a full test plan.
 - If any step fails, capture:
