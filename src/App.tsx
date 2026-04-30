@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { FilterPopup } from './components/FilterPopup';
@@ -17,7 +16,7 @@ import { Modal } from './components/Modal';
 import { computePivot } from './domain/pivot';
 // (filterSetActiveCount no longer used)
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
-import type { DatasetFileV1, DatasetSchema, FilterSet, PivotConfig, SelectedCell, Tuple, View } from './domain/types';
+import type { DatasetFileV1, DatasetSchema, FilterSet, PivotConfig, Tuple, View } from './domain/types';
 import styles from './AppLayout.module.css';
 import { migrateDatasetOnSchemaChange } from './domain/schemaMigration';
 import { ensureDefaultFlagRules } from './domain/metadataStyling';
@@ -40,6 +39,7 @@ import { ScaffoldDialog } from './components/ScaffoldDialog';
 import { PreferencesPanel } from './components/PreferencesPanel';
 import { setRecordField } from './domain/updateRecord';
 import { loadUiPrefs, saveUiPrefs, type UiPrefsV1 } from './domain/uiPrefs';
+import { useWorkspacePanels } from './domain/workspacePanels';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -99,14 +99,11 @@ export default function App() {
     measureKey: defaultMeasure,
   });
 
-  const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [showPivotLayout, setShowPivotLayout] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilterSet, setActiveFilterSet] = useState<FilterSet>({ filters: [] });
   const [activeViewId, setActiveViewId] = useState<string | null>(null);
-  const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'bulk' | 'fullRecords'>('entry');
-  const [fullRecordsRecordIds, setFullRecordsRecordIds] = useState<string[] | null>(null);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
 
@@ -117,134 +114,27 @@ export default function App() {
     saveUiPrefs(uiPrefs);
   }, [uiPrefs]);
 
-  const [gridSelection, setGridSelection] = useState<GridSelection>({
-    columns: CompactSelection.empty(),
-    rows: CompactSelection.empty(),
-  });
-
-  const clearGridSelection = useCallback(() => {
-    setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
-  }, []);
-
-  const clearWorkspaceSelection = useCallback(() => {
-    setSelected(null);
-    setFullRecordsRecordIds(null);
-    clearGridSelection();
-  }, [clearGridSelection]);
-
-  const transitionToNoPanel = useCallback((options?: { clearWorkspace?: boolean; clearFullRecordsRecordIds?: boolean }) => {
-    if (options?.clearWorkspace) {
-      clearWorkspaceSelection();
-      return;
-    }
-
-    if (options?.clearFullRecordsRecordIds) {
-      setFullRecordsRecordIds(null);
-    }
-
-    setPanelMode('none');
-  }, [clearWorkspaceSelection]);
-
-  const transitionToEntry = useCallback((selection: SelectedCell, options?: { deferWhileDragging?: boolean; preserveFullRecordsRecordIds?: boolean }) => {
-    setSelected(selection);
-
-    if (!options?.preserveFullRecordsRecordIds) {
-      setFullRecordsRecordIds(null);
-    }
-
-    // If the user is drag-selecting, don’t pop panels mid-gesture.
-    // We'll open on pointer release iff the final selection still warrants it.
-    if (options?.deferWhileDragging && pointerDownRef.current && pointerOriginRef.current === 'grid') {
-      setPanelMode('none');
-      setPendingPanelMode('entry');
-      return;
-    }
-
-    setPendingPanelMode(null);
-    setPanelMode('entry');
-  }, []);
-
-  const transitionToBulk = useCallback((options?: { deferUntilPointerUp?: boolean }) => {
-    setFullRecordsRecordIds(null);
-
-    if (options?.deferUntilPointerUp) {
-      setPanelMode('none');
-      setPendingPanelMode('bulk');
-      return;
-    }
-
-    setPendingPanelMode(null);
-    setPanelMode('bulk');
-  }, []);
-
-  const transitionToFullRecords = useCallback((options?: { recordIds?: string[] | null; preserveBulkSelection?: boolean }) => {
-    if (options?.recordIds) {
-      // In bulk mode we may not have a single selected cell; persist the record ids
-      // so FullRecordsPanel can render reliably.
-      setFullRecordsRecordIds(options.recordIds);
-    } else if (!options?.preserveBulkSelection) {
-      setFullRecordsRecordIds(null);
-    }
-
-    setPendingPanelMode(null);
-    setPanelMode('fullRecords');
-  }, []);
-
-  const openEntryFromSelection = useCallback((selection: SelectedCell) => {
-    transitionToEntry(selection, { deferWhileDragging: true });
-  }, [transitionToEntry]);
-
-  const openFullRecordsFromBulk = useCallback((recordIds: string[]) => {
-    transitionToFullRecords({ recordIds, preserveBulkSelection: true });
-  }, [transitionToFullRecords]);
-
-  const gridAreaRef = useRef<HTMLDivElement | null>(null);
-
-  // Track pointer state so we can avoid opening panels mid drag-select.
-  // Principle: only treat pointer-down gestures that START on the grid as drag-selection gestures.
-  const [pointerDown, setPointerDown] = useState(false);
-  const pointerDownRef = useRef(false);
-  const pointerOriginRef = useRef<'grid' | 'ui' | null>(null);
-
-  useEffect(() => {
-    const opts = { capture: true } as const;
-
-    const down = (e: Event) => {
-      pointerDownRef.current = true;
-      setPointerDown(true);
-
-      const t = e.target;
-      if (t instanceof Node && gridAreaRef.current?.contains(t)) pointerOriginRef.current = 'grid';
-      else pointerOriginRef.current = 'ui';
-    };
-
-    const up = () => {
-      pointerDownRef.current = false;
-      setPointerDown(false);
-      pointerOriginRef.current = null;
-    };
-
-    // Pointer events (preferred)
-    window.addEventListener('pointerdown', down, opts);
-    window.addEventListener('pointerup', up, opts);
-    window.addEventListener('pointercancel', up, opts);
-
-    // Mouse fallback (in case pointer events are not emitted for some reason)
-    window.addEventListener('mousedown', down, opts);
-    window.addEventListener('mouseup', up, opts);
-
-    return () => {
-      window.removeEventListener('pointerdown', down, opts);
-      window.removeEventListener('pointerup', up, opts);
-      window.removeEventListener('pointercancel', up, opts);
-      window.removeEventListener('mousedown', down, opts);
-      window.removeEventListener('mouseup', up, opts);
-    };
-  }, []);
-
-  // While pointer is down, we don't want side panels to pop during drag selection.
-  // Instead, we queue which panel should open on pointer release.
-  const [pendingPanelMode, setPendingPanelMode] = useState<'entry' | 'bulk' | null>(null);
+  const {
+    selected,
+    setSelected,
+    panelMode,
+    setPanelMode,
+    fullRecordsRecordIds,
+    gridSelection,
+    setGridSelection,
+    pointerDown,
+    pendingPanelMode,
+    setPendingPanelMode,
+    gridAreaRef,
+    pointerOriginRef,
+    clearWorkspaceSelection,
+    transitionToNoPanel,
+    transitionToEntry,
+    transitionToBulk,
+    transitionToFullRecords,
+    openEntryFromSelection,
+    openFullRecordsFromBulk,
+  } = useWorkspacePanels();
 
   // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
   // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
@@ -565,8 +455,8 @@ export default function App() {
             if (col !== cur.cell[0] || row !== cur.cell[1]) {
               e.preventDefault();
               setGridSelection({
-                columns: CompactSelection.empty(),
-                rows: CompactSelection.empty(),
+                columns: gridSelection.columns,
+                rows: gridSelection.rows,
                 current: {
                   cell: [col, row],
                   range: { x: col, y: row, width: 1, height: 1 },

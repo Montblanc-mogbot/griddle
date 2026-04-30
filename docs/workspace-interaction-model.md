@@ -217,6 +217,8 @@ The most obvious consolidation candidates are:
 
 That is why the next stabilization step should centralize these transitions behind named helpers or a reducer-backed controller before further UX changes are attempted.
 
+Update (2026-04-30): this first stabilization slice now extracts the workspace panel / selection transition ownership into `src/domain/workspacePanels.ts`, so `App.tsx` consumes named transition helpers instead of owning the full interaction state machine inline. This keeps behavior unchanged while reducing the risk of future side-panel regressions.
+
 ## Side-panel UX prep: fixed-header / scrollable-body audit (2026-04-22)
 
 This is an inspection-only planning slice for the next side-panel polish pass. It does **not** change runtime behavior.
