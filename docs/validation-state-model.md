@@ -645,7 +645,30 @@ Guardrails:
 - prefer Full Records over brittle Entry jumps when ambiguity exists
 - keep the output machine-oriented so future UI can decide whether to prompt, open, or stay put
 
-## Proposed next note
+## Implementation checkpoint (2026-05-07)
 
-The next validation-prep slice should extend the manual workflow docs with a tiny checkpoint describing how grouped summaries map back to Entry vs Full Records navigation without mutating filters or views.
-That note should stay doc-only and additive.
+The validation-prep work now has four concrete pure helpers in `src/domain/validationTargeting.ts`:
+- `classifyValidationIssueTarget`
+- `groupValidationIssues`
+- `summarizeValidationIssueGroups`
+- `classifyValidationSummaryNavigationTarget`
+
+Together they solve the main pre-UI problem: Griddle can now classify issue destinations and derive stable grouped summaries **without** coupling that logic to React render state, ad-hoc panel mutations, or guessed cell navigation.
+That gives the future UI an honest domain contract for:
+- keeping dataset/config issues out of record-edit surfaces
+- preferring Entry only when a unique visible cell is already provable
+- falling back to Full Records when a record is known but Entry would be brittle
+- producing deterministic grouped summary sections before a full validation panel exists
+
+### First real UI-facing validation task
+
+The first bounded UI slice should be a **small validation-summary affordance**, not a full validation panel rewrite.
+It should render grouped validation sections plus issue rows from the existing helper outputs and allow a user to trigger the already-defined Entry vs Full Records vs dataset-only/unresolved routing behavior.
+
+Keep that first UI slice conservative:
+- no filter/view mutation to manufacture targets
+- no autofix workflow
+- no broad `App.tsx` rewrite
+- no requirement to finalize the eventual panel design
+
+If this slice works, Griddle will finally expose the completed domain groundwork through a visible interaction path while still respecting the current panel/selection model.

@@ -169,6 +169,34 @@
   background: rgba(79, 70, 229, 0.18);
 }
 
+.validationButton,
+.validationButtonActive {
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.validationButton:hover,
+.validationButtonActive:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.validationButtonActive {
+  color: var(--dangerText);
+  border-color: color-mix(in srgb, var(--danger) 30%, var(--border2));
+  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+}
+
 .icon {
   width: 18px;
   height: 18px;

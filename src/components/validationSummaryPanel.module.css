@@ -1,0 +1,154 @@
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--surface);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.closeButton,
+.navButton {
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  padding: 8px 10px;
+}
+
+.closeButton:hover,
+.navButton:hover {
+  background: var(--surface2);
+}
+
+.emptyState {
+  padding: 16px;
+  color: var(--muted);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.section {
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--surface2);
+}
+
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sectionMeta,
+.issueMeta,
+.issueSuggestion,
+.inlineHint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.severityBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.severity_error {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--dangerText);
+}
+
+.severity_warning {
+  background: color-mix(in srgb, #f59e0b 14%, transparent);
+  color: #b45309;
+}
+
+.severity_info {
+  background: color-mix(in srgb, #3b82f6 14%, transparent);
+  color: #1d4ed8;
+}
+
+.issueList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.issueRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border2);
+}
+
+.issueRow:first-child {
+  border-top: 0;
+}
+
+.issueCopy {
+  min-width: 0;
+}
+
+.issueMessage {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.issueMeta,
+.issueSuggestion {
+  margin-top: 4px;
+}
