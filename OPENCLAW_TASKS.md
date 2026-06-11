@@ -14,6 +14,9 @@ Griddle (Structured JSON Editor)
 - `npm run build`
 
 ## Execute next
+- [x] Rename the Full Records action button from `Back to entry` to copy that stays correct regardless of whether Full Records was opened from Entry or Bulk. Scope: touch only the Full Records header action label in `src/components/FullRecordsPanel.tsx`, prefer wording that describes the destination honestly without overpromising mode-specific behavior, then run `npm run lint`, `npm test`, and `npm run build`. Acceptance: the button text no longer implies an entry-only return path and the app validates cleanly aside from known existing warnings.
+  - Chosen copy: `Open side panel`
+  - Validation: `npm run lint` ✅ (existing `src/App.tsx` hook warnings only at lines 406/422/455); `npm test` ✅ (24 tests); `npm run build` ✅ (existing Vite/Rollup upstream warning noise only).
 - [x] Validate the current working tree on `stabilization-pass-1` and commit/push if green. Scope: inspect the current uncommitted validation-summary changes, run `npm run lint`, `npm test`, and `npm run build`, commit only if the tree is coherent and validation passes, then push to `fork/stabilization-pass-1` and update this task with evidence. Acceptance: either (a) committed + pushed with validation evidence, or (b) task updated with the exact blocker preventing commit.
   - Evidence: validation-summary slice is coherent on `stabilization-pass-1`: it adds a top-chrome validation badge + summary drawer, keeps navigation honest by only advertising Entry when a concrete visible-cell selection exists, and falls back to Full Records / non-navigation copy otherwise; supporting docs and repo-local `openclaw.md` were added alongside the UI files.
   - Validation: `npm run lint` ✅ (existing `src/App.tsx` hook-dependency warnings only at lines 406/422/455); `npm test` ✅ (24 tests); `npm run build` ✅ (existing Vite/Rollup chunk-size and `/*#__PURE__*/` upstream dependency warnings only).
