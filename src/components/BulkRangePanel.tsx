@@ -174,11 +174,12 @@ export function BulkRangePanel(props: {
   selected: SelectedCell | null;
   recordIds: string[];
   cellCount: number;
+  source?: 'grid' | 'currentView';
   onClose: () => void;
   onGoToFullRecords: () => void;
   onDatasetChange: (next: DatasetFileV1) => void;
 }) {
-  const { dataset, config, selected, recordIds, cellCount, onClose, onGoToFullRecords, onDatasetChange } = props;
+  const { dataset, config, selected, recordIds, cellCount, source = 'grid', onClose, onGoToFullRecords, onDatasetChange } = props;
 
   const flags = flagFields(dataset.schema);
   const measures = new Set(measureFields(dataset.schema).map((f) => f.key));
@@ -238,13 +239,17 @@ export function BulkRangePanel(props: {
           ) : null}
 
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-            {cellCount} cells selected • {records.length} records affected
+            {source === 'currentView'
+              ? `${records.length} records in the current View`
+              : `${cellCount} cells selected • ${records.length} records affected`}
           </div>
         </div>
         <button onClick={onClose}>Close</button>
       </div>
 
-      <div style={{ fontSize: 12, color: 'var(--muted)' }}>Range selection = bulk edit. Single cell = Entry.</div>
+      <div style={{ fontSize: 12, color: 'var(--muted)' }}>
+        {source === 'currentView' ? 'Bulk edit is showing all records in the current View.' : 'Range selection = bulk edit. Single cell = Entry.'}
+      </div>
 
       <div style={{ display: 'flex', gap: 8, marginTop: -8 }}>
         <button onClick={onGoToFullRecords}>Full records…</button>

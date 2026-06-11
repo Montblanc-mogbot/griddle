@@ -14,7 +14,7 @@ import { MetadataStyleEditor } from './components/MetadataStyleEditor';
 import { BulkRangePanel } from './components/BulkRangePanel';
 import { SchemaEditor } from './components/SchemaEditor';
 import { Modal } from './components/Modal';
-import { computePivot } from './domain/pivot';
+import { computePivot, recordsInCurrentView } from './domain/pivot';
 // (filterSetActiveCount no longer used)
 import { bulkSetMetadata, createRecordFromSelection, getRecordsForCell, upsertRecords, updateRecordMetadata } from './domain/records';
 import type { DatasetFileV1, DatasetSchema, FilterSet, PivotConfig, SelectedCell, Tuple, View } from './domain/types';
@@ -264,6 +264,7 @@ export default function App() {
     setSelected,
     panelMode,
     setPanelMode,
+    bulkRecordIds,
     fullRecordsRecordIds,
     gridSelection,
     setGridSelection,
@@ -278,6 +279,7 @@ export default function App() {
     transitionToBulk,
     transitionToFullRecords,
     openEntryFromSelection,
+    openBulkFromRecordIds,
     openFullRecordsFromBulk,
   } = useWorkspacePanels();
 
@@ -390,20 +392,33 @@ export default function App() {
   const validationGroups = useMemo(() => groupValidationIssues(validationIssues), [validationIssues]);
   const validationSummaries = useMemo(() => summarizeValidationIssueGroups(validationGroups), [validationGroups]);
 
+  const currentViewRecords = useMemo(
+    () => (dataset ? recordsInCurrentView(dataset.records, config, activeFilterSet) : []),
+    [dataset, config, activeFilterSet],
+  );
+
+  const currentViewRecordIds = useMemo(() => currentViewRecords.map((record) => record.id), [currentViewRecords]);
+
   const bulkSel = (() => {
-    const { recordIds, cellCount } = getRecordIdsForGridSelection({ pivot, config, selection: gridSelection });
+    const selectedBulk = getRecordIdsForGridSelection({ pivot, config, selection: gridSelection });
     const ranges = gridSelection.current ? [gridSelection.current.range, ...gridSelection.current.rangeStack] : [];
-    const hasMulti = ranges.some((r) => r.width * r.height > 1) || (gridSelection.current?.rangeStack.length ?? 0) > 0;
-    return { recordIds, cellCount, hasMulti };
+    const hasGridMulti = ranges.some((r) => r.width * r.height > 1) || (gridSelection.current?.rangeStack.length ?? 0) > 0;
+
+    if (bulkRecordIds && bulkRecordIds.length > 0) {
+      return { recordIds: bulkRecordIds, cellCount: 0, hasMulti: true, source: 'currentView' as const };
+    }
+
+    return { recordIds: selectedBulk.recordIds, cellCount: selectedBulk.cellCount, hasMulti: hasGridMulti, source: 'grid' as const };
   })();
 
   // While dragging on the grid, if the selection becomes multi, queue bulk panel for pointer release.
   useEffect(() => {
+    if (bulkSel.source !== 'grid') return;
     if (!pointerDown) return;
     if (pointerOriginRef.current !== 'grid') return;
     if (!bulkSel.hasMulti) return;
     transitionToBulk({ deferUntilPointerUp: true });
-  }, [pointerDown, bulkSel.hasMulti, transitionToBulk]);
+  }, [pointerDown, bulkSel.hasMulti, bulkSel.source, transitionToBulk]);
 
   // Keep panels from popping during drag-select; open the pending panel mode on release.
   useEffect(() => {
@@ -421,14 +436,15 @@ export default function App() {
     else setPendingPanelMode(null);
   }, [pointerDown, pendingPanelMode, bulkSel.hasMulti, selected, transitionToBulk, transitionToEntry]);
 
-  // If selection becomes multi (e.g. shift-click) and we're not mid-drag, show bulk panel.
+  // If grid selection becomes multi (e.g. shift-click) and we're not mid-drag, show bulk panel.
   useEffect(() => {
+    if (bulkSel.source !== 'grid') return;
     if (pointerDown) return;
     if (panelMode === 'fullRecords') return;
     if (bulkSel.hasMulti) transitionToBulk();
     else if (panelMode === 'bulk' && selected) transitionToEntry(selected);
     else if (panelMode === 'bulk' && !selected) transitionToNoPanel();
-  }, [bulkSel.hasMulti, pointerDown, panelMode, selected, transitionToBulk, transitionToEntry, transitionToNoPanel]);
+  }, [bulkSel.hasMulti, bulkSel.source, pointerDown, panelMode, selected, transitionToBulk, transitionToEntry, transitionToNoPanel]);
   // After data changes, refresh selected.cell.recordIds/value so the tape stays in sync.
   useEffect(() => {
     if (!selected || !dataset) return;
@@ -884,6 +900,25 @@ export default function App() {
           clearWorkspaceSelection();
           openFullRecordsFromBulk(recordIds);
         }}
+        onOpenBulkForCurrentView={() => {
+          if (currentViewRecordIds.length === 0) {
+            window.alert('There are no records in the current View.');
+            return;
+          }
+
+          clearWorkspaceSelection();
+          openBulkFromRecordIds(currentViewRecordIds);
+        }}
+        onOpenFullRecordsForCurrentView={() => {
+          if (currentViewRecordIds.length === 0) {
+            window.alert('There are no records in the current View.');
+            return;
+          }
+
+          clearWorkspaceSelection();
+          openFullRecordsFromBulk(currentViewRecordIds);
+        }}
+        currentViewRecordCount={currentViewRecordIds.length}
         onLayout={() => setShowPivotLayout(true)}
         onFilters={() => setShowFilters(true)}
         onStyles={() => setShowStyleEditor(true)}
@@ -944,8 +979,8 @@ export default function App() {
           <FilterPopup
             schema={dataset.schema}
             records={dataset.records}
-            allowedDimensionKeys={[...new Set([...config.rowKeys, ...config.colKeys, ...config.slicerKeys])]}
-            singleSelectDimensionKeys={config.slicerKeys}
+            allowedFieldKeys={[...new Set([...config.rowKeys, ...config.colKeys, ...config.slicerKeys, ...dataset.schema.fields.filter((field) => field.roles.includes('flag')).map((field) => field.key)])]}
+            singleSelectFieldKeys={config.slicerKeys}
             active={activeFilterSet}
             onApply={(next) => {
               clearWorkspaceSelection();
@@ -1056,6 +1091,7 @@ export default function App() {
               selected={selected}
               recordIds={bulkSel.recordIds}
               cellCount={bulkSel.cellCount}
+              source={bulkSel.source}
               onClose={() => {
                 // Clear selection so user can click the same cell again.
                 transitionToNoPanel({ clearWorkspace: true });
@@ -1179,6 +1215,7 @@ export default function App() {
               config={config}
               selected={selected}
               recordIds={fullRecordsRecordIds ?? (bulkSel.hasMulti ? bulkSel.recordIds : undefined)}
+              contextLabel={selected ? undefined : bulkRecordIds && bulkRecordIds.length > 0 ? 'Current View' : 'Bulk selection'}
               uiPrefs={uiPrefs}
               onClose={() => {
                 // Clear grid selection so clicking the same cell re-triggers selection + opens panels.
@@ -1186,7 +1223,8 @@ export default function App() {
               }}
               onDone={() => {
                 if (selected) transitionToEntry(selected);
-                else transitionToNoPanel({ clearFullRecordsRecordIds: true });
+                else if (bulkRecordIds && bulkRecordIds.length > 0) transitionToBulk({ recordIds: bulkRecordIds });
+                else transitionToNoPanel({ clearFullRecordsRecordIds: true, clearBulkRecordIds: true });
               }}
               onDatasetChange={(next) => setDataset(next)}
             />

@@ -13,22 +13,22 @@ import {
 export function FilterPopup(props: {
   schema: DatasetSchema;
   records: RecordEntity[];
-  allowedDimensionKeys?: string[];
+  allowedFieldKeys?: string[];
   /**
-   * Dimension keys that must remain single-select (e.g. slicers).
+   * Field keys that must remain single-select (e.g. slicers).
    * We enforce this in the UI so record creation can reliably pre-fill values.
    */
-  singleSelectDimensionKeys?: string[];
+  singleSelectFieldKeys?: string[];
   active: FilterSet;
   onApply: (next: FilterSet) => void;
   onClose: () => void;
 }) {
-  const { schema, records, allowedDimensionKeys, singleSelectDimensionKeys, active, onApply, onClose } = props;
+  const { schema, records, allowedFieldKeys, singleSelectFieldKeys, active, onApply, onClose } = props;
 
   const dimensionKeys = useMemo(() => {
-    const allowed = allowedDimensionKeys ? new Set(allowedDimensionKeys) : undefined;
+    const allowed = allowedFieldKeys ? new Set(allowedFieldKeys) : undefined;
     return dimensionKeysEligibleForFiltering(schema, allowed);
-  }, [schema, allowedDimensionKeys]);
+  }, [schema, allowedFieldKeys]);
   const [draft, setDraft] = useState<FilterSet>(() => ({ name: active.name, filters: active.filters.map((f) => ({ ...f })) }));
 
   const [activeDim, setActiveDim] = useState<string>(() => dimensionKeys[0] ?? '');
@@ -49,7 +49,7 @@ export function FilterPopup(props: {
   function setValues(nextValues: string[]) {
     if (!activeFilter) return;
 
-    const single = singleSelectDimensionKeys?.includes(activeFilter.dimensionKey) ?? false;
+    const single = singleSelectFieldKeys?.includes(activeFilter.dimensionKey) ?? false;
     if (single && nextValues.length > 1) {
       window.alert('This field is configured as a slicer and must be limited to one value.');
       return;
@@ -71,7 +71,7 @@ export function FilterPopup(props: {
         }}
       >
         <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>
-          Dimensions ({filterSetActiveCount(draft)})
+          Fields ({filterSetActiveCount(draft)})
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {dimensionKeys.map((k) => {

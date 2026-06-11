@@ -4,9 +4,9 @@
 Griddle (Structured JSON Editor)
 
 ## Branch / remote
-- Branch: `stabilization-pass-1`
-- Push target: `fork/stabilization-pass-1`
-- Do not treat upstream `origin/master` as the working branch for new changes.
+- Branch: `feature/current-view-record-actions`
+- Push target: `fork/feature/current-view-record-actions`
+- Feature work should branch from current `master`, not the old stabilization branch.
 
 ## Validation loop
 - `npm run lint`
@@ -14,6 +14,9 @@ Griddle (Structured JSON Editor)
 - `npm run build`
 
 ## Execute next
+- [x] Implement current-View record opening for reconciliation-style flag filtering. Scope: extend the existing Filters surface so `flag` fields are filterable, add top-chrome actions to open Bulk Edit / Full Records for all records in the current View, and wire the panel state so current-View record sets behave honestly across Bulk ↔ Full Records transitions without introducing a separate query panel. Acceptance: users can filter on flags in the existing Filters UI, then open Bulk Edit or Full Records for the current View directly from top chrome; the implementation uses the same current-View record logic as pivot computation and validates with `npm run lint`, `npm test`, and `npm run build`.
+  - Evidence: added `recordsInCurrentView` in `src/domain/pivot.ts`, generalized filter popup props from dimension-only naming to field naming so flag keys can participate, added top-chrome `Bulk Edit` / `Full Records` current-View actions, and taught workspace panel state to carry explicit bulk record IDs for current-View flows.
+  - Validation: `npm run lint` ✅ (existing `src/App.tsx` hook warnings only at lines 421/437/471); `npm test` ✅ (24 tests); `npm run build` ✅ (existing Vite/Rollup upstream warning noise only).
 - [x] Rename the Full Records action button from `Back to entry` to copy that stays correct regardless of whether Full Records was opened from Entry or Bulk. Scope: touch only the Full Records header action label in `src/components/FullRecordsPanel.tsx`, prefer wording that describes the destination honestly without overpromising mode-specific behavior, then run `npm run lint`, `npm test`, and `npm run build`. Acceptance: the button text no longer implies an entry-only return path and the app validates cleanly aside from known existing warnings.
   - Chosen copy: `Open side panel`
   - Validation: `npm run lint` ✅ (existing `src/App.tsx` hook warnings only at lines 406/422/455); `npm test` ✅ (24 tests); `npm run build` ✅ (existing Vite/Rollup upstream warning noise only).
