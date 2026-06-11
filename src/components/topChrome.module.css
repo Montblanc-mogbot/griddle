@@ -170,7 +170,8 @@
 }
 
 .validationButton,
-.validationButtonActive {
+.validationButtonActive,
+.currentViewButton {
   height: 32px;
   border-radius: 10px;
   border: 1px solid var(--border2);
@@ -186,7 +187,8 @@
 }
 
 .validationButton:hover,
-.validationButtonActive:hover {
+.validationButtonActive:hover,
+.currentViewButton:hover {
   background: var(--surface2);
   color: var(--text);
 }
@@ -195,6 +197,16 @@
   color: var(--dangerText);
   border-color: color-mix(in srgb, var(--danger) 30%, var(--border2));
   background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+}
+
+.currentViewButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.currentViewButton:disabled:hover {
+  background: var(--surface);
+  color: var(--muted);
 }
 
 .icon {

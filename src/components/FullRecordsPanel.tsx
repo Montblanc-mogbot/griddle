@@ -17,11 +17,11 @@ import { formatNumberFullPrecision } from '../domain/format';
 import type { MouseEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
 
-function ContextPills(props: { selected: SelectedCell | null; config: PivotConfig }) {
-  const { selected, config } = props;
+function ContextPills(props: { selected: SelectedCell | null; config: PivotConfig; contextLabel?: string }) {
+  const { selected, config, contextLabel } = props;
 
   if (!selected) {
-    return <div className={styles.context}><span>Bulk selection</span></div>;
+    return <div className={styles.context}><span>{contextLabel ?? 'Bulk selection'}</span></div>;
   }
 
   const dimKeys = Array.from(new Set([...config.rowKeys, ...config.colKeys]));
@@ -121,6 +121,7 @@ function CellEditor(props: {
 function FullRecordsHeader(props: {
   selected: SelectedCell | null;
   config: PivotConfig;
+  contextLabel?: string;
   recordCount: number;
   workingCount: number;
   activeMeasureLabel: string;
@@ -135,6 +136,7 @@ function FullRecordsHeader(props: {
   const {
     selected,
     config,
+    contextLabel,
     recordCount,
     workingCount,
     activeMeasureLabel,
@@ -151,9 +153,9 @@ function FullRecordsHeader(props: {
     <div className={styles.header}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
         <div className={styles.title}>Full records</div>
-        <ContextPills selected={selected} config={config} />
+        <ContextPills selected={selected} config={config} contextLabel={contextLabel} />
         <div style={{ fontSize: 12, color: '#666', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <span>{recordCount} records in this cell.</span>
+          <span>{recordCount} records shown.</span>
           <span>
             <b>Working:</b> {workingCount} | <b>{activeMeasureLabel}:</b> {formatNumberFullPrecision(workingMeasureSum)}
           </span>
@@ -299,12 +301,13 @@ export function FullRecordsPanel(props: {
   config: PivotConfig;
   selected: SelectedCell | null;
   recordIds?: string[];
+  contextLabel?: string;
   uiPrefs: UiPrefsV1;
   onClose: () => void;
   onDone: () => void;
   onDatasetChange: (next: DatasetFileV1) => void;
 }) {
-  const { dataset, config, selected, recordIds: explicitRecordIds, uiPrefs, onClose, onDone, onDatasetChange } = props;
+  const { dataset, config, selected, recordIds: explicitRecordIds, contextLabel, uiPrefs, onClose, onDone, onDatasetChange } = props;
 
   const [newDraft, setNewDraft] = useState<RecordEntity | null>(null);
   const [workingIds, setWorkingIds] = useState<string[]>([]);
@@ -455,6 +458,7 @@ export function FullRecordsPanel(props: {
       <FullRecordsHeader
         selected={selected}
         config={config}
+        contextLabel={contextLabel}
         recordCount={records.length}
         workingCount={workingTotals.count}
         activeMeasureLabel={activeMeasureLabel}

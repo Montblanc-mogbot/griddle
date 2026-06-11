@@ -65,6 +65,17 @@ function measureValue(record: RecordEntity, measureKey: string): number | null {
   return null;
 }
 
+export function recordsInCurrentView(
+  records: RecordEntity[],
+  config: PivotConfig,
+  activeFilterSet?: FilterSet,
+): RecordEntity[] {
+  return applyFilterSet(
+    records.filter((r) => recordMatchesSlicers(r, config) && recordMatchesRowFilters(r, config)),
+    activeFilterSet,
+  );
+}
+
 /**
  * Compute a pivot view over flat records.
  * v1 rules:
@@ -83,10 +94,7 @@ export function computePivot(
 
   const flagKeys = schema.fields.filter((f) => f.roles.includes('flag')).map((f) => f.key);
 
-  const filtered = applyFilterSet(
-    records.filter((r) => recordMatchesSlicers(r, config) && recordMatchesRowFilters(r, config)),
-    activeFilterSet,
-  );
+  const filtered = recordsInCurrentView(records, config, activeFilterSet);
 
   function axisTuples(keys: string[], axis: 'row' | 'col'): Tuple[] {
     // Minimal initial implementation:

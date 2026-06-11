@@ -5,7 +5,7 @@ import { Menu, MenuDivider, MenuItem } from './Menu';
 import styles from './topChrome.module.css';
 
 // Minimal inline SVG icons (outline style, consistent 1.5px stroke)
-function Icon({ kind }: { kind: 'save' | 'open' | 'export' | 'layout' | 'filter' | 'styles' | 'fields' | 'validation' }) {
+function Icon({ kind }: { kind: 'save' | 'open' | 'export' | 'layout' | 'filter' | 'styles' | 'fields' | 'validation' | 'bulkEdit' | 'records' }) {
   const stroke = 'currentColor';
   const strokeWidth = 1.5;
   const strokeLinecap = 'round' as const;
@@ -76,6 +76,25 @@ function Icon({ kind }: { kind: 'save' | 'open' | 'export' | 'layout' | 'filter'
           <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
         </svg>
       );
+    case 'bulkEdit':
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="16" rx="2" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <line x1="8" y1="4" x2="8" y2="20" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <line x1="3" y1="10" x2="21" y2="10" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <path d="M12 15h6" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <path d="M12 18h4" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+        </svg>
+      );
+    case 'records':
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="4" width="16" height="16" rx="2" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <line x1="8" y1="9" x2="16" y2="9" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <line x1="8" y1="13" x2="16" y2="13" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <line x1="8" y1="17" x2="13" y2="17" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+        </svg>
+      );
   }
 }
 
@@ -124,6 +143,9 @@ export function TopChrome(props: {
   onFields: () => void;
   onPreferences: () => void;
   onOrphans: () => void;
+  onOpenBulkForCurrentView: () => void;
+  onOpenFullRecordsForCurrentView: () => void;
+  currentViewRecordCount: number;
   validationIssueCount?: number;
   onValidationSummary?: () => void;
 
@@ -157,6 +179,9 @@ export function TopChrome(props: {
     onLoadView,
     onPreferences,
     onOrphans,
+    onOpenBulkForCurrentView,
+    onOpenFullRecordsForCurrentView,
+    currentViewRecordCount,
     validationIssueCount = 0,
     onValidationSummary,
   } = props;
@@ -306,6 +331,31 @@ export function TopChrome(props: {
           >
             <Icon kind="validation" />
             <span>{validationIssueCount}</span>
+          </button>
+        </div>
+
+        <div className={styles.sep} />
+
+        <div className={styles.toolbarGroup}>
+          <button
+            type="button"
+            className={styles.currentViewButton}
+            onClick={onOpenBulkForCurrentView}
+            title="Open Bulk Edit for all records in the current View"
+            disabled={currentViewRecordCount === 0}
+          >
+            <Icon kind="bulkEdit" />
+            <span>Bulk Edit</span>
+          </button>
+          <button
+            type="button"
+            className={styles.currentViewButton}
+            onClick={onOpenFullRecordsForCurrentView}
+            title="Open Full Records for all records in the current View"
+            disabled={currentViewRecordCount === 0}
+          >
+            <Icon kind="records" />
+            <span>Full Records</span>
           </button>
         </div>
 

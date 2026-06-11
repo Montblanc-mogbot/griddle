@@ -17,6 +17,7 @@ export function createEmptyGridSelection(): GridSelection {
 export function useWorkspacePanels() {
   const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [panelMode, setPanelMode] = useState<PanelMode>('entry');
+  const [bulkRecordIds, setBulkRecordIds] = useState<string[] | null>(null);
   const [fullRecordsRecordIds, setFullRecordsRecordIds] = useState<string[] | null>(null);
   const [gridSelection, setGridSelection] = useState<GridSelection>(() => createEmptyGridSelection());
   const [pointerDown, setPointerDown] = useState(false);
@@ -32,14 +33,19 @@ export function useWorkspacePanels() {
 
   const clearWorkspaceSelection = useCallback(() => {
     setSelected(null);
+    setBulkRecordIds(null);
     setFullRecordsRecordIds(null);
     clearGridSelection();
   }, [clearGridSelection]);
 
-  const transitionToNoPanel = useCallback((options?: { clearWorkspace?: boolean; clearFullRecordsRecordIds?: boolean }) => {
+  const transitionToNoPanel = useCallback((options?: { clearWorkspace?: boolean; clearBulkRecordIds?: boolean; clearFullRecordsRecordIds?: boolean }) => {
     if (options?.clearWorkspace) {
       clearWorkspaceSelection();
       return;
+    }
+
+    if (options?.clearBulkRecordIds) {
+      setBulkRecordIds(null);
     }
 
     if (options?.clearFullRecordsRecordIds) {
@@ -51,6 +57,7 @@ export function useWorkspacePanels() {
 
   const transitionToEntry = useCallback((selection: SelectedCell, options?: { deferWhileDragging?: boolean; preserveFullRecordsRecordIds?: boolean }) => {
     setSelected(selection);
+    setBulkRecordIds(null);
 
     if (!options?.preserveFullRecordsRecordIds) {
       setFullRecordsRecordIds(null);
@@ -66,7 +73,14 @@ export function useWorkspacePanels() {
     setPanelMode('entry');
   }, []);
 
-  const transitionToBulk = useCallback((options?: { deferUntilPointerUp?: boolean }) => {
+  const transitionToBulk = useCallback((options?: { deferUntilPointerUp?: boolean; recordIds?: string[] | null }) => {
+    if (options?.recordIds) {
+      setBulkRecordIds(options.recordIds);
+      setSelected(null);
+    } else {
+      setBulkRecordIds(null);
+    }
+
     setFullRecordsRecordIds(null);
 
     if (options?.deferUntilPointerUp) {
@@ -86,6 +100,10 @@ export function useWorkspacePanels() {
       setFullRecordsRecordIds(null);
     }
 
+    if (!options?.preserveBulkSelection) {
+      setBulkRecordIds(null);
+    }
+
     setPendingPanelMode(null);
     setPanelMode('fullRecords');
   }, []);
@@ -93,6 +111,10 @@ export function useWorkspacePanels() {
   const openEntryFromSelection = useCallback((selection: SelectedCell) => {
     transitionToEntry(selection, { deferWhileDragging: true });
   }, [transitionToEntry]);
+
+  const openBulkFromRecordIds = useCallback((recordIds: string[]) => {
+    transitionToBulk({ recordIds });
+  }, [transitionToBulk]);
 
   const openFullRecordsFromBulk = useCallback((recordIds: string[]) => {
     transitionToFullRecords({ recordIds, preserveBulkSelection: true });
@@ -136,6 +158,7 @@ export function useWorkspacePanels() {
     setSelected,
     panelMode,
     setPanelMode,
+    bulkRecordIds,
     fullRecordsRecordIds,
     gridSelection,
     setGridSelection,
@@ -151,6 +174,7 @@ export function useWorkspacePanels() {
     transitionToBulk,
     transitionToFullRecords,
     openEntryFromSelection,
+    openBulkFromRecordIds,
     openFullRecordsFromBulk,
   };
 }
