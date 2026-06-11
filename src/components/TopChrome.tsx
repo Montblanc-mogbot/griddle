@@ -5,7 +5,7 @@ import { Menu, MenuDivider, MenuItem } from './Menu';
 import styles from './topChrome.module.css';
 
 // Minimal inline SVG icons (outline style, consistent 1.5px stroke)
-function Icon({ kind }: { kind: 'save' | 'open' | 'export' | 'layout' | 'filter' | 'styles' | 'fields' }) {
+function Icon({ kind }: { kind: 'save' | 'open' | 'export' | 'layout' | 'filter' | 'styles' | 'fields' | 'validation' }) {
   const stroke = 'currentColor';
   const strokeWidth = 1.5;
   const strokeLinecap = 'round' as const;
@@ -68,6 +68,14 @@ function Icon({ kind }: { kind: 'save' | 'open' | 'export' | 'layout' | 'filter'
           <line x1="3" y1="18" x2="3.01" y2="18" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
         </svg>
       );
+    case 'validation':
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+          <path d="M12 8v5" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <path d="M12 17h.01" stroke={stroke} strokeWidth={strokeWidth + 0.5} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap={strokeLinecap} strokeLinejoin={strokeLinejoin}/>
+        </svg>
+      );
   }
 }
 
@@ -116,6 +124,8 @@ export function TopChrome(props: {
   onFields: () => void;
   onPreferences: () => void;
   onOrphans: () => void;
+  validationIssueCount?: number;
+  onValidationSummary?: () => void;
 
   // Views
   onViewsChange: (next: View[]) => void;
@@ -147,6 +157,8 @@ export function TopChrome(props: {
     onLoadView,
     onPreferences,
     onOrphans,
+    validationIssueCount = 0,
+    onValidationSummary,
   } = props;
 
   const [editingTitle, setEditingTitle] = useState(false);
@@ -286,6 +298,15 @@ export function TopChrome(props: {
           <IconToolButton title="Fields" onClick={onFields}>
             <Icon kind="fields" />
           </IconToolButton>
+          <button
+            type="button"
+            className={validationIssueCount > 0 ? styles.validationButtonActive : styles.validationButton}
+            onClick={() => onValidationSummary?.()}
+            title="Open validation summary"
+          >
+            <Icon kind="validation" />
+            <span>{validationIssueCount}</span>
+          </button>
         </div>
 
         <div className={styles.sep} />

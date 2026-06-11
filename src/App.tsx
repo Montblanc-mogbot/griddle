@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CompactSelection, type GridSelection } from '@glideapps/glide-data-grid';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { GridSelection } from '@glideapps/glide-data-grid';
 import './App.css';
 import { GlidePivotGrid } from './components/GlidePivotGrid';
 import { FilterPopup } from './components/FilterPopup';
@@ -38,8 +38,18 @@ import { findOrphanedRecords } from './domain/orphans';
 import { ResizableDrawer } from './components/ResizableDrawer';
 import { ScaffoldDialog } from './components/ScaffoldDialog';
 import { PreferencesPanel } from './components/PreferencesPanel';
+import { ValidationSummaryPanel, type ValidationNavigationMode } from './components/ValidationSummaryPanel';
 import { setRecordField } from './domain/updateRecord';
 import { loadUiPrefs, saveUiPrefs, type UiPrefsV1 } from './domain/uiPrefs';
+import { useWorkspacePanels } from './domain/workspacePanels';
+import {
+  classifyValidationIssueTarget,
+  classifyValidationSummaryNavigationTarget,
+  groupValidationIssues,
+  summarizeValidationIssueGroups,
+  type ValidationIssue,
+  type ValidationIssueGroup,
+} from './domain/validationTargeting';
 
 function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotConfig {
   const keys = new Set(schema.fields.map((f) => f.key));
@@ -68,6 +78,140 @@ function reconcilePivotConfig(schema: DatasetSchema, prev: PivotConfig): PivotCo
   if (next.measureKey === '' && defaultMeasure) next.measureKey = defaultMeasure;
 
   return next;
+}
+
+function isUniqueVisibleCellTarget(
+  issue: ValidationIssue,
+  selection: GridSelection,
+  config: PivotConfig,
+  pivot: ReturnType<typeof computePivot>,
+): boolean {
+  if (issue.target.kind !== 'field' || !issue.target.recordId || !issue.target.fieldKey) {
+    return false;
+  }
+
+  const current = selection.current;
+  if (!current || current.range.width !== 1 || current.range.height !== 1 || current.rangeStack.length > 0) {
+    return false;
+  }
+
+  const selectedColIndex = current.cell[0] - config.rowKeys.length;
+  const selectedRowIndex = current.cell[1];
+  if (selectedColIndex < 0 || selectedRowIndex < 0) {
+    return false;
+  }
+
+  const selectedColumnTuple = pivot.colTuples[selectedColIndex];
+  const selectedRowTuple = pivot.rowTuples[selectedRowIndex];
+  if (!selectedColumnTuple || !selectedRowTuple) {
+    return false;
+  }
+
+  const fieldKey = issue.target.fieldKey;
+  const fieldVisible = config.measureKey === fieldKey || config.rowKeys.includes(fieldKey) || config.colKeys.includes(fieldKey);
+  if (!fieldVisible) {
+    return false;
+  }
+
+  const cell = pivot.cells[`${selectedRowIndex}:${selectedColIndex}`];
+  return Boolean(cell?.recordIds.includes(issue.target.recordId));
+}
+
+function getVisibleCellSelectionForIssue(args: {
+  issue: ValidationIssue;
+  selection: GridSelection;
+  config: PivotConfig;
+  pivot: ReturnType<typeof computePivot>;
+}): SelectedCell | null {
+  const { issue, selection, config, pivot } = args;
+  if (!isUniqueVisibleCellTarget(issue, selection, config, pivot)) {
+    return null;
+  }
+
+  const current = selection.current;
+  if (!current) return null;
+
+  const colIndex = current.cell[0] - config.rowKeys.length;
+  const rowIndex = current.cell[1];
+  const row = pivot.rowTuples[rowIndex];
+  const col = pivot.colTuples[colIndex];
+  const cell = pivot.cells[`${rowIndex}:${colIndex}`];
+
+  if (!row || !col || !cell || !issue.target.recordId || !cell.recordIds.includes(issue.target.recordId)) {
+    return null;
+  }
+
+  return {
+    rowIndex,
+    colIndex,
+    row,
+    col,
+    cell,
+  };
+}
+
+function buildValidationIssueState(args: {
+  issue: ValidationIssue;
+  selection: GridSelection;
+  config: PivotConfig;
+  pivot: ReturnType<typeof computePivot>;
+}) {
+  const actionableSelection = getVisibleCellSelectionForIssue(args);
+  const target = classifyValidationIssueTarget(args.issue, {
+    hasUniqueVisibleCellTarget: Boolean(actionableSelection),
+    canOpenInFullRecords: Boolean(args.issue.target.recordId),
+  });
+
+  const mode: ValidationNavigationMode =
+    target === 'entry-eligible' ? 'entry' : target === 'full-records-eligible' ? 'full-records' : 'none';
+
+  const label =
+    target === 'entry-eligible'
+      ? 'Open Entry'
+      : target === 'full-records-eligible'
+        ? 'Open Full Records'
+        : target === 'dataset-only'
+          ? 'Dataset-only issue'
+          : 'No reliable jump target';
+
+  return { target, mode, label, actionableSelection };
+}
+
+function buildValidationGroupState(args: {
+  group: ValidationIssueGroup;
+  selection: GridSelection;
+  config: PivotConfig;
+  pivot: ReturnType<typeof computePivot>;
+}) {
+  const { group, selection, config, pivot } = args;
+  const entryEligibleStates = group.issues
+    .map((issue) => buildValidationIssueState({ issue, selection, config, pivot }))
+    .filter((state) => state.target === 'entry-eligible');
+
+  const target = classifyValidationSummaryNavigationTarget(group, {
+    hasUniqueVisibleFieldTarget: entryEligibleStates.length === 1,
+    canOpenInFullRecords: group.issues.some((issue) => Boolean(issue.target.recordId)),
+  });
+
+  const mode: ValidationNavigationMode =
+    target === 'entry-eligible' ? 'entry' : target === 'full-records-eligible' ? 'full-records' : 'none';
+
+  const label =
+    target === 'entry-eligible'
+      ? 'Open Entry'
+      : target === 'full-records-eligible'
+        ? 'Open Full Records'
+        : target === 'dataset-only'
+          ? 'Dataset-only section'
+          : 'No reliable jump target';
+
+  return {
+    target,
+    mode,
+    label,
+    actionableSelection: entryEligibleStates[0]?.actionableSelection ?? null,
+    recordIds: [...new Set(group.issues.map((issue) => issue.target.recordId).filter((recordId): recordId is string => Boolean(recordId)))],
+  };
 }
 
 export default function App() {
@@ -99,16 +243,14 @@ export default function App() {
     measureKey: defaultMeasure,
   });
 
-  const [selected, setSelected] = useState<SelectedCell | null>(null);
   const [showSchemaEditor, setShowSchemaEditor] = useState(false);
   const [showPivotLayout, setShowPivotLayout] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilterSet, setActiveFilterSet] = useState<FilterSet>({ filters: [] });
   const [activeViewId, setActiveViewId] = useState<string | null>(null);
-  const [panelMode, setPanelMode] = useState<'none' | 'entry' | 'bulk' | 'fullRecords'>('entry');
-  const [fullRecordsRecordIds, setFullRecordsRecordIds] = useState<string[] | null>(null);
   const [showStyleEditor, setShowStyleEditor] = useState(false);
   const [showScaffoldDialog, setShowScaffoldDialog] = useState(false);
+  const [showValidationSummary, setShowValidationSummary] = useState(false);
 
   const [uiPrefs, setUiPrefs] = useState<UiPrefsV1>(() => loadUiPrefs());
   const [showPreferences, setShowPreferences] = useState(false);
@@ -117,134 +259,27 @@ export default function App() {
     saveUiPrefs(uiPrefs);
   }, [uiPrefs]);
 
-  const [gridSelection, setGridSelection] = useState<GridSelection>({
-    columns: CompactSelection.empty(),
-    rows: CompactSelection.empty(),
-  });
-
-  const clearGridSelection = useCallback(() => {
-    setGridSelection({ columns: CompactSelection.empty(), rows: CompactSelection.empty() });
-  }, []);
-
-  const clearWorkspaceSelection = useCallback(() => {
-    setSelected(null);
-    setFullRecordsRecordIds(null);
-    clearGridSelection();
-  }, [clearGridSelection]);
-
-  const transitionToNoPanel = useCallback((options?: { clearWorkspace?: boolean; clearFullRecordsRecordIds?: boolean }) => {
-    if (options?.clearWorkspace) {
-      clearWorkspaceSelection();
-      return;
-    }
-
-    if (options?.clearFullRecordsRecordIds) {
-      setFullRecordsRecordIds(null);
-    }
-
-    setPanelMode('none');
-  }, [clearWorkspaceSelection]);
-
-  const transitionToEntry = useCallback((selection: SelectedCell, options?: { deferWhileDragging?: boolean; preserveFullRecordsRecordIds?: boolean }) => {
-    setSelected(selection);
-
-    if (!options?.preserveFullRecordsRecordIds) {
-      setFullRecordsRecordIds(null);
-    }
-
-    // If the user is drag-selecting, don’t pop panels mid-gesture.
-    // We'll open on pointer release iff the final selection still warrants it.
-    if (options?.deferWhileDragging && pointerDownRef.current && pointerOriginRef.current === 'grid') {
-      setPanelMode('none');
-      setPendingPanelMode('entry');
-      return;
-    }
-
-    setPendingPanelMode(null);
-    setPanelMode('entry');
-  }, []);
-
-  const transitionToBulk = useCallback((options?: { deferUntilPointerUp?: boolean }) => {
-    setFullRecordsRecordIds(null);
-
-    if (options?.deferUntilPointerUp) {
-      setPanelMode('none');
-      setPendingPanelMode('bulk');
-      return;
-    }
-
-    setPendingPanelMode(null);
-    setPanelMode('bulk');
-  }, []);
-
-  const transitionToFullRecords = useCallback((options?: { recordIds?: string[] | null; preserveBulkSelection?: boolean }) => {
-    if (options?.recordIds) {
-      // In bulk mode we may not have a single selected cell; persist the record ids
-      // so FullRecordsPanel can render reliably.
-      setFullRecordsRecordIds(options.recordIds);
-    } else if (!options?.preserveBulkSelection) {
-      setFullRecordsRecordIds(null);
-    }
-
-    setPendingPanelMode(null);
-    setPanelMode('fullRecords');
-  }, []);
-
-  const openEntryFromSelection = useCallback((selection: SelectedCell) => {
-    transitionToEntry(selection, { deferWhileDragging: true });
-  }, [transitionToEntry]);
-
-  const openFullRecordsFromBulk = useCallback((recordIds: string[]) => {
-    transitionToFullRecords({ recordIds, preserveBulkSelection: true });
-  }, [transitionToFullRecords]);
-
-  const gridAreaRef = useRef<HTMLDivElement | null>(null);
-
-  // Track pointer state so we can avoid opening panels mid drag-select.
-  // Principle: only treat pointer-down gestures that START on the grid as drag-selection gestures.
-  const [pointerDown, setPointerDown] = useState(false);
-  const pointerDownRef = useRef(false);
-  const pointerOriginRef = useRef<'grid' | 'ui' | null>(null);
-
-  useEffect(() => {
-    const opts = { capture: true } as const;
-
-    const down = (e: Event) => {
-      pointerDownRef.current = true;
-      setPointerDown(true);
-
-      const t = e.target;
-      if (t instanceof Node && gridAreaRef.current?.contains(t)) pointerOriginRef.current = 'grid';
-      else pointerOriginRef.current = 'ui';
-    };
-
-    const up = () => {
-      pointerDownRef.current = false;
-      setPointerDown(false);
-      pointerOriginRef.current = null;
-    };
-
-    // Pointer events (preferred)
-    window.addEventListener('pointerdown', down, opts);
-    window.addEventListener('pointerup', up, opts);
-    window.addEventListener('pointercancel', up, opts);
-
-    // Mouse fallback (in case pointer events are not emitted for some reason)
-    window.addEventListener('mousedown', down, opts);
-    window.addEventListener('mouseup', up, opts);
-
-    return () => {
-      window.removeEventListener('pointerdown', down, opts);
-      window.removeEventListener('pointerup', up, opts);
-      window.removeEventListener('pointercancel', up, opts);
-      window.removeEventListener('mousedown', down, opts);
-      window.removeEventListener('mouseup', up, opts);
-    };
-  }, []);
-
-  // While pointer is down, we don't want side panels to pop during drag selection.
-  // Instead, we queue which panel should open on pointer release.
-  const [pendingPanelMode, setPendingPanelMode] = useState<'entry' | 'bulk' | null>(null);
+  const {
+    selected,
+    setSelected,
+    panelMode,
+    setPanelMode,
+    fullRecordsRecordIds,
+    gridSelection,
+    setGridSelection,
+    pointerDown,
+    pendingPanelMode,
+    setPendingPanelMode,
+    gridAreaRef,
+    pointerOriginRef,
+    clearWorkspaceSelection,
+    transitionToNoPanel,
+    transitionToEntry,
+    transitionToBulk,
+    transitionToFullRecords,
+    openEntryFromSelection,
+    openFullRecordsFromBulk,
+  } = useWorkspacePanels();
 
   // NOTE: @glideapps/glide-data-grid treats scrollOffsetX as an *externally controlled* value.
   // If we continuously feed it back via React state on every scroll event, it can fight user scrolling
@@ -288,6 +323,72 @@ export default function App() {
         : { rowTuples: [], colTuples: [], cells: {} },
     [dataset, config, activeFilterSet],
   );
+
+  const validationIssues = useMemo<ValidationIssue[]>(() => {
+    if (!dataset) return [];
+
+    const issues: ValidationIssue[] = [];
+    const measureKey = config.measureKey;
+
+    if (!measureKey || !dataset.schema.fields.some((field) => field.key === measureKey)) {
+      issues.push({
+        id: 'config:measureKey:missing',
+        severity: 'error',
+        scope: 'dataset',
+        rule: 'measure-key-required',
+        message: 'Pivot measure field is missing or no longer exists in the schema.',
+        suggestion: 'Choose a valid measure field in Pivot layout.',
+        target: { path: '/config/measureKey', kind: 'dataset' },
+      });
+    }
+
+    const rowAndColumnKeys = [...config.rowKeys, ...config.colKeys];
+    const knownKeys = new Set(dataset.schema.fields.map((field) => field.key));
+    for (const key of rowAndColumnKeys) {
+      if (!knownKeys.has(key)) {
+        issues.push({
+          id: `config:key:${key}`,
+          severity: 'warning',
+          scope: 'dataset',
+          rule: 'pivot-key-missing',
+          message: `Pivot field "${key}" is no longer present in the schema.`,
+          suggestion: 'Remove or replace the missing field in Pivot layout.',
+          target: { path: `/config/pivotKeys/${key}`, kind: 'dataset' },
+        });
+      }
+    }
+
+    const numericMeasureKeys = dataset.schema.fields
+      .filter((field) => field.roles.includes('measure') || field.type === 'number')
+      .map((field) => field.key);
+
+    for (const record of dataset.records) {
+      if (!measureKey || !numericMeasureKeys.includes(measureKey)) continue;
+      const rawValue = record.data[measureKey];
+      const missingValue = rawValue === null || rawValue === undefined || rawValue === '';
+      if (missingValue) {
+        issues.push({
+          id: `record:${record.id}:missing-measure:${measureKey}`,
+          severity: 'error',
+          scope: 'record',
+          rule: 'measure-required',
+          message: `Record is missing a value for measure "${measureKey}".`,
+          suggestion: 'Fill in the value from Entry or Full Records.',
+          target: {
+            path: `/records/by-id/${record.id}/fields/${measureKey}`,
+            kind: 'field',
+            recordId: record.id,
+            fieldKey: measureKey,
+          },
+        });
+      }
+    }
+
+    return issues;
+  }, [config.colKeys, config.measureKey, config.rowKeys, dataset]);
+
+  const validationGroups = useMemo(() => groupValidationIssues(validationIssues), [validationIssues]);
+  const validationSummaries = useMemo(() => summarizeValidationIssueGroups(validationGroups), [validationGroups]);
 
   const bulkSel = (() => {
     const { recordIds, cellCount } = getRecordIdsForGridSelection({ pivot, config, selection: gridSelection });
@@ -565,8 +666,8 @@ export default function App() {
             if (col !== cur.cell[0] || row !== cur.cell[1]) {
               e.preventDefault();
               setGridSelection({
-                columns: CompactSelection.empty(),
-                rows: CompactSelection.empty(),
+                columns: gridSelection.columns,
+                rows: gridSelection.rows,
                 current: {
                   cell: [col, row],
                   range: { x: col, y: row, width: 1, height: 1 },
@@ -788,6 +889,8 @@ export default function App() {
         onStyles={() => setShowStyleEditor(true)}
         onFields={() => setShowSchemaEditor(true)}
         onPreferences={() => setShowPreferences(true)}
+        validationIssueCount={validationIssues.length}
+        onValidationSummary={() => setShowValidationSummary((open) => !open)}
         onViewsChange={(next) => setDataset((prev) => (prev ? { ...prev, views: next } : prev))}
         onLoadView={(viewId, fs) => {
           setSelected(null);
@@ -1020,6 +1123,49 @@ export default function App() {
                   const updated = bulkSetMetadata(inCell, flagKey, value);
                   return upsertRecords(prev, updated);
                 });
+              }}
+            />
+          </ResizableDrawer>
+        ) : showValidationSummary ? (
+          <ResizableDrawer storageKey="griddle:drawerWidth:validation-summary:v1">
+            <ValidationSummaryPanel
+              totalCount={validationIssues.length}
+              groups={validationGroups}
+              summaries={validationSummaries}
+              getSectionNavigationState={(group) => {
+                const state = buildValidationGroupState({ group, selection: gridSelection, config, pivot });
+                return { mode: state.mode, label: state.label };
+              }}
+              getIssueNavigationState={(issue) => {
+                const state = buildValidationIssueState({ issue, selection: gridSelection, config, pivot });
+                return { mode: state.mode, label: state.label };
+              }}
+              onClose={() => setShowValidationSummary(false)}
+              onNavigateSection={(group) => {
+                const state = buildValidationGroupState({ group, selection: gridSelection, config, pivot });
+                if (state.mode === 'entry' && state.actionableSelection) {
+                  transitionToEntry(state.actionableSelection);
+                  setShowValidationSummary(false);
+                  return;
+                }
+                if (state.mode === 'full-records' && state.recordIds.length > 0) {
+                  clearWorkspaceSelection();
+                  openFullRecordsFromBulk(state.recordIds);
+                  setShowValidationSummary(false);
+                }
+              }}
+              onNavigateIssue={(issue) => {
+                const state = buildValidationIssueState({ issue, selection: gridSelection, config, pivot });
+                if (state.mode === 'entry' && state.actionableSelection) {
+                  transitionToEntry(state.actionableSelection);
+                  setShowValidationSummary(false);
+                  return;
+                }
+                if (state.mode === 'full-records' && issue.target.recordId) {
+                  clearWorkspaceSelection();
+                  openFullRecordsFromBulk([issue.target.recordId]);
+                  setShowValidationSummary(false);
+                }
               }}
             />
           </ResizableDrawer>

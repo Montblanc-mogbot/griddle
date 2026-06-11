@@ -586,7 +586,89 @@ These targeting rules are intentionally aligned with the current interaction mod
 
 That means the targeting layer should prefer **honest fallbacks** over clever but brittle jumps.
 
-## Proposed next note
+## Issue grouping helper guidance
 
-The next validation-prep slice should turn these rules into a tiny pure helper (or typed stub) that classifies issue targets without rendering UI.
-That helper should consume the existing `ValidationIssue` contract and these routing rules, and stay additive/reversible.
+For future validation-panel presentation, grouping should stay domain-only and conservative at first.
+A small pure helper may group issues by:
+- `severity` first (`error`, `warning`, `info`)
+- then a conservative top-level `target.path` prefix (for example `/records/by-id`, `/config/measureKey`, `/schema/fields`)
+
+Why this first-pass grouping is useful:
+- keeps panel summaries deterministic without requiring UI state
+- clusters record-local vs config/schema issues predictably
+- stays reversible if later UI wants richer grouping modes
+
+Guardrails:
+- do not bake in visual section names yet
+- do not assume grouping by current pivot row/column context
+- do not overfit to one future sidebar layout
+- prefer stable path-derived grouping keys over rendered labels
+
+## Issue section-summary helper guidance
+
+After grouping, a future panel may need a second pure helper that turns grouped issues into compact section summaries.
+That summary layer should stay domain-only and conservative.
+
+Recommended section-summary fields:
+- stable `key` copied from the group
+- `severity`
+- `pathPrefix`
+- a stable machine-derived `label`
+- `count`
+
+Guardrails:
+- labels should be derived from structural fields already present in the group, not from speculative UI copy
+- counts should reflect grouped issue length only; no hidden weighting or display heuristics
+- do not encode expand/collapse state, icons, CTA text, or navigation behavior here
+- do not pretend the summary label is final user-facing wording for the eventual panel
+
+A first-pass label such as `<severity>: <pathPrefix>` is acceptable because it is deterministic and easy to replace later.
+
+## Grouped-summary navigation helper guidance
+
+If grouped validation summaries become clickable before a full validation panel exists, their navigation should still stay domain-only and conservative.
+A small pure helper may classify a grouped summary as:
+- `entry-eligible`
+- `full-records-eligible`
+- `dataset-only`
+- `unresolved`
+
+Recommended rules:
+- `dataset-only` if any issue in the group is truly dataset/config/schema scoped
+- `entry-eligible` only when the group still honestly narrows to one record-backed field area and the caller can already prove the current interaction model has a unique visible field target
+- `full-records-eligible` when the group has one or more trustworthy record ids but no honest single-cell Entry destination
+- `unresolved` when the group has no safe dataset destination and no trustworthy record anchor
+
+Guardrails:
+- do not mutate filters, views, or panel state inside the helper
+- do not pretend a section header can identify an exact cell unless the caller can already prove that fact
+- prefer Full Records over brittle Entry jumps when ambiguity exists
+- keep the output machine-oriented so future UI can decide whether to prompt, open, or stay put
+
+## Implementation checkpoint (2026-05-07)
+
+The validation-prep work now has four concrete pure helpers in `src/domain/validationTargeting.ts`:
+- `classifyValidationIssueTarget`
+- `groupValidationIssues`
+- `summarizeValidationIssueGroups`
+- `classifyValidationSummaryNavigationTarget`
+
+Together they solve the main pre-UI problem: Griddle can now classify issue destinations and derive stable grouped summaries **without** coupling that logic to React render state, ad-hoc panel mutations, or guessed cell navigation.
+That gives the future UI an honest domain contract for:
+- keeping dataset/config issues out of record-edit surfaces
+- preferring Entry only when a unique visible cell is already provable
+- falling back to Full Records when a record is known but Entry would be brittle
+- producing deterministic grouped summary sections before a full validation panel exists
+
+### First real UI-facing validation task
+
+The first bounded UI slice should be a **small validation-summary affordance**, not a full validation panel rewrite.
+It should render grouped validation sections plus issue rows from the existing helper outputs and allow a user to trigger the already-defined Entry vs Full Records vs dataset-only/unresolved routing behavior.
+
+Keep that first UI slice conservative:
+- no filter/view mutation to manufacture targets
+- no autofix workflow
+- no broad `App.tsx` rewrite
+- no requirement to finalize the eventual panel design
+
+If this slice works, Griddle will finally expose the completed domain groundwork through a visible interaction path while still respecting the current panel/selection model.
