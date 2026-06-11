@@ -165,7 +165,7 @@ function FullRecordsHeader(props: {
         <button onClick={onDeleteAll} disabled={!canDeleteAll}>
           Delete all
         </button>
-        <button onClick={onDone}>Back to entry</button>
+        <button onClick={onDone}>Open side panel</button>
         <button onClick={onClose}>Close</button>
       </div>
     </div>
